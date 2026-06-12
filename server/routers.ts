@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server";
+import { SignJWT } from "jose";
 import { z } from "zod";
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
@@ -50,17 +51,14 @@ const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
 });
 
 // ── Session cookie helper ──────────────────────────────────────────────────
-function setAdminSessionCookie(ctx: { req: any; res: any }, email: string) {
-  const { SignJWT } = require("jose");
-  const secret = new TextEncoder().encode(ENV.cookieSecret || "fallback-secret");
-  return new SignJWT({ sub: email, role: "admin" })
+async function setAdminSessionCookie(ctx: { req: any; res: any }, email: string) {
+  const secret = new TextEncoder().encode(ENV.cookieSecret || process.env.JWT_SECRET || "fallback-secret");
+  const token = await new SignJWT({ sub: email, role: "admin" })
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("7d")
-    .sign(secret)
-    .then((token: string) => {
-      const opts = getSessionCookieOptions(ctx.req);
-      ctx.res.cookie(COOKIE_NAME, token, { ...opts, maxAge: 7 * 24 * 60 * 60 * 1000 });
-    });
+    .sign(secret);
+  const opts = getSessionCookieOptions(ctx.req);
+  ctx.res.cookie(COOKIE_NAME, token, { ...opts, maxAge: 7 * 24 * 60 * 60 * 1000 });
 }
 
 // ── Categories ─────────────────────────────────────────────────────────────
