@@ -231,7 +231,7 @@ export default function AdminBooklets() {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="font-serif text-sm">{b.title}</p>
+                  <p className="font-serif text-sm" style={{color: '#2e37bd'}}>{b.title}</p>
                   <p className="text-xs text-muted-foreground font-mono mt-0.5">{b.slug}</p>
                   {b.description && (
                     <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{b.description}</p>
