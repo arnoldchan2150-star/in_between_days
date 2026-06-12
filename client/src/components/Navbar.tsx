@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
-import { useAuth } from "@/_core/hooks/useAuth";
 
 const NAV_LINKS = [
   { href: "/journal", label: "遊記" },
@@ -13,118 +12,82 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const [location] = useLocation();
-  const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { user } = useAuth();
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // Close mobile menu on route change
-  useEffect(() => { setOpen(false); }, [location]);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const isHome = location === "/";
 
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
+
+  const navBg = isHome
+    ? scrolled
+      ? "bg-background/95 backdrop-blur-sm border-b border-border"
+      : "bg-transparent"
+    : "bg-background/95 backdrop-blur-sm border-b border-border";
+
+  const textColor = isHome && !scrolled ? "text-white" : "text-foreground";
+  const logoColor = isHome && !scrolled ? "text-white" : "text-foreground";
+
   return (
     <>
-      <header
-        className={[
-          "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-          scrolled || !isHome
-            ? "bg-background/95 backdrop-blur-sm border-b border-border"
-            : "bg-transparent",
-        ].join(" ")}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${navBg}`}
       >
-        <div className="container-wide flex items-center justify-between h-16 md:h-20">
+        <div className="container flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/">
-            <span
-              className={[
-                "font-serif text-sm tracking-[0.18em] uppercase transition-colors duration-300",
-                scrolled || !isHome ? "text-foreground" : "text-white",
-              ].join(" ")}
-            >
+            <span className={`font-serif text-sm tracking-[0.2em] uppercase cursor-pointer transition-colors ${logoColor}`}>
               In-Between Days
             </span>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8">
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-8">
             {NAV_LINKS.map((link) => (
               <Link key={link.href} href={link.href}>
                 <span
-                  className={[
-                    "nav-link transition-colors duration-300",
-                    scrolled || !isHome ? "" : "!text-white/80 hover:!text-white",
-                    location === link.href ? "active" : "",
-                  ].join(" ")}
+                  className={`text-xs tracking-[0.12em] cursor-pointer transition-colors hover:opacity-60 ${textColor} ${
+                    location.startsWith(link.href) ? "opacity-100" : "opacity-70"
+                  }`}
                 >
                   {link.label}
                 </span>
               </Link>
             ))}
-            {user?.role === "admin" && (
-              <Link href="/admin">
-                <span
-                  className={[
-                    "nav-link transition-colors duration-300",
-                    scrolled || !isHome ? "" : "!text-white/80 hover:!text-white",
-                  ].join(" ")}
-                >
-                  後台
-                </span>
-              </Link>
-            )}
-          </nav>
+          </div>
 
-          {/* Mobile hamburger */}
+          {/* Mobile menu button */}
           <button
-            className={[
-              "md:hidden p-2 transition-colors duration-300",
-              scrolled || !isHome ? "text-foreground" : "text-white",
-            ].join(" ")}
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => setMenuOpen((v) => !v)}
+            className={`md:hidden p-2 transition-colors ${textColor}`}
             aria-label="選單"
           >
-            {open ? <X size={20} /> : <Menu size={20} />}
+            {menuOpen ? <X size={18} /> : <Menu size={18} />}
           </button>
         </div>
-      </header>
+      </nav>
 
-      {/* Mobile menu overlay */}
-      <div
-        className={[
-          "fixed inset-0 z-40 bg-background flex flex-col pt-20 px-8 transition-all duration-300 md:hidden",
-          open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
-        ].join(" ")}
-      >
-        <nav className="flex flex-col gap-8 mt-8">
-          {NAV_LINKS.map((link, i) => (
-            <Link key={link.href} href={link.href}>
-              <span
-                className={[
-                  "font-serif text-2xl font-light tracking-wider transition-all duration-300",
-                  open ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
-                  location === link.href ? "text-foreground" : "text-muted-foreground",
-                ].join(" ")}
-                style={{ transitionDelay: `${i * 60}ms` }}
-              >
-                {link.label}
-              </span>
-            </Link>
-          ))}
-          {user?.role === "admin" && (
-            <Link href="/admin">
-              <span className="font-serif text-2xl font-light tracking-wider text-muted-foreground">
-                後台管理
-              </span>
-            </Link>
-          )}
-        </nav>
-      </div>
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-40 bg-background pt-16">
+          <div className="container py-8 flex flex-col gap-6">
+            {NAV_LINKS.map((link) => (
+              <Link key={link.href} href={link.href}>
+                <span
+                  onClick={() => setMenuOpen(false)}
+                  className="font-serif text-xl font-light cursor-pointer text-foreground hover:text-muted-foreground transition-colors block"
+                >
+                  {link.label}
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -1,103 +1,141 @@
 import { Link } from "wouter";
-import AdminLayout from "./AdminLayout";
 import { trpc } from "@/lib/trpc";
-import { PlusCircle, Pencil, Trash2 } from "lucide-react";
+import AdminLayout from "./AdminLayout";
 import { toast } from "sonner";
+import { Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react";
 
 export default function AdminPosts() {
+  const { data: posts, isLoading, refetch } = trpc.posts.adminList.useQuery();
   const utils = trpc.useUtils();
-  const { data: posts, isLoading } = trpc.posts.adminList.useQuery();
 
-  const deletePost = trpc.posts.delete.useMutation({
+  const deleteMutation = trpc.posts.delete.useMutation({
     onSuccess: () => {
-      utils.posts.adminList.invalidate();
-      toast.success("遊記已刪除");
+      toast.success("文章已刪除");
+      refetch();
     },
-    onError: () => toast.error("刪除失敗"),
+    onError: (err) => toast.error(err.message),
+  });
+
+  const updateMutation = trpc.posts.update.useMutation({
+    onSuccess: () => {
+      toast.success("更新成功");
+      utils.posts.adminList.invalidate();
+    },
+    onError: (err) => toast.error(err.message),
   });
 
   const handleDelete = (id: number, title: string) => {
     if (!confirm(`確定要刪除「${title}」嗎？此操作無法復原。`)) return;
-    deletePost.mutate({ id });
+    deleteMutation.mutate({ id });
+  };
+
+  const togglePublish = (id: number, published: boolean) => {
+    updateMutation.mutate({ id, published: !published });
   };
 
   return (
-    <AdminLayout title="遊記管理">
-      <div className="max-w-4xl">
+    <AdminLayout title="文章管理">
+      <div className="max-w-5xl">
         <div className="flex items-center justify-between mb-8">
-          <p className="text-label">共 {posts?.length ?? 0} 篇</p>
+          <p className="text-sm text-muted-foreground">
+            共 {posts?.length ?? 0} 篇文章
+          </p>
           <Link href="/admin/posts/new">
-            <span className="btn-filled text-xs">
-              <PlusCircle size={13} />
-              新增遊記
+            <span className="inline-flex items-center gap-2 bg-foreground text-background px-4 py-2 text-xs tracking-wider hover:bg-foreground/80 transition-colors cursor-pointer">
+              <Plus size={12} /> 新增文章
             </span>
           </Link>
         </div>
 
         {isLoading ? (
           <div className="space-y-3">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-14 bg-muted animate-pulse" />
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-14 bg-secondary/30 animate-pulse" />
             ))}
           </div>
         ) : posts && posts.length > 0 ? (
           <div className="border border-border">
-            {posts.map((post, i) => (
-              <div
-                key={post.id}
-                className={[
-                  "flex items-center justify-between px-5 py-4 gap-4",
-                  i < posts.length - 1 ? "border-b border-border" : "",
-                ].join(" ")}
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <span
-                    className={[
-                      "w-1.5 h-1.5 rounded-full flex-shrink-0",
-                      post.published ? "bg-foreground" : "bg-muted-foreground/40",
-                    ].join(" ")}
-                  />
-                  <div className="min-w-0">
-                    <p className="text-sm font-light truncate">{post.title}</p>
-                    <div className="flex items-center gap-3 mt-0.5">
-                      <span className="text-label">{post.category}</span>
-                      <span className="text-label">
-                        {post.published ? "已發布" : "草稿"}
-                      </span>
-                      {post.publishedAt && (
-                        <span className="text-label">
-                          {new Date(post.publishedAt).toLocaleDateString("zh-TW")}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 flex-shrink-0">
-                  <Link href={`/admin/posts/${post.id}`}>
-                    <span className="p-2 text-muted-foreground hover:text-foreground transition-colors">
-                      <Pencil size={14} />
-                    </span>
-                  </Link>
-                  <button
-                    onClick={() => handleDelete(post.id, post.title)}
-                    className="p-2 text-muted-foreground hover:text-destructive transition-colors"
-                    disabled={deletePost.isPending}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              </div>
-            ))}
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border bg-secondary/20">
+                  <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal">
+                    標題
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal hidden md:table-cell">
+                    分類
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal hidden md:table-cell">
+                    類型
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal">
+                    狀態
+                  </th>
+                  <th className="text-right px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal">
+                    操作
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {posts.map((post) => (
+                  <tr key={post.id} className="border-b border-border last:border-0 hover:bg-secondary/10">
+                    <td className="px-4 py-3">
+                      <p className="text-sm font-serif line-clamp-1">{post.title}</p>
+                      <p className="text-xs text-muted-foreground mt-0.5 hidden md:block">
+                        /{post.slug}
+                      </p>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground hidden md:table-cell">
+                      {post.category}
+                    </td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground hidden md:table-cell">
+                      {post.type === "travel" ? "遊記" : "文化"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => togglePublish(post.id, post.published)}
+                        className={`inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-sm ${
+                          post.published
+                            ? "bg-foreground/10 text-foreground"
+                            : "bg-secondary text-muted-foreground"
+                        }`}
+                      >
+                        {post.published ? (
+                          <>
+                            <Eye size={10} /> 已發布
+                          </>
+                        ) : (
+                          <>
+                            <EyeOff size={10} /> 草稿
+                          </>
+                        )}
+                      </button>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link href={`/admin/posts/${post.id}/edit`}>
+                          <span className="p-1.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                            <Edit size={13} />
+                          </span>
+                        </Link>
+                        <button
+                          onClick={() => handleDelete(post.id, post.title)}
+                          className="p-1.5 text-muted-foreground hover:text-destructive transition-colors"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
-          <div className="text-center py-20 border border-dashed border-border">
-            <p className="font-serif text-lg font-light text-muted-foreground mb-4">
-              尚無遊記
-            </p>
+          <div className="text-center py-16 border border-dashed border-border">
+            <p className="text-sm text-muted-foreground mb-4">尚無文章</p>
             <Link href="/admin/posts/new">
-              <span className="btn-minimal text-xs">
-                <PlusCircle size={13} />
-                新增第一篇遊記
+              <span className="inline-flex items-center gap-2 border border-border px-4 py-2 text-xs tracking-wider hover:border-foreground transition-colors cursor-pointer">
+                <Plus size={12} /> 新增第一篇文章
               </span>
             </Link>
           </div>

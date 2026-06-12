@@ -1,70 +1,72 @@
 import { Link } from "wouter";
-import { Instagram, Facebook, Mail } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-border mt-auto">
-      <div className="container-wide py-12 md:py-16">
-        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
+    <footer className="bg-background border-t border-border py-12">
+      <div className="container">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 mb-10">
           {/* Brand */}
-          <div className="text-center md:text-left">
-            <p className="font-serif text-sm tracking-[0.18em] uppercase text-foreground mb-2">
+          <div>
+            <p className="font-serif text-sm tracking-[0.2em] uppercase mb-3">
               In-Between Days
             </p>
-            <p className="text-label">間隙裡的日常</p>
+            <p className="text-xs text-muted-foreground leading-relaxed max-w-xs">
+              走走停停，在旅途間隙，遇見世界，也遇見自己。
+            </p>
           </div>
 
-          {/* Nav links */}
-          <nav className="flex flex-wrap justify-center gap-x-8 gap-y-3">
-            {[
-              { href: "/journal", label: "遊記" },
-              { href: "/destinations", label: "目的地" },
-              { href: "/culture", label: "電影 × 書籍" },
-              { href: "/booklet", label: "旅遊小冊子" },
-              { href: "/about", label: "關於我" },
-            ].map((link) => (
-              <Link key={link.href} href={link.href}>
-                <span className="text-label hover:text-foreground transition-colors duration-200">
-                  {link.label}
+          {/* Navigation */}
+          <div>
+            <p className="text-xs text-muted-foreground tracking-[0.15em] uppercase mb-4">
+              探索
+            </p>
+            <div className="flex flex-col gap-2.5">
+              {[
+                { href: "/journal", label: "旅行遊記" },
+                { href: "/destinations", label: "目的地" },
+                { href: "/culture", label: "電影 × 書籍" },
+                { href: "/booklet", label: "旅遊小冊子" },
+                { href: "/about", label: "關於我" },
+              ].map((link) => (
+                <Link key={link.href} href={link.href}>
+                  <span className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                    {link.label}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Contact */}
+          <div>
+            <p className="text-xs text-muted-foreground tracking-[0.15em] uppercase mb-4">
+              聯絡
+            </p>
+            <div className="flex flex-col gap-2.5">
+              <a
+                href="mailto:hello@inbetweendays.com"
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                hello@inbetweendays.com
+              </a>
+              <Link href="/booklet">
+                <span className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                  訂閱旅遊小冊子
                 </span>
               </Link>
-            ))}
-          </nav>
-
-          {/* Social */}
-          <div className="flex items-center gap-5">
-            <a
-              href="https://instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-              className="text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
-              <Instagram size={17} />
-            </a>
-            <a
-              href="https://facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-              className="text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
-              <Facebook size={17} />
-            </a>
-            <a
-              href="mailto:hello@inbetweendays.com"
-              aria-label="Email"
-              className="text-muted-foreground hover:text-foreground transition-colors duration-200"
-            >
-              <Mail size={17} />
-            </a>
+            </div>
           </div>
         </div>
 
-        <div className="mt-10 pt-6 border-t border-border/50 text-center">
-          <p className="text-label text-[0.65rem]">
-            © {new Date().getFullYear()} In-Between Days・間隙裡的日常・All Rights Reserved
+        <div className="border-t border-border pt-6 flex flex-col md:flex-row items-center justify-between gap-3">
+          <p className="text-xs text-muted-foreground/60">
+            © {new Date().getFullYear()} In-Between Days. All rights reserved.
           </p>
+          <Link href="/admin">
+            <span className="text-xs text-muted-foreground/40 hover:text-muted-foreground transition-colors cursor-pointer">
+              管理後台
+            </span>
+          </Link>
         </div>
       </div>
     </footer>

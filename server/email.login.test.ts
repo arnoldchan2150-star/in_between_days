@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { hashPassword, verifyPassword, getCredentialByEmail, hasAnyCredential, upsertCredential } from "./auth";
 
 // ── Unit tests for password utilities ─────────────────────────────────────
@@ -23,9 +23,17 @@ describe("password utilities", () => {
 });
 
 // ── Integration-style tests for DB helpers (mocked) ───────────────────────
-vi.mock("./db", () => ({
-  getDb: vi.fn().mockResolvedValue(null),
-}));
+vi.mock("./db", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("./db")>();
+  return {
+    ...actual,
+    getDb: vi.fn().mockResolvedValue(null),
+    getAdminCredential: vi.fn().mockResolvedValue(undefined),
+    hasAdminCredential: vi.fn().mockResolvedValue(false),
+    createAdminCredential: vi.fn().mockResolvedValue(undefined),
+    updateAdminCredential: vi.fn().mockResolvedValue(undefined),
+  };
+});
 
 describe("auth DB helpers (no DB)", () => {
   it("getCredentialByEmail returns undefined when DB is unavailable", async () => {

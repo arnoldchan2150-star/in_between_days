@@ -1,143 +1,149 @@
-import { Link } from "wouter";
+import { useParams, Link } from "wouter";
 import { ArrowLeft, Calendar, MapPin } from "lucide-react";
-import Layout from "@/components/Layout";
 import { trpc } from "@/lib/trpc";
-import { Streamdown } from "streamdown";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { Skeleton } from "@/components/ui/skeleton";
 
-interface PostDetailProps {
-  params: { slug: string };
-}
+export default function PostDetail() {
+  const params = useParams<{ slug: string }>();
+  const slug = params.slug ?? "";
 
-export default function PostDetail({ params }: PostDetailProps) {
-  const { data, isLoading, error } = trpc.posts.bySlug.useQuery({ slug: params.slug });
+  const { data: post, isLoading, error } = trpc.posts.bySlug.useQuery({ slug }, { enabled: !!slug });
 
   if (isLoading) {
     return (
-      <Layout>
-        <div className="container-narrow py-24 animate-pulse">
-          <div className="h-3 bg-muted w-24 mb-8" />
-          <div className="h-8 bg-muted w-3/4 mb-4" />
-          <div className="h-3 bg-muted w-1/3 mb-12" />
-          <div className="bg-muted aspect-[16/9] mb-12" />
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-3 bg-muted mb-3 last:w-2/3" />
-          ))}
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="pt-24 container py-12 max-w-3xl mx-auto">
+          <Skeleton className="h-4 w-24 mb-8" />
+          <Skeleton className="h-8 w-3/4 mb-4" />
+          <Skeleton className="h-4 w-1/2 mb-8" />
+          <Skeleton className="aspect-video mb-8" />
+          <div className="space-y-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Skeleton key={i} className="h-4 w-full" />
+            ))}
+          </div>
         </div>
-      </Layout>
+        <Footer />
+      </div>
     );
   }
 
-  if (error || !data) {
+  if (error || !post) {
     return (
-      <Layout>
-        <div className="container-narrow py-24 text-center">
-          <p className="font-serif text-2xl font-light text-muted-foreground mb-4">
-            找不到這篇遊記
-          </p>
-          <Link href="/journal">
-            <span className="text-label hover:text-foreground transition-colors">
-              ← 返回遊記列表
-            </span>
-          </Link>
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-center">
+            <p className="font-serif text-xl text-muted-foreground mb-4">找不到這篇文章</p>
+            <Link href="/journal">
+              <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-1 justify-center">
+                <ArrowLeft size={14} /> 返回遊記列表
+              </span>
+            </Link>
+          </div>
         </div>
-      </Layout>
+        <Footer />
+      </div>
     );
   }
-
-  const { post, media } = data;
 
   return (
-    <Layout>
-      {/* Back link */}
-      <div className="container py-6 border-b border-border">
-        <Link href="/journal">
-          <span className="text-label hover:text-foreground transition-colors flex items-center gap-2">
-            <ArrowLeft size={12} />
-            返回遊記列表
-          </span>
-        </Link>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
 
-      {/* Article header */}
-      <header className="container-narrow pt-14 pb-10">
-        <div className="flex items-center gap-4 mb-6">
-          <span className="badge-category">{post.category}</span>
-          {post.publishedAt && (
-            <span className="text-label flex items-center gap-1">
-              <Calendar size={10} />
-              {new Date(post.publishedAt).toLocaleDateString("zh-TW", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </span>
-          )}
-        </div>
-        <h1 className="font-serif text-3xl md:text-4xl font-light leading-tight tracking-wide mb-6">
-          {post.title}
-        </h1>
-        {post.excerpt && (
-          <p className="font-serif text-lg text-muted-foreground font-light leading-loose">
-            {post.excerpt}
-          </p>
-        )}
-        <div className="divider mt-8" />
-      </header>
-
-      {/* Cover image – full width */}
+      {/* Hero Image */}
       {post.coverImageUrl && (
-        <div className="w-full mb-14">
+        <div className="relative h-[60vh] min-h-[400px]">
           <img
             src={post.coverImageUrl}
             alt={post.title}
-            className="w-full max-h-[70vh] object-cover img-travel"
+            className="w-full h-full object-cover"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
       )}
 
-      {/* Article body */}
-      <article className="container-narrow pb-20">
-        <div className="prose-travel">
-          <Streamdown>{post.content}</Streamdown>
-        </div>
-
-        {/* Inline gallery */}
-        {media && media.length > 0 && (
-          <div className="mt-16">
-            <p className="text-label mb-8">旅行影像</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {media.map((m) => (
-                <figure key={m.id}>
-                  <img
-                    src={m.url}
-                    alt={m.caption ?? "旅行照片"}
-                    className="w-full aspect-[4/3] object-cover img-travel"
-                  />
-                  {m.caption && (
-                    <figcaption className="text-label mt-2">{m.caption}</figcaption>
-                  )}
-                </figure>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Footer nav */}
-        <div className="mt-20 pt-10 border-t border-border flex justify-between items-center">
+      {/* Content */}
+      <article className={`flex-1 bg-background ${post.coverImageUrl ? "" : "pt-24"}`}>
+        <div className="container max-w-3xl mx-auto py-12">
+          {/* Back link */}
           <Link href="/journal">
-            <span className="text-label hover:text-foreground transition-colors flex items-center gap-2">
-              <ArrowLeft size={12} />
-              所有遊記
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-8">
+              <ArrowLeft size={12} /> 返回遊記
             </span>
           </Link>
-          <Link href={`/destinations?cat=${post.category}`}>
-            <span className="text-label hover:text-foreground transition-colors flex items-center gap-2">
-              <MapPin size={10} />
-              更多 {post.category} 遊記
+
+          {/* Meta */}
+          <div className="flex flex-wrap items-center gap-4 mb-4">
+            <span className="text-xs text-muted-foreground tracking-widest flex items-center gap-1">
+              <MapPin size={11} /> {post.category}
             </span>
-          </Link>
+            {post.publishedAt && (
+              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <Calendar size={11} />
+                {new Date(post.publishedAt).toLocaleDateString("zh-TW", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </span>
+            )}
+          </div>
+
+          {/* Title */}
+          <h1 className="font-serif text-3xl md:text-4xl font-light mb-4 leading-tight">
+            {post.title}
+          </h1>
+
+          {post.excerpt && (
+            <p className="text-muted-foreground text-base leading-relaxed mb-8 border-l-2 border-border pl-4 italic">
+              {post.excerpt}
+            </p>
+          )}
+
+          <hr className="border-border mb-8" />
+
+          {/* Body */}
+          <div
+            className="prose-travel"
+            dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, "<br/>") }}
+          />
+
+          {/* Media gallery */}
+          {post.media && post.media.length > 0 && (
+            <div className="mt-12">
+              <h3 className="font-serif text-lg font-light mb-6 text-muted-foreground">
+                旅行相簿
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {post.media.map((m) => (
+                  <div key={m.id} className="aspect-[4/3] overflow-hidden">
+                    <img
+                      src={m.url}
+                      alt={m.caption ?? "旅行照片"}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Footer nav */}
+          <div className="mt-16 pt-8 border-t border-border">
+            <Link href="/journal">
+              <span className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <ArrowLeft size={14} /> 更多旅行故事
+              </span>
+            </Link>
+          </div>
         </div>
       </article>
-    </Layout>
+
+      <Footer />
+    </div>
   );
 }

@@ -1,90 +1,65 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useSearch } from "wouter";
-import Layout from "@/components/Layout";
 import { trpc } from "@/lib/trpc";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const CATEGORIES = [
-  { label: "南美", en: "South America", img: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=1200&q=80&auto=format&fit=crop" },
-  { label: "中東", en: "Middle East", img: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=1200&q=80&auto=format&fit=crop" },
-  { label: "亞洲", en: "Asia", img: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=1200&q=80&auto=format&fit=crop" },
-  { label: "歐洲", en: "Europe", img: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=1200&q=80&auto=format&fit=crop" },
-  { label: "中亞", en: "Central Asia", img: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1200&q=80&auto=format&fit=crop" },
-  { label: "東南亞", en: "Southeast Asia", img: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=1200&q=80&auto=format&fit=crop" },
-];
+const CATEGORIES = ["全部", "南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"];
 
-const PLACEHOLDER_IMAGES = [
-  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&q=75&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=75&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=75&auto=format&fit=crop",
+const FALLBACK_IMGS = [
+  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&q=70&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=70&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=70&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=70&auto=format&fit=crop",
 ];
 
 export default function Destinations() {
   const search = useSearch();
   const params = new URLSearchParams(search);
-  const initialCat = params.get("cat") ?? "";
+  const initialCat = params.get("cat") ?? "全部";
   const [activeCategory, setActiveCategory] = useState(initialCat);
 
-  const { data: posts, isLoading } = trpc.posts.list.useQuery(
-    activeCategory ? { category: activeCategory } : {}
-  );
+  useEffect(() => {
+    const p = new URLSearchParams(search);
+    const cat = p.get("cat") ?? "全部";
+    setActiveCategory(cat);
+  }, [search]);
 
-  const activeCatInfo = CATEGORIES.find((c) => c.label === activeCategory);
+  const { data: posts, isLoading } = trpc.posts.list.useQuery({
+    category: activeCategory === "全部" ? undefined : activeCategory,
+    type: "travel",
+  });
 
   return (
-    <Layout>
-      {/* Hero banner when category selected */}
-      {activeCatInfo ? (
-        <section className="relative h-64 md:h-80 flex items-end">
-          <img
-            src={activeCatInfo.img}
-            alt={activeCatInfo.label}
-            className="absolute inset-0 w-full h-full object-cover img-travel"
-          />
-          <div className="hero-overlay absolute inset-0" />
-          <div className="relative z-10 container pb-10">
-            <p className="text-label text-white/60 mb-2">{activeCatInfo.en}</p>
-            <h1 className="font-serif text-4xl font-light text-white tracking-wider">
-              {activeCatInfo.label}
-            </h1>
-          </div>
-        </section>
-      ) : (
-        <section className="section-sm border-b border-border">
-          <div className="container">
-            <p className="text-label mb-3">Destinations</p>
-            <h1 className="text-heading">旅行目的地</h1>
-          </div>
-        </section>
-      )}
+    <div className="min-h-screen flex flex-col">
+      <Navbar />
 
-      {/* Category selector */}
-      <section className="py-8 border-b border-border">
+      {/* Header */}
+      <section className="pt-32 pb-12 bg-background border-b border-border">
         <div className="container">
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+          <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-2">
+            Destinations
+          </p>
+          <h1 className="font-serif text-3xl font-light">旅行目的地</h1>
+        </div>
+      </section>
+
+      {/* Category Filter */}
+      <section className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="container">
+          <div className="flex gap-6 overflow-x-auto py-4">
             {CATEGORIES.map((cat) => (
               <button
-                key={cat.label}
-                onClick={() =>
-                  setActiveCategory((prev) => (prev === cat.label ? "" : cat.label))
-                }
-                className={[
-                  "relative overflow-hidden aspect-square group",
-                  activeCategory === cat.label ? "ring-1 ring-foreground" : "",
-                ].join(" ")}
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`text-xs tracking-[0.12em] whitespace-nowrap pb-1 transition-colors border-b ${
+                  activeCategory === cat
+                    ? "border-foreground text-foreground"
+                    : "border-transparent text-muted-foreground hover:text-foreground"
+                }`}
               >
-                <img
-                  src={cat.img}
-                  alt={cat.label}
-                  className="w-full h-full object-cover img-travel group-hover:scale-105 transition-transform duration-400"
-                />
-                <div
-                  className={[
-                    "absolute inset-0 flex flex-col items-center justify-center transition-colors duration-300",
-                    activeCategory === cat.label ? "bg-black/40" : "bg-black/25 group-hover:bg-black/15",
-                  ].join(" ")}
-                >
-                  <p className="font-serif text-white text-sm tracking-wider">{cat.label}</p>
-                </div>
+                {cat}
               </button>
             ))}
           </div>
@@ -92,61 +67,54 @@ export default function Destinations() {
       </section>
 
       {/* Posts */}
-      <section className="section">
+      <section className="flex-1 py-16 bg-background">
         <div className="container">
-          {!activeCategory && (
-            <p className="text-label mb-10">
-              選擇目的地以篩選遊記，或瀏覽全部
-            </p>
-          )}
-
           {isLoading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[...Array(6)].map((_, i) => (
-                <div key={i} className="animate-pulse">
-                  <div className="bg-muted aspect-[4/3] mb-4" />
-                  <div className="h-3 bg-muted w-16 mb-3" />
-                  <div className="h-5 bg-muted w-3/4" />
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i}>
+                  <Skeleton className="aspect-[4/3] mb-4" />
+                  <Skeleton className="h-4 w-16 mb-2" />
+                  <Skeleton className="h-5 w-full mb-2" />
                 </div>
               ))}
             </div>
           ) : posts && posts.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-              {posts.map((post: (typeof posts)[number], i: number) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {posts.map((post, i) => (
                 <Link key={post.id} href={`/journal/${post.slug}`}>
-                  <article className="card-post group cursor-pointer">
-                    <div className="overflow-hidden mb-5">
+                  <article className="group cursor-pointer">
+                    <div className="aspect-[4/3] overflow-hidden mb-4 bg-muted">
                       <img
-                        src={post.coverImageUrl ?? PLACEHOLDER_IMAGES[i % PLACEHOLDER_IMAGES.length]}
+                        src={post.coverImageUrl || FALLBACK_IMGS[i % FALLBACK_IMGS.length]}
                         alt={post.title}
-                        className="w-full aspect-[4/3] object-cover img-travel group-hover:scale-[1.03] transition-transform duration-500"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     </div>
-                    <div>
-                      <span className="badge-category mb-3 inline-block">{post.category}</span>
-                      <h2 className="font-serif text-lg font-light leading-snug mb-2 group-hover:text-muted-foreground transition-colors">
-                        {post.title}
-                      </h2>
-                      {post.excerpt && (
-                        <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-                          {post.excerpt}
-                        </p>
-                      )}
-                    </div>
+                    <p className="text-xs text-muted-foreground tracking-widest mb-2">
+                      {post.category}
+                    </p>
+                    <h2 className="font-serif text-lg font-light group-hover:text-muted-foreground transition-colors">
+                      {post.title}
+                    </h2>
                   </article>
                 </Link>
               ))}
             </div>
           ) : (
             <div className="text-center py-24">
-              <p className="font-serif text-2xl font-light text-muted-foreground mb-4">
-                {activeCategory ? `尚無 ${activeCategory} 的遊記` : "遊記即將上線"}
+              <p className="font-serif text-xl text-muted-foreground font-light mb-2">
+                {activeCategory !== "全部"
+                  ? `尚無「${activeCategory}」的旅行故事`
+                  : "旅行故事即將上線"}
               </p>
-              <p className="text-label">敬請期待</p>
+              <p className="text-sm text-muted-foreground">遊記正在整理中，敬請期待</p>
             </div>
           )}
         </div>
       </section>
-    </Layout>
+
+      <Footer />
+    </div>
   );
 }

@@ -26,14 +26,14 @@ export default function AdminAbout() {
     }
   }, [about]);
 
-  const uploadFile = trpc.upload.uploadFile.useMutation({
-    onSuccess: (data) => {
+  const uploadPhotoMutation = trpc.about.uploadPhoto.useMutation({
+    onSuccess: (data: { url: string; key: string }) => {
       setPhotoUrl(data.url);
       setPhotoKey(data.key);
       toast.success("照片已上傳");
       setUploading(false);
     },
-    onError: (e) => {
+    onError: (e: { message: string }) => {
       toast.error("上傳失敗：" + e.message);
       setUploading(false);
     },
@@ -44,7 +44,7 @@ export default function AdminAbout() {
       utils.about.get.invalidate();
       toast.success("關於我已更新");
     },
-    onError: (e) => toast.error("更新失敗：" + e.message),
+    onError: (e: { message: string }) => toast.error("更新失敗：" + e.message),
   });
 
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,12 +53,11 @@ export default function AdminAbout() {
     setUploading(true);
     const reader = new FileReader();
     reader.onload = () => {
-      const base64 = (reader.result as string).split(",")[1];
-      uploadFile.mutate({
-        base64,
+      const dataBase64 = (reader.result as string).split(",")[1] ?? "";
+      uploadPhotoMutation.mutate({
         filename: file.name,
         contentType: file.type,
-        folder: "about",
+        dataBase64,
       });
     };
     reader.readAsDataURL(file);
@@ -79,13 +78,13 @@ export default function AdminAbout() {
       <div className="max-w-2xl space-y-8">
         {/* Photo */}
         <div>
-          <label className="text-label block mb-3">個人意境照</label>
+          <label className="text-xs text-muted-foreground tracking-wider block mb-3">個人意境照</label>
           <div className="flex items-start gap-4">
             {photoUrl && (
               <img
                 src={photoUrl}
                 alt="個人照"
-                className="w-24 aspect-[3/4] object-cover object-top img-travel"
+                className="w-24 aspect-[3/4] object-cover"
               />
             )}
             <div className="flex flex-col gap-2">
@@ -93,7 +92,7 @@ export default function AdminAbout() {
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
                 disabled={uploading}
-                className="btn-minimal text-xs"
+                className="flex items-center gap-2 border border-dashed border-border px-4 py-2 text-xs text-muted-foreground hover:border-foreground transition-colors disabled:opacity-50"
               >
                 <Upload size={12} />
                 {uploading ? "上傳中..." : "上傳照片"}
@@ -110,7 +109,7 @@ export default function AdminAbout() {
                 value={photoUrl}
                 onChange={(e) => setPhotoUrl(e.target.value)}
                 placeholder="或直接貼上圖片 URL"
-                className="border-b border-border bg-transparent py-1.5 text-xs outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/40 w-64"
+                className="border border-border bg-background px-3 py-1.5 text-xs focus:outline-none focus:border-foreground transition-colors w-64"
               />
             </div>
           </div>
@@ -118,48 +117,45 @@ export default function AdminAbout() {
 
         {/* Philosophy */}
         <div>
-          <label className="text-label block mb-2">旅行理念</label>
+          <label className="text-xs text-muted-foreground tracking-wider block mb-2">旅行理念</label>
           <textarea
             value={philosophy}
             onChange={(e) => setPhilosophy(e.target.value)}
             rows={8}
             placeholder="生活如長路，旅行便是途中屬於我的留白..."
-            className="w-full border border-border bg-transparent p-4 text-sm font-serif font-light outline-none focus:border-foreground transition-colors resize-y placeholder:text-muted-foreground/30 leading-loose"
+            className="w-full border border-border bg-background p-4 text-sm font-serif font-light focus:outline-none focus:border-foreground transition-colors resize-y leading-loose"
           />
-          <p className="text-[0.65rem] text-muted-foreground/60 mt-1">支援 Markdown 格式</p>
+          <p className="text-xs text-muted-foreground/60 mt-1">支援純文字格式</p>
         </div>
 
         {/* Blog origin */}
         <div>
-          <label className="text-label block mb-2">部落格初衷</label>
+          <label className="text-xs text-muted-foreground tracking-wider block mb-2">部落格初衷</label>
           <textarea
             value={blogOrigin}
             onChange={(e) => setBlogOrigin(e.target.value)}
             rows={6}
             placeholder="「In-Between Days」取自..."
-            className="w-full border border-border bg-transparent p-4 text-sm font-serif font-light outline-none focus:border-foreground transition-colors resize-y placeholder:text-muted-foreground/30 leading-loose"
+            className="w-full border border-border bg-background p-4 text-sm font-serif font-light focus:outline-none focus:border-foreground transition-colors resize-y leading-loose"
           />
         </div>
 
         {/* Countries */}
         <div>
-          <label className="text-label block mb-2">走過的國家（JSON 陣列格式）</label>
+          <label className="text-xs text-muted-foreground tracking-wider block mb-2">走過的國家</label>
           <textarea
             value={countriesVisited}
             onChange={(e) => setCountriesVisited(e.target.value)}
-            rows={4}
-            placeholder='["日本", "韓國", "法國", "義大利"]'
-            className="w-full border border-border bg-transparent p-4 text-sm font-mono outline-none focus:border-foreground transition-colors resize-y placeholder:text-muted-foreground/30"
+            rows={3}
+            placeholder="日本、韓國、法國、義大利、秘魯..."
+            className="w-full border border-border bg-background p-4 text-sm focus:outline-none focus:border-foreground transition-colors resize-y"
           />
-          <p className="text-[0.65rem] text-muted-foreground/60 mt-1">
-            請使用 JSON 陣列格式，例如：["日本", "法國", "秘魯"]
-          </p>
         </div>
 
         <button
           onClick={handleSave}
           disabled={updateAbout.isPending}
-          className="btn-filled text-xs"
+          className="flex items-center gap-2 bg-foreground text-background px-6 py-2.5 text-xs tracking-widest hover:bg-foreground/80 transition-colors disabled:opacity-50"
         >
           <Save size={13} />
           {updateAbout.isPending ? "儲存中..." : "儲存設定"}

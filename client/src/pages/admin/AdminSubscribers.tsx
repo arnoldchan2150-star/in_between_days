@@ -1,77 +1,103 @@
-import AdminLayout from "./AdminLayout";
 import { trpc } from "@/lib/trpc";
-import { Mail, CheckCircle, Clock } from "lucide-react";
+import AdminLayout from "./AdminLayout";
+import { toast } from "sonner";
+import { Download, Mail } from "lucide-react";
 
 export default function AdminSubscribers() {
-  const { data: subscribers, isLoading } = trpc.booklets.subscribers.useQuery();
+  const { data: subscribers, isLoading } = trpc.subscribers.list.useQuery();
 
-  const sentCount = subscribers?.filter((s) => s.sentAt).length ?? 0;
-  const pendingCount = (subscribers?.length ?? 0) - sentCount;
+  const exportCsv = () => {
+    if (!subscribers || subscribers.length === 0) return;
+    const header = "姓名,信箱,小冊子,訂閱時間,寄送時間";
+    const rows = subscribers.map((s) =>
+      [
+        s.name,
+        s.email,
+        s.bookletTitle ?? "",
+        s.createdAt ? new Date(s.createdAt).toLocaleString("zh-TW") : "",
+        s.sentAt ? new Date(s.sentAt).toLocaleString("zh-TW") : "未寄送",
+      ].join(",")
+    );
+    const csv = [header, ...rows].join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `subscribers_${new Date().toISOString().split("T")[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("CSV 已匯出");
+  };
 
   return (
     <AdminLayout title="訂閱者管理">
-      <div className="max-w-3xl">
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          {[
-            { label: "總訂閱者", value: subscribers?.length ?? 0, icon: Mail },
-            { label: "已寄送", value: sentCount, icon: CheckCircle },
-            { label: "待寄送", value: pendingCount, icon: Clock },
-          ].map(({ label, value, icon: Icon }) => (
-            <div key={label} className="border border-border p-4">
-              <Icon size={14} className="text-muted-foreground mb-2" />
-              <p className="font-serif text-2xl font-light">{value}</p>
-              <p className="text-label mt-1">{label}</p>
-            </div>
-          ))}
+      <div className="max-w-5xl">
+        <div className="flex items-center justify-between mb-8">
+          <p className="text-sm text-muted-foreground">
+            共 {subscribers?.length ?? 0} 位訂閱者
+          </p>
+          <button
+            onClick={exportCsv}
+            className="inline-flex items-center gap-2 border border-border px-4 py-2 text-xs tracking-wider hover:border-foreground transition-colors"
+          >
+            <Download size={12} /> 匯出 CSV
+          </button>
         </div>
 
         {isLoading ? (
-          <div className="space-y-2">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-12 bg-muted animate-pulse" />
+          <div className="space-y-3">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="h-12 bg-secondary/30 animate-pulse" />
             ))}
           </div>
         ) : subscribers && subscribers.length > 0 ? (
           <div className="border border-border">
-            <div className="grid grid-cols-[1fr_1.5fr_auto_auto] gap-4 px-5 py-3 border-b border-border bg-secondary/30">
-              <p className="text-label">姓名</p>
-              <p className="text-label">電子郵件</p>
-              <p className="text-label">狀態</p>
-              <p className="text-label">訂閱日期</p>
-            </div>
-            {subscribers.map((sub, i) => (
-              <div
-                key={sub.id}
-                className={[
-                  "grid grid-cols-[1fr_1.5fr_auto_auto] gap-4 px-5 py-3 items-center",
-                  i < subscribers.length - 1 ? "border-b border-border" : "",
-                ].join(" ")}
-              >
-                <p className="text-sm font-light truncate">{sub.name}</p>
-                <p className="text-sm text-muted-foreground truncate">{sub.email}</p>
-                <span className="text-label whitespace-nowrap">
-                  {sub.sentAt ? (
-                    <span className="flex items-center gap-1 text-foreground">
-                      <CheckCircle size={10} /> 已寄送
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1 text-muted-foreground">
-                      <Clock size={10} /> 待寄送
-                    </span>
-                  )}
-                </span>
-                <p className="text-label whitespace-nowrap">
-                  {new Date(sub.createdAt).toLocaleDateString("zh-TW")}
-                </p>
-              </div>
-            ))}
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border bg-secondary/20">
+                  <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal">姓名</th>
+                  <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal">信箱</th>
+                  <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal hidden md:table-cell">小冊子</th>
+                  <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal hidden md:table-cell">訂閱時間</th>
+                  <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal">寄送狀態</th>
+                </tr>
+              </thead>
+              <tbody>
+                {subscribers.map((sub, i) => (
+                  <tr key={i} className="border-b border-border last:border-0 hover:bg-secondary/10">
+                    <td className="px-4 py-3 text-sm">{sub.name}</td>
+                    <td className="px-4 py-3 text-sm text-muted-foreground">
+                      <a href={`mailto:${sub.email}`} className="hover:text-foreground transition-colors flex items-center gap-1">
+                        <Mail size={11} /> {sub.email}
+                      </a>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground hidden md:table-cell">
+                      {sub.bookletTitle ?? "—"}
+                    </td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground hidden md:table-cell">
+                      {sub.createdAt
+                        ? new Date(sub.createdAt).toLocaleDateString("zh-TW")
+                        : "—"}
+                    </td>
+                    <td className="px-4 py-3">
+                      <span
+                        className={`text-xs px-2 py-0.5 ${
+                          sub.sentAt
+                            ? "bg-foreground/10 text-foreground"
+                            : "bg-secondary text-muted-foreground"
+                        }`}
+                      >
+                        {sub.sentAt ? "已寄送" : "待寄送"}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         ) : (
           <div className="text-center py-16 border border-dashed border-border">
-            <p className="font-serif text-lg font-light text-muted-foreground">
-              尚無訂閱者
-            </p>
+            <p className="text-sm text-muted-foreground">尚無訂閱者</p>
           </div>
         )}
       </div>

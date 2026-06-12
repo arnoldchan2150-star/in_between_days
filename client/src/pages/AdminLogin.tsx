@@ -1,286 +1,104 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
-import { Lock, Mail, Eye, EyeOff, ArrowLeft, KeyRound } from "lucide-react";
-import { Link } from "wouter";
-
-type Mode = "login" | "setup" | "change";
+import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function AdminLogin() {
   const [, navigate] = useLocation();
-  const [mode, setMode] = useState<Mode>("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [currentPassword, setCurrentPassword] = useState("");
+  const [form, setForm] = useState({ email: "", password: "" });
   const [showPw, setShowPw] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Check if any password has been configured
-  const { data: hasPassword, isLoading: checkingPw } = trpc.auth.hasPassword.useQuery();
-  const utils = trpc.useUtils();
+  const { data: isSet } = trpc.auth.isAdminPasswordSet.useQuery();
 
-  const loginMut = trpc.auth.emailLogin.useMutation({
-    onSuccess: async () => {
-      await utils.auth.me.invalidate();
+  const setupMutation = trpc.auth.setupAdminPassword.useMutation({
+    onSuccess: () => {
+      toast.success("管理員帳號設定成功，請重新登入");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const loginMutation = trpc.auth.emailLogin.useMutation({
+    onSuccess: () => {
+      toast.success("登入成功");
       navigate("/admin");
     },
-    onError: (e) => setError(e.message),
+    onError: (err) => toast.error(err.message || "登入失敗"),
   });
 
-  const setPwMut = trpc.auth.setPassword.useMutation({
-    onSuccess: () => {
-      setSuccess("密碼設定成功！請用新密碼登入。");
-      setMode("login");
-      setPassword("");
-      setConfirmPassword("");
-      setCurrentPassword("");
-      setError("");
-    },
-    onError: (e) => setError(e.message),
-  });
-
-  const handleLogin = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    if (!email || !password) { setError("請填寫電郵與密碼"); return; }
-    loginMut.mutate({ email, password });
+    if (!form.email || !form.password) return;
+    setLoading(true);
+    try {
+      if (!isSet) {
+        await setupMutation.mutateAsync({ email: form.email, password: form.password });
+      } else {
+        await loginMutation.mutateAsync({ email: form.email, password: form.password });
+      }
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const handleSetPassword = (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    if (!email) { setError("請填寫電郵地址"); return; }
-    if (password.length < 8) { setError("密碼至少需要 8 個字元"); return; }
-    if (password !== confirmPassword) { setError("兩次輸入的密碼不一致"); return; }
-    setPwMut.mutate({
-      email,
-      password,
-      currentPassword: mode === "change" ? currentPassword : undefined,
-    });
-  };
-
-  if (checkingPw) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-label animate-pulse tracking-widest">載入中⋯</div>
-      </div>
-    );
-  }
-
-  // First-time setup: no password set yet
-  const isFirstTime = !hasPassword;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background px-6">
-      <div className="max-w-sm w-full space-y-8">
-
-        {/* Header */}
-        <div className="text-center space-y-3">
-          <Lock size={26} className="mx-auto text-muted-foreground" strokeWidth={1.5} />
-          <h1 className="font-serif text-2xl font-light tracking-wide">
-            {isFirstTime ? "設定管理員密碼" : mode === "change" ? "更改密碼" : "後台登入"}
-          </h1>
-          <p className="text-muted-foreground text-sm leading-relaxed">
-            {isFirstTime
-              ? "首次使用，請先設定你的電郵與密碼"
-              : mode === "change"
-              ? "輸入目前密碼與新密碼"
-              : "In-Between Days 後台管理"}
+    <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="w-full max-w-sm px-6">
+        <div className="text-center mb-10">
+          <p className="font-serif text-sm tracking-[0.2em] uppercase text-foreground mb-1">
+            In-Between Days
           </p>
+          <p className="text-xs text-muted-foreground tracking-widest">管理後台</p>
         </div>
 
-        <div className="divider mx-auto max-w-[60px]" />
-
-        {/* Success message */}
-        {success && (
-          <div className="bg-secondary/60 border border-border rounded-sm px-4 py-3 text-sm text-foreground text-center">
-            {success}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">
+              電子信箱
+            </label>
+            <input
+              type="email"
+              value={form.email}
+              onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+              placeholder="admin@example.com"
+              required
+              className="w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors"
+            />
           </div>
-        )}
 
-        {/* Error message */}
-        {error && (
-          <div className="bg-red-50 border border-red-200 rounded-sm px-4 py-3 text-sm text-red-700 text-center">
-            {error}
-          </div>
-        )}
-
-        {/* ── Login Form ── */}
-        {!isFirstTime && mode === "login" && (
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-label block">電郵地址</label>
-              <div className="relative">
-                <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  className="w-full pl-9 pr-4 py-2.5 border border-border bg-background text-sm focus:outline-none focus:border-foreground/40 transition-colors rounded-sm"
-                  autoComplete="email"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-label block">密碼</label>
-              <div className="relative">
-                <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type={showPw ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-9 pr-10 py-2.5 border border-border bg-background text-sm focus:outline-none focus:border-foreground/40 transition-colors rounded-sm"
-                  autoComplete="current-password"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loginMut.isPending}
-              className="btn-filled w-full flex items-center justify-center gap-2 disabled:opacity-60"
-            >
-              {loginMut.isPending ? "登入中⋯" : "登入後台"}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => { setMode("change"); setError(""); setSuccess(""); }}
-              className="w-full text-center text-label hover:text-foreground transition-colors text-xs flex items-center justify-center gap-1.5"
-            >
-              <KeyRound size={11} />
-              更改密碼
-            </button>
-          </form>
-        )}
-
-        {/* ── First-time Setup / Change Password Form ── */}
-        {(isFirstTime || mode === "change") && (
-          <form onSubmit={handleSetPassword} className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-label block">電郵地址</label>
-              <div className="relative">
-                <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  className="w-full pl-9 pr-4 py-2.5 border border-border bg-background text-sm focus:outline-none focus:border-foreground/40 transition-colors rounded-sm"
-                  autoComplete="email"
-                  required
-                />
-              </div>
-            </div>
-
-            {mode === "change" && (
-              <div className="space-y-1">
-                <label className="text-label block">目前密碼</label>
-                <div className="relative">
-                  <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    type={showPw ? "text" : "password"}
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full pl-9 pr-10 py-2.5 border border-border bg-background text-sm focus:outline-none focus:border-foreground/40 transition-colors rounded-sm"
-                    autoComplete="current-password"
-                    required
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className="space-y-1">
-              <label className="text-label block">
-                {mode === "change" ? "新密碼" : "設定密碼"}
-              </label>
-              <div className="relative">
-                <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type={showPw ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="至少 8 個字元"
-                  className="w-full pl-9 pr-10 py-2.5 border border-border bg-background text-sm focus:outline-none focus:border-foreground/40 transition-colors rounded-sm"
-                  autoComplete="new-password"
-                  minLength={8}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
-                </button>
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <label className="text-label block">確認密碼</label>
-              <div className="relative">
-                <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type={showPw ? "text" : "password"}
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="再次輸入密碼"
-                  className="w-full pl-9 pr-4 py-2.5 border border-border bg-background text-sm focus:outline-none focus:border-foreground/40 transition-colors rounded-sm"
-                  autoComplete="new-password"
-                  required
-                />
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={setPwMut.isPending}
-              className="btn-filled w-full flex items-center justify-center gap-2 disabled:opacity-60"
-            >
-              {setPwMut.isPending
-                ? "儲存中⋯"
-                : isFirstTime
-                ? "設定密碼並繼續"
-                : "更新密碼"}
-            </button>
-
-            {!isFirstTime && (
+          <div>
+            <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">
+              密碼 {!isSet && <span className="text-muted-foreground/60">（首次設定，請輸入至少 8 位）</span>}
+            </label>
+            <div className="relative">
+              <input
+                type={showPw ? "text" : "password"}
+                value={form.password}
+                onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+                placeholder={!isSet ? "設定管理員密碼（至少 8 位）" : "輸入密碼"}
+                required
+                minLength={!isSet ? 8 : 1}
+                className="w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors pr-10"
+              />
               <button
                 type="button"
-                onClick={() => { setMode("login"); setError(""); setSuccess(""); }}
-                className="w-full text-center text-label hover:text-foreground transition-colors text-xs flex items-center justify-center gap-1.5"
+                onClick={() => setShowPw((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
-                <ArrowLeft size={11} />
-                返回登入
+                {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
               </button>
-            )}
-          </form>
-        )}
+            </div>
+          </div>
 
-        {/* Footer */}
-        <div className="text-center pt-2">
-          <Link href="/">
-            <span className="text-label hover:text-foreground transition-colors text-xs flex items-center justify-center gap-1.5 cursor-pointer">
-              <ArrowLeft size={11} />
-              返回網站首頁
-            </span>
-          </Link>
-        </div>
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-foreground text-background py-3 text-xs tracking-widest hover:bg-foreground/80 transition-colors disabled:opacity-50 mt-2"
+          >
+            {loading ? "處理中..." : !isSet ? "設定並登入" : "登入"}
+          </button>
+        </form>
       </div>
     </div>
   );

@@ -1,48 +1,72 @@
 import bcrypt from "bcryptjs";
-import { eq } from "drizzle-orm";
-import { adminCredentials } from "../drizzle/schema";
-import { getDb } from "./db";
+import {
+  createAdminCredential,
+  getAdminCredential,
+  hasAdminCredential,
+  updateAdminCredential,
+} from "./db";
 
 const SALT_ROUNDS = 12;
 
-/** Hash a plain-text password */
-export async function hashPassword(plain: string): Promise<string> {
-  return bcrypt.hash(plain, SALT_ROUNDS);
+export async function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, SALT_ROUNDS);
 }
 
-/** Compare a plain-text password against a stored hash */
-export async function verifyPassword(plain: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(plain, hash);
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  return bcrypt.compare(password, hash);
 }
 
-/** Return the stored credential row for an email, or undefined */
+export async function adminLogin(
+  email: string,
+  password: string
+): Promise<{ success: boolean; error?: string }> {
+  const cred = await getAdminCredential(email);
+  if (!cred) return { success: false, error: "帳號或密碼錯誤" };
+  const valid = await verifyPassword(password, cred.passwordHash);
+  if (!valid) return { success: false, error: "帳號或密碼錯誤" };
+  return { success: true };
+}
+
+export async function setupAdminPassword(
+  email: string,
+  password: string
+): Promise<void> {
+  const hash = await hashPassword(password);
+  const existing = await getAdminCredential(email);
+  if (existing) {
+    await updateAdminCredential(email, hash);
+  } else {
+    await createAdminCredential(email, hash);
+  }
+}
+
+export async function isAdminPasswordSet(): Promise<boolean> {
+  return hasAdminCredential();
+}
+
+// ── Aliases for test compatibility ───────────────────────────────────────
 export async function getCredentialByEmail(email: string) {
-  const db = await getDb();
-  if (!db) return undefined;
-  const rows = await db
-    .select()
-    .from(adminCredentials)
-    .where(eq(adminCredentials.email, email.toLowerCase().trim()))
-    .limit(1);
-  return rows[0];
+  return getAdminCredential(email);
 }
 
-/** Check whether any admin credential exists (used for first-time setup) */
 export async function hasAnyCredential(): Promise<boolean> {
-  const db = await getDb();
-  if (!db) return false;
-  const rows = await db.select({ id: adminCredentials.id }).from(adminCredentials).limit(1);
-  return rows.length > 0;
+  return hasAdminCredential();
 }
 
-/** Upsert (create or update) admin credentials for an email */
-export async function upsertCredential(email: string, plain: string): Promise<void> {
-  const db = await getDb();
-  if (!db) throw new Error("Database not available");
-  const hash = await hashPassword(plain);
-  const normalizedEmail = email.toLowerCase().trim();
-  await db
-    .insert(adminCredentials)
-    .values({ email: normalizedEmail, passwordHash: hash })
-    .onDuplicateKeyUpdate({ set: { passwordHash: hash } });
+export async function upsertCredential(email: string, password: string): Promise<void> {
+  return setupAdminPassword(email, password);
+}
+
+export async function changeAdminPassword(
+  email: string,
+  oldPassword: string,
+  newPassword: string
+): Promise<{ success: boolean; error?: string }> {
+  const cred = await getAdminCredential(email);
+  if (!cred) return { success: false, error: "帳號不存在" };
+  const valid = await verifyPassword(oldPassword, cred.passwordHash);
+  if (!valid) return { success: false, error: "舊密碼錯誤" };
+  const hash = await hashPassword(newPassword);
+  await updateAdminCredential(email, hash);
+  return { success: true };
 }

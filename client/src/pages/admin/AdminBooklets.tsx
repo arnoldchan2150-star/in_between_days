@@ -1,327 +1,254 @@
 import { useState, useRef } from "react";
-import AdminLayout from "./AdminLayout";
 import { trpc } from "@/lib/trpc";
+import AdminLayout from "./AdminLayout";
 import { toast } from "sonner";
-import { Upload, Trash2, CheckCircle, Circle, PlusCircle, GripVertical } from "lucide-react";
+import { Plus, Trash2, Upload, BookOpen, Eye, EyeOff } from "lucide-react";
 
-function slugify(str: string) {
-  return str
-    .toLowerCase()
-    .replace(/\s+/g, "-")
-    .replace(/[^\w\-]+/g, "")
-    .replace(/\-\-+/g, "-")
-    .replace(/^-+/, "")
-    .replace(/-+$/, "");
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.split(",")[1] ?? "");
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
 export default function AdminBooklets() {
+  const { data: booklets, isLoading, refetch } = trpc.booklets.adminList.useQuery();
   const utils = trpc.useUtils();
-  const { data: booklets, isLoading } = trpc.booklets.all.useQuery();
-  const { data: subscribers } = trpc.booklets.subscribers.useQuery();
 
   const [showForm, setShowForm] = useState(false);
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
-  const [coverUrl, setCoverUrl] = useState("");
-  const [fileUrl, setFileUrl] = useState("");
-  const [fileKey, setFileKey] = useState("");
-  const [sortOrder, setSortOrder] = useState(0);
-  const [uploading, setUploading] = useState(false);
-  const [uploadingCover, setUploadingCover] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const coverInputRef = useRef<HTMLInputElement>(null);
-
-  const uploadFile = trpc.upload.uploadFile.useMutation({
-    onSuccess: (data) => {
-      setFileUrl(data.url);
-      setFileKey(data.key);
-      toast.success("PDF 已上傳");
-      setUploading(false);
-    },
-    onError: (e) => {
-      toast.error("上傳失敗：" + e.message);
-      setUploading(false);
-    },
+  const [form, setForm] = useState({
+    title: "",
+    slug: "",
+    description: "",
+    fileUrl: "",
+    fileKey: "",
+    coverUrl: "",
+    active: true,
+    sortOrder: 0,
   });
+  const [uploading, setUploading] = useState<"pdf" | "cover" | null>(null);
+  const pdfRef = useRef<HTMLInputElement>(null);
+  const coverRef = useRef<HTMLInputElement>(null);
 
-  const uploadCover = trpc.upload.uploadFile.useMutation({
-    onSuccess: (data) => {
-      setCoverUrl(data.url);
-      toast.success("封面圖已上傳");
-      setUploadingCover(false);
-    },
-    onError: (e) => {
-      toast.error("封面上傳失敗：" + e.message);
-      setUploadingCover(false);
-    },
-  });
-
-  const createBooklet = trpc.booklets.create.useMutation({
+  const uploadMutation = trpc.booklets.uploadFile.useMutation();
+  const createMutation = trpc.booklets.create.useMutation({
     onSuccess: () => {
-      utils.booklets.all.invalidate();
-      toast.success("小冊子已新增");
+      toast.success("小冊子已建立");
       setShowForm(false);
-      resetForm();
+      setForm({ title: "", slug: "", description: "", fileUrl: "", fileKey: "", coverUrl: "", active: true, sortOrder: 0 });
+      refetch();
     },
-    onError: (e) => toast.error("新增失敗：" + e.message),
+    onError: (err) => toast.error(err.message),
   });
-
-  const updateBooklet = trpc.booklets.update.useMutation({
+  const deleteMutation = trpc.booklets.delete.useMutation({
     onSuccess: () => {
-      utils.booklets.all.invalidate();
-      toast.success("已更新");
+      toast.success("小冊子已刪除");
+      refetch();
     },
+    onError: (err) => toast.error(err.message),
   });
-
-  const deleteBooklet = trpc.booklets.delete.useMutation({
+  const updateMutation = trpc.booklets.update.useMutation({
     onSuccess: () => {
-      utils.booklets.all.invalidate();
-      toast.success("已刪除");
+      toast.success("更新成功");
+      utils.booklets.adminList.invalidate();
     },
   });
 
-  const resetForm = () => {
-    setTitle(""); setSlug(""); setDescription("");
-    setCoverUrl(""); setFileUrl(""); setFileKey(""); setSortOrder(0);
-  };
-
-  const handleTitleChange = (val: string) => {
-    setTitle(val);
-    if (!slug || slug === slugify(title)) {
-      setSlug(slugify(val));
+  const handleUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: "pdf" | "cover"
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(type);
+    try {
+      const dataBase64 = await fileToBase64(file);
+      const result = await uploadMutation.mutateAsync({
+        filename: file.name,
+        contentType: file.type,
+        dataBase64,
+        type,
+      });
+      if (type === "pdf") {
+        setForm((f) => ({ ...f, fileUrl: result.url, fileKey: result.key }));
+        toast.success("PDF 上傳成功");
+      } else {
+        setForm((f) => ({ ...f, coverUrl: result.url }));
+        toast.success("封面上傳成功");
+      }
+    } catch {
+      toast.error("上傳失敗");
+    } finally {
+      setUploading(null);
     }
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = (reader.result as string).split(",")[1];
-      uploadFile.mutate({ base64, filename: file.name, contentType: file.type, folder: "booklets" });
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleCoverUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploadingCover(true);
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = (reader.result as string).split(",")[1];
-      uploadCover.mutate({ base64, filename: file.name, contentType: file.type, folder: "booklet-covers" });
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleCreate = () => {
-    if (!title.trim() || !slug.trim()) {
-      toast.error("請填寫標題與網址代號");
+  const handleCreate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.title || !form.slug || !form.fileUrl) {
+      toast.error("請填寫標題、Slug 並上傳 PDF");
       return;
     }
-    createBooklet.mutate({
-      title: title.trim(),
-      slug: slug.trim(),
-      description: description || undefined,
-      coverUrl: coverUrl || undefined,
-      fileUrl,
-      fileKey,
-      active: true,
-      sortOrder,
-    });
+    createMutation.mutate(form);
   };
 
   return (
     <AdminLayout title="小冊子管理">
-      <div className="max-w-3xl">
-        {/* Header */}
+      <div className="max-w-4xl">
         <div className="flex items-center justify-between mb-8">
-          <p className="text-label">共 {booklets?.length ?? 0} 本小冊子・{subscribers?.length ?? 0} 位訂閱者</p>
-          <button onClick={() => setShowForm((v) => !v)} className="btn-minimal text-xs">
-            <PlusCircle size={13} />
-            新增小冊子
+          <p className="text-sm text-muted-foreground">共 {booklets?.length ?? 0} 本小冊子</p>
+          <button
+            onClick={() => setShowForm((v) => !v)}
+            className="inline-flex items-center gap-2 bg-foreground text-background px-4 py-2 text-xs tracking-wider hover:bg-foreground/80 transition-colors"
+          >
+            <Plus size={12} /> 新增小冊子
           </button>
         </div>
 
-        {/* Create form */}
+        {/* Create Form */}
         {showForm && (
-          <div className="border border-border p-6 mb-8 space-y-4 animate-fade-up">
-            <p className="text-label mb-4">新增旅遊小冊子</p>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-label block mb-2">標題 *</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => handleTitleChange(e.target.value)}
-                  placeholder="熊野古道"
-                  className="w-full border-b border-border bg-transparent py-2 text-sm outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/40"
-                />
-              </div>
-              <div>
-                <label className="text-label block mb-2">網址代號 (slug) *</label>
-                <input
-                  type="text"
-                  value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
-                  placeholder="kumano-kodo"
-                  className="w-full border-b border-border bg-transparent py-2 text-sm outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/40"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label className="text-label block mb-2">說明（選填）</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={2}
-                placeholder="簡短介紹這份小冊子的內容..."
-                className="w-full border-b border-border bg-transparent py-2 text-sm outline-none focus:border-foreground transition-colors resize-none placeholder:text-muted-foreground/40"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-label block mb-2">封面圖（選填）</label>
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => coverInputRef.current?.click()}
-                    disabled={uploadingCover}
-                    className="btn-minimal text-xs"
-                  >
-                    <Upload size={12} />
-                    {uploadingCover ? "上傳中..." : "上傳封面"}
-                  </button>
-                  <input ref={coverInputRef} type="file" accept="image/*" className="hidden" onChange={handleCoverUpload} />
-                  {coverUrl && <span className="text-xs text-muted-foreground">✓ 已上傳</span>}
+          <div className="border border-border p-6 mb-8 bg-secondary/10">
+            <h3 className="font-serif text-base font-light mb-5">新增小冊子</h3>
+            <form onSubmit={handleCreate} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">標題 *</label>
+                  <input
+                    type="text"
+                    value={form.title}
+                    onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                    required
+                    className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground"
+                    placeholder="熊野古道旅遊指南"
+                  />
                 </div>
-                <input
-                  type="text"
-                  value={coverUrl}
-                  onChange={(e) => setCoverUrl(e.target.value)}
-                  placeholder="或貼上圖片 URL"
-                  className="mt-2 w-full border-b border-border bg-transparent py-1.5 text-xs outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/40"
-                />
+                <div>
+                  <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">Slug *</label>
+                  <input
+                    type="text"
+                    value={form.slug}
+                    onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+                    required
+                    className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground font-mono"
+                    placeholder="kumano-kodo"
+                  />
+                </div>
               </div>
               <div>
-                <label className="text-label block mb-2">排序（數字越小越前）</label>
-                <input
-                  type="number"
-                  value={sortOrder}
-                  onChange={(e) => setSortOrder(Number(e.target.value))}
-                  className="w-full border-b border-border bg-transparent py-2 text-sm outline-none focus:border-foreground transition-colors"
+                <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">描述</label>
+                <textarea
+                  value={form.description}
+                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  rows={2}
+                  className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground resize-none"
+                  placeholder="小冊子簡介"
                 />
               </div>
-            </div>
-
-            <div>
-              <label className="text-label block mb-2">PDF 檔案（選填，可稍後上傳）</label>
-              <div className="flex items-center gap-3">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">PDF 檔案 *</label>
+                  {form.fileUrl ? (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                      <BookOpen size={12} />
+                      <span className="truncate">已上傳</span>
+                      <button type="button" onClick={() => setForm((f) => ({ ...f, fileUrl: "", fileKey: "" }))} className="text-destructive hover:underline">移除</button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => pdfRef.current?.click()}
+                      disabled={uploading === "pdf"}
+                      className="flex items-center gap-2 border border-dashed border-border px-4 py-2 text-xs text-muted-foreground hover:border-foreground transition-colors disabled:opacity-50"
+                    >
+                      <Upload size={12} />
+                      {uploading === "pdf" ? "上傳中..." : "上傳 PDF"}
+                    </button>
+                  )}
+                  <input ref={pdfRef} type="file" accept=".pdf" onChange={(e) => handleUpload(e, "pdf")} className="hidden" />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">封面圖片</label>
+                  {form.coverUrl ? (
+                    <div className="flex items-center gap-2">
+                      <img src={form.coverUrl} alt="封面" className="w-12 h-16 object-cover" />
+                      <button type="button" onClick={() => setForm((f) => ({ ...f, coverUrl: "" }))} className="text-xs text-destructive hover:underline">移除</button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => coverRef.current?.click()}
+                      disabled={uploading === "cover"}
+                      className="flex items-center gap-2 border border-dashed border-border px-4 py-2 text-xs text-muted-foreground hover:border-foreground transition-colors disabled:opacity-50"
+                    >
+                      <Upload size={12} />
+                      {uploading === "cover" ? "上傳中..." : "上傳封面"}
+                    </button>
+                  )}
+                  <input ref={coverRef} type="file" accept="image/*" onChange={(e) => handleUpload(e, "cover")} className="hidden" />
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  disabled={createMutation.isPending}
+                  className="bg-foreground text-background px-5 py-2 text-xs tracking-widest hover:bg-foreground/80 transition-colors disabled:opacity-50"
+                >
+                  {createMutation.isPending ? "建立中..." : "建立小冊子"}
+                </button>
                 <button
                   type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={uploading}
-                  className="btn-minimal text-xs"
+                  onClick={() => setShowForm(false)}
+                  className="border border-border px-5 py-2 text-xs tracking-widest hover:border-foreground transition-colors"
                 >
-                  <Upload size={12} />
-                  {uploading ? "上傳中..." : "上傳 PDF"}
+                  取消
                 </button>
-                <input ref={fileInputRef} type="file" accept=".pdf" className="hidden" onChange={handleFileUpload} />
-                {fileUrl && <span className="text-xs text-muted-foreground">✓ PDF 已上傳</span>}
               </div>
-              <input
-                type="text"
-                value={fileUrl}
-                onChange={(e) => setFileUrl(e.target.value)}
-                placeholder="或直接貼上 PDF URL"
-                className="mt-2 w-full border-b border-border bg-transparent py-1.5 text-xs outline-none focus:border-foreground transition-colors placeholder:text-muted-foreground/40"
-              />
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <button onClick={handleCreate} disabled={createBooklet.isPending} className="btn-filled text-xs">
-                {createBooklet.isPending ? "新增中..." : "新增"}
-              </button>
-              <button onClick={() => { setShowForm(false); resetForm(); }} className="btn-minimal text-xs">
-                取消
-              </button>
-            </div>
+            </form>
           </div>
         )}
 
-        {/* Booklets list */}
+        {/* List */}
         {isLoading ? (
           <div className="space-y-3">
-            {[...Array(3)].map((_, i) => <div key={i} className="h-20 bg-muted animate-pulse" />)}
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="h-20 bg-secondary/30 animate-pulse" />
+            ))}
           </div>
         ) : booklets && booklets.length > 0 ? (
-          <div className="border border-border">
-            {booklets.map((booklet, i) => (
-              <div
-                key={booklet.id}
-                className={[
-                  "flex items-center gap-4 px-5 py-4",
-                  i < booklets.length - 1 ? "border-b border-border" : "",
-                ].join(" ")}
-              >
-                <GripVertical size={14} className="text-muted-foreground/40 flex-shrink-0" />
-
-                {/* Cover thumbnail */}
-                {booklet.coverUrl ? (
-                  <img
-                    src={booklet.coverUrl}
-                    alt={booklet.title}
-                    className="w-12 h-14 object-cover flex-shrink-0 img-travel"
-                  />
+          <div className="space-y-3">
+            {booklets.map((b) => (
+              <div key={b.id} className="flex items-center gap-4 border border-border p-4">
+                {b.coverUrl ? (
+                  <img src={b.coverUrl} alt={b.title} className="w-12 h-16 object-cover flex-shrink-0" />
                 ) : (
-                  <div className="w-12 h-14 bg-muted flex-shrink-0 flex items-center justify-center">
-                    <span className="text-[0.55rem] text-muted-foreground text-center leading-tight px-1">無封面</span>
+                  <div className="w-12 h-16 bg-secondary flex items-center justify-center flex-shrink-0">
+                    <BookOpen size={16} className="text-muted-foreground" />
                   </div>
                 )}
-
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-light">{booklet.title}</p>
-                  <p className="text-[0.65rem] text-muted-foreground font-mono">/booklet/{booklet.slug}</p>
-                  {booklet.description && (
-                    <p className="text-[0.65rem] text-muted-foreground truncate mt-0.5">{booklet.description}</p>
+                  <p className="font-serif text-sm">{b.title}</p>
+                  <p className="text-xs text-muted-foreground font-mono mt-0.5">{b.slug}</p>
+                  {b.description && (
+                    <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{b.description}</p>
                   )}
-                  <p className="text-label mt-1">
-                    排序 {booklet.sortOrder}・{booklet.active ? "顯示中" : "已隱藏"}・
-                    {new Date(booklet.createdAt).toLocaleDateString("zh-TW")}
-                  </p>
                 </div>
-
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
-                    onClick={() => updateBooklet.mutate({ id: booklet.id, active: !booklet.active })}
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    title={booklet.active ? "隱藏" : "顯示"}
+                    onClick={() => updateMutation.mutate({ id: b.id, active: !b.active })}
+                    className={`text-xs px-2 py-0.5 ${b.active ? "text-foreground" : "text-muted-foreground"}`}
                   >
-                    {booklet.active ? <CheckCircle size={16} className="text-foreground" /> : <Circle size={16} />}
+                    {b.active ? <Eye size={14} /> : <EyeOff size={14} />}
                   </button>
-                  {booklet.fileUrl && (
-                    <a
-                      href={booklet.fileUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-label hover:text-foreground transition-colors text-xs"
-                    >
-                      PDF
-                    </a>
-                  )}
                   <button
                     onClick={() => {
-                      if (confirm(`確定刪除「${booklet.title}」？`)) {
-                        deleteBooklet.mutate({ id: booklet.id });
-                      }
+                      if (confirm(`確定刪除「${b.title}」？`)) deleteMutation.mutate({ id: b.id });
                     }}
-                    className="p-1.5 text-muted-foreground hover:text-destructive transition-colors"
+                    className="p-1 text-muted-foreground hover:text-destructive transition-colors"
                   >
                     <Trash2 size={13} />
                   </button>
@@ -331,35 +258,7 @@ export default function AdminBooklets() {
           </div>
         ) : (
           <div className="text-center py-16 border border-dashed border-border">
-            <p className="font-serif text-lg font-light text-muted-foreground mb-4">尚無小冊子</p>
-            <button onClick={() => setShowForm(true)} className="btn-minimal text-xs">
-              <PlusCircle size={13} />
-              新增第一本小冊子
-            </button>
-          </div>
-        )}
-
-        {/* Subscribers */}
-        {subscribers && subscribers.length > 0 && (
-          <div className="mt-12">
-            <p className="text-label mb-4">最近訂閱者</p>
-            <div className="border border-border">
-              {subscribers.slice(0, 10).map((sub, i) => (
-                <div
-                  key={sub.id}
-                  className={[
-                    "flex items-center justify-between px-5 py-3 gap-4",
-                    i < Math.min(subscribers.length, 10) - 1 ? "border-b border-border" : "",
-                  ].join(" ")}
-                >
-                  <div>
-                    <p className="text-sm font-light">{sub.name}</p>
-                    <p className="text-[0.65rem] text-muted-foreground">{sub.email}</p>
-                  </div>
-                  <p className="text-label">{sub.sentAt ? "✓ 已寄送" : "未寄送"}</p>
-                </div>
-              ))}
-            </div>
+            <p className="text-sm text-muted-foreground">尚無小冊子</p>
           </div>
         )}
       </div>

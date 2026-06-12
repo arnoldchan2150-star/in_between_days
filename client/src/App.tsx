@@ -4,32 +4,58 @@ import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
+
+// Public pages
 import Home from "./pages/Home";
+import Journal from "./pages/Journal";
+import PostDetail from "./pages/PostDetail";
+import Destinations from "./pages/Destinations";
+import Culture from "./pages/Culture";
+import Booklet from "./pages/Booklet";
+import About from "./pages/About";
+
+// Admin pages
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminPosts from "./pages/admin/AdminPosts";
+import AdminPostEditor from "./pages/admin/AdminPostEditor";
+import AdminBooklets from "./pages/admin/AdminBooklets";
+import AdminSubscribers from "./pages/admin/AdminSubscribers";
+import AdminAbout from "./pages/admin/AdminAbout";
 
 function Router() {
-  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
+      {/* Public routes */}
+      <Route path="/" component={Home} />
+      <Route path="/journal" component={Journal} />
+      <Route path="/journal/:slug" component={PostDetail} />
+      <Route path="/destinations" component={Destinations} />
+      <Route path="/culture" component={Culture} />
+      <Route path="/booklet" component={Booklet} />
+      <Route path="/about" component={About} />
+
+      {/* Admin routes */}
+      <Route path="/admin/login" component={AdminLogin} />
+      <Route path="/admin" component={AdminDashboard} />
+      <Route path="/admin/posts" component={AdminPosts} />
+      <Route path="/admin/posts/new" component={AdminPostEditor} />
+      <Route path="/admin/posts/:id/edit" component={AdminPostEditor} />
+      <Route path="/admin/booklets" component={AdminBooklets} />
+      <Route path="/admin/subscribers" component={AdminSubscribers} />
+      <Route path="/admin/about" component={AdminAbout} />
+
+      {/* 404 */}
+      <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
-
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
+      <ThemeProvider defaultTheme="light">
         <TooltipProvider>
           <Toaster />
           <Router />

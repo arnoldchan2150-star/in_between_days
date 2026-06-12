@@ -1,74 +1,53 @@
 # In-Between Days – Project TODO
 
-## Phase 1: Database Schema & Backend API
-- [x] Define DB schema: posts, categories, booklet_subscribers, media, about_page
-- [x] Run drizzle migration
-- [x] Backend tRPC routers: posts CRUD, categories, booklet subscriptions, about
-- [x] File upload endpoint (images & PDF booklets)
-- [x] Email sending for booklet (notify owner + send PDF to subscriber)
+## 資料庫 Schema 與 Migration
+- [x] 建立 posts 資料表（title, slug, excerpt, content, category, type, published, coverImageUrl, coverImageKey, publishedAt）
+- [x] 建立 post_media 資料表（postId, url, key, caption, sortOrder）
+- [x] 建立 booklets 資料表（title, slug, description, fileUrl, fileKey, coverUrl, active, sortOrder）
+- [x] 建立 booklet_subscribers 資料表（name, email, bookletId, sentAt, createdAt）
+- [x] 建立 about_page 資料表（philosophy, blogOrigin, countriesVisited, photoUrl, photoKey）
+- [x] 建立 admin_credentials 資料表（email, passwordHash）
+- [x] 執行所有 SQL migration
 
-## Phase 2: Global Styles, Fonts, Nav & Footer
-- [x] Google Fonts: Noto Serif TC + Noto Sans TC (Japanese-minimal feel)
-- [x] Global CSS: low-saturation palette, generous whitespace, light typography
-- [x] Top navigation bar (desktop + mobile hamburger)
-- [x] Footer: copyright, social links, email
+## 後端 API
+- [x] server/db.ts：完整 CRUD 查詢 helper（posts, booklets, subscribers, about, admin）
+- [x] server/auth.ts：hashPassword, verifyPassword, adminLogin, setupAdminPassword, isAdminPasswordSet
+- [x] server/email.ts：sendBookletToSubscriber, notifyOwnerNewSubscriber（Nodemailer）
+- [x] server/routers.ts：完整 tRPC 路由（posts, booklets, subscribers, about, auth）
+- [x] 管理員 adminProcedure 守衛
+- [x] S3 檔案上傳（封面圖片、小冊子 PDF、關於我照片）
 
-## Phase 3: Homepage
-- [x] Full-bleed hero image with slogan overlay
-- [x] Latest 3 posts preview section
-- [x] Featured destinations section (6 categories)
-- [x] Booklet CTA button
-- [x] Japanese-minimal layout with generous whitespace
+## 全域樣式與導覽
+- [x] client/index.html：Google Fonts（Noto Serif TC + Noto Sans TC）
+- [x] client/src/index.css：日式極簡低飽和度配色、Tailwind 4 OKLCH tokens
+- [x] Navbar：桌機版 + 手機漢堡選單，首頁透明/捲動後白底
+- [x] Footer：品牌、導覽連結、聯絡資訊
 
-## Phase 4: Posts & Destinations
-- [x] Post list page with card layout + category filter
-- [x] Single post inner page (long-scroll, large images, wide line-height)
-- [x] Optional film/book recommendation sections in post
-- [x] Destination category page (filter by region)
+## 前端公開頁面
+- [x] 首頁（Home）：Hero、最新遊記、引言、目的地地圖、小冊子 CTA、文化專欄 CTA
+- [x] 遊記列表（Journal）：分類篩選、文章卡片
+- [x] 單篇遊記（PostDetail）：封面、內文、相簿
+- [x] 目的地（Destinations）：地區篩選、文章卡片
+- [x] 電影×書籍（Culture）：文化專欄文章列表
+- [x] 旅遊小冊子（Booklet）：多 Tab、訂閱表單、成功狀態
+- [x] 關於我（About）：照片、旅行哲學、部落格初衷
 
-## Phase 5: Column Pages & About
-- [x] Travel × Film × Books column page
-- [x] Booklet request page (name + email form, auto-send PDF)
-- [x] About me page (philosophy, countries visited, personal photo)
+## 管理後台
+- [x] AdminLogin：email/password 登入，首次設定密碼
+- [x] AdminLayout：側邊欄導覽、登出、查看網站連結
+- [x] AdminDashboard：統計總覽、快速操作
+- [x] AdminPosts：文章列表、發布/草稿切換、刪除
+- [x] AdminPostEditor：新增/編輯文章、封面圖片上傳
+- [x] AdminBooklets：小冊子管理、PDF + 封面上傳
+- [x] AdminSubscribers：訂閱者列表、CSV 匯出
+- [x] AdminAbout：關於我內容編輯、照片上傳
 
-## Phase 6: Admin Backend
-- [x] Admin-only route guard (owner role check)
-- [x] Admin dashboard: create/edit/delete posts
-- [x] Photo upload in post editor
-- [x] Manage booklet PDF files
-- [x] View booklet subscribers list
+## 測試
+- [x] server/auth.logout.test.ts：登出 cookie 清除測試
+- [x] server/email.login.test.ts：密碼雜湊/驗證、DB helper 測試
+- [x] server/posts.test.ts：文章相關測試
+- [x] 所有 11 項測試通過
 
-## Phase 7: Integration, Tests & Delivery
-- [x] Email integration test (booklet send + owner notification)
-- [x] Vitest unit tests
-- [x] Final responsive check (mobile/desktop)
-- [x] Save checkpoint and deliver
-
-## Phase 8: Multi-Booklet Tabs
-- [x] Add slug, coverUrl, sortOrder columns to booklets table
-- [x] Add getPublicBooklets() and getBookletBySlug() db helpers
-- [x] Add publicList and bySlug procedures to booklets router
-- [x] Update subscribe mutation to accept optional bookletSlug
-- [x] Rewrite Booklet.tsx with tab navigation (熊野古道 / 沙巴神山)
-- [x] Hero image switches when tab changes
-- [x] Each tab has independent subscription form + success state
-- [x] Update AdminBooklets.tsx with slug, coverUrl, sortOrder fields
-- [x] Seed 熊野古道 and 沙巴神山 booklet records in DB
-
-## Phase 9: Fix Admin Login
-- [x] Fix upsertUser: always enforce admin role for owner (regardless of what role value was passed in)
-- [x] Fix authenticateRequest in sdk.ts: re-check ownerOpenId on every request and upgrade role if needed
-- [x] Fetch fresh user record after upsertUser so returned role is always current
-- [x] Improve AdminLayout login screen: clear instructions, Manus account login button, back to site link
-- [x] Improve AdminLayout "no permission" screen: show current account name, logout + re-login button
-- [x] Add "← 前台" link in admin top bar for easy navigation back
-
-## Phase 10: Email/Password Login for Admin
-- [x] Add admin_credentials table (email, hashed password)
-- [x] Backend: emailLogin mutation (verify email+password, issue JWT session)
-- [x] Backend: setAdminPassword mutation (first-time setup, owner only)
-- [x] Backend: changePassword mutation (change password when logged in)
-- [x] Admin login page: email + password form
-- [x] First-time setup page: set password if none configured
-- [x] Ensure all admin pages work after email login (posts, booklets, about)
-- [x] Tests for email login flow
+## 部署
+- [ ] 儲存 Checkpoint
+- [ ] 發布為永久網站
