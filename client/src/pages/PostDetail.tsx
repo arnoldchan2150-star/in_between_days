@@ -1,5 +1,5 @@
 import { useParams, Link } from "wouter";
-import { ArrowLeft, Calendar, MapPin } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, ExternalLink } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -50,6 +50,70 @@ export default function PostDetail() {
     );
   }
 
+  // ── iframe 嵌入模式 ──────────────────────────────────────────────────────
+  if (post.embedUrl) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Navbar />
+
+        {/* 頂部資訊列 */}
+        <div className="pt-16 border-b border-border bg-background">
+          <div className="container py-4 flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-4">
+              <Link href="/journal">
+                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                  <ArrowLeft size={12} /> 返回遊記
+                </span>
+              </Link>
+              <span className="text-muted-foreground/30 text-xs">|</span>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-muted-foreground tracking-widest flex items-center gap-1">
+                  <MapPin size={11} /> {post.category}
+                </span>
+                {post.publishedAt && (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1">
+                    <Calendar size={11} />
+                    {new Date(post.publishedAt).toLocaleDateString("zh-TW", {
+                      year: "numeric",
+                      month: "long",
+                    })}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <h1 className="font-serif text-sm font-light text-foreground hidden sm:block">
+                {post.title}
+              </h1>
+              <a
+                href={post.embedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border px-3 py-1.5 hover:border-foreground/40"
+              >
+                <ExternalLink size={11} />
+                在新分頁開啟
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {/* iframe 全螢幕嵌入 */}
+        <div className="flex-1" style={{ height: "calc(100vh - 57px)" }}>
+          <iframe
+            src={post.embedUrl}
+            title={post.title}
+            className="w-full border-0"
+            style={{ height: "100%", display: "block" }}
+            allow="fullscreen"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // ── 一般文章模式 ─────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

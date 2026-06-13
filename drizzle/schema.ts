@@ -44,6 +44,7 @@ export const posts = mysqlTable("posts", {
   type: mysqlEnum("type", ["travel", "culture"]).default("travel").notNull(),
   published: boolean("published").default(false).notNull(),
   publishedAt: timestamp("publishedAt"),
+  embedUrl: text("embedUrl"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
