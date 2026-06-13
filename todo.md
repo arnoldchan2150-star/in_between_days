@@ -51,3 +51,10 @@
 ## 部署
 - [x] 儲存 Checkpoint
 - [x] 發布為永久網站（請點擊管理介面的 Publish 按鈕）
+
+## 圖片上傳功能（從網址改為本地上傳）
+- [ ] 後端：建立 upload.image tRPC 路由，接收 base64 並上傳至 S3
+- [ ] 前端：建立 ImageUploader 共用元件（拖放 / 點擊選擇）
+- [ ] AdminPostEditor：封面圖改為 ImageUploader
+- [ ] AdminBooklets：小冊子封面改為 ImageUploader
+- [ ] AdminAbout：個人照片改為 ImageUploader

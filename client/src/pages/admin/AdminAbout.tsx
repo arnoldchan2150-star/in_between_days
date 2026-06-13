@@ -1,8 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import AdminLayout from "./AdminLayout";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { Upload, Save } from "lucide-react";
+import { Save } from "lucide-react";
+import ImageUploader from "@/components/ImageUploader";
 
 export default function AdminAbout() {
   const utils = trpc.useUtils();
@@ -14,7 +15,6 @@ export default function AdminAbout() {
   const [photoUrl, setPhotoUrl] = useState("");
   const [photoKey, setPhotoKey] = useState("");
   const [uploading, setUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (about) {
@@ -26,18 +26,7 @@ export default function AdminAbout() {
     }
   }, [about]);
 
-  const uploadPhotoMutation = trpc.about.uploadPhoto.useMutation({
-    onSuccess: (data: { url: string; key: string }) => {
-      setPhotoUrl(data.url);
-      setPhotoKey(data.key);
-      toast.success("照片已上傳");
-      setUploading(false);
-    },
-    onError: (e: { message: string }) => {
-      toast.error("上傳失敗：" + e.message);
-      setUploading(false);
-    },
-  });
+  const uploadPhotoMutation = trpc.about.uploadPhoto.useMutation();
 
   const updateAbout = trpc.about.update.useMutation({
     onSuccess: () => {
@@ -46,22 +35,6 @@ export default function AdminAbout() {
     },
     onError: (e: { message: string }) => toast.error("更新失敗：" + e.message),
   });
-
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataBase64 = (reader.result as string).split(",")[1] ?? "";
-      uploadPhotoMutation.mutate({
-        filename: file.name,
-        contentType: file.type,
-        dataBase64,
-      });
-    };
-    reader.readAsDataURL(file);
-  };
 
   const handleSave = () => {
     updateAbout.mutate({
@@ -77,42 +50,25 @@ export default function AdminAbout() {
     <AdminLayout title="關於我設定">
       <div className="max-w-2xl space-y-8">
         {/* Photo */}
-        <div>
-          <label className="text-xs text-muted-foreground tracking-wider block mb-3">個人意境照</label>
-          <div className="flex items-start gap-4">
-            {photoUrl && (
-              <img
-                src={photoUrl}
-                alt="個人照"
-                className="w-24 aspect-[3/4] object-cover"
-              />
-            )}
-            <div className="flex flex-col gap-2">
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={uploading}
-                className="flex items-center gap-2 border border-dashed border-border px-4 py-2 text-xs text-muted-foreground hover:border-foreground transition-colors disabled:opacity-50"
-              >
-                <Upload size={12} />
-                {uploading ? "上傳中..." : "上傳照片"}
-              </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handlePhotoUpload}
-              />
-              <input
-                type="text"
-                value={photoUrl}
-                onChange={(e) => setPhotoUrl(e.target.value)}
-                placeholder="或直接貼上圖片 URL"
-                className="border border-border bg-background px-3 py-1.5 text-xs focus:outline-none focus:border-foreground transition-colors w-64"
-              />
-            </div>
-          </div>
+        <div className="max-w-xs">
+          <ImageUploader
+            label="個人意境照"
+            currentUrl={photoUrl}
+            uploading={uploading}
+            aspectRatio="3/4"
+            onUpload={async (params) => {
+              setUploading(true);
+              try {
+                return await uploadPhotoMutation.mutateAsync(params);
+              } finally {
+                setUploading(false);
+              }
+            }}
+            onUploaded={(url) => {
+              setPhotoUrl(url);
+              if (!url) setPhotoKey("");
+            }}
+          />
         </div>
 
         {/* Philosophy */}
