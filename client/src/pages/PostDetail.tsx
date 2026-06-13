@@ -1,5 +1,6 @@
 import { useParams, Link } from "wouter";
 import { ArrowLeft, Calendar, MapPin, ExternalLink } from "lucide-react";
+import { useRef, useEffect, useState } from "react";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -10,6 +11,23 @@ export default function PostDetail() {
   const slug = params.slug ?? "";
 
   const { data: post, isLoading, error } = trpc.posts.bySlug.useQuery({ slug }, { enabled: !!slug });
+
+  // 動態計算 iframe 高度 = 視窗高度 - 頂部列高度
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [iframeHeight, setIframeHeight] = useState("calc(100vh - 113px)");
+
+  useEffect(() => {
+    if (!post?.embedUrl) return;
+    const updateHeight = () => {
+      if (headerRef.current) {
+        const h = headerRef.current.getBoundingClientRect().bottom;
+        setIframeHeight(`calc(100dvh - ${h}px)`);
+      }
+    };
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, [post?.embedUrl]);
 
   if (isLoading) {
     return (
@@ -53,62 +71,67 @@ export default function PostDetail() {
   // ── iframe 嵌入模式 ──────────────────────────────────────────────────────
   if (post.embedUrl) {
     return (
-      <div className="min-h-screen flex flex-col">
-        <Navbar />
-
-        {/* 頂部資訊列 */}
-        <div className="pt-16 border-b border-border bg-background">
-          <div className="container py-4 flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-4">
-              <Link href="/journal">
-                <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                  <ArrowLeft size={12} /> 返回遊記
-                </span>
-              </Link>
-              <span className="text-muted-foreground/30 text-xs">|</span>
-              <div className="flex items-center gap-3">
-                <span className="text-xs text-muted-foreground tracking-widest flex items-center gap-1">
-                  <MapPin size={11} /> {post.category}
-                </span>
-                {post.publishedAt && (
-                  <span className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Calendar size={11} />
-                    {new Date(post.publishedAt).toLocaleDateString("zh-TW", {
-                      year: "numeric",
-                      month: "long",
-                    })}
+      <div className="overflow-hidden" style={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
+        {/* 頂部區域（Navbar + 資訊列）*/}
+        <div ref={headerRef} style={{ flexShrink: 0 }}>
+          <Navbar />
+          {/* 資訊列 */}
+          <div className="border-b border-border bg-background">
+            <div className="container py-3 flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-4">
+                <Link href="/journal">
+                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                    <ArrowLeft size={12} /> 返回遊記
                   </span>
-                )}
+                </Link>
+                <span className="text-muted-foreground/30 text-xs">|</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-muted-foreground tracking-widest flex items-center gap-1">
+                    <MapPin size={11} /> {post.category}
+                  </span>
+                  {post.publishedAt && (
+                    <span className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Calendar size={11} />
+                      {new Date(post.publishedAt).toLocaleDateString("zh-TW", {
+                        year: "numeric",
+                        month: "long",
+                      })}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <h1 className="font-serif text-sm font-light text-foreground hidden sm:block">
-                {post.title}
-              </h1>
-              <a
-                href={post.embedUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border px-3 py-1.5 hover:border-foreground/40"
-              >
-                <ExternalLink size={11} />
-                在新分頁開啟
-              </a>
+              <div className="flex items-center gap-3">
+                <h1 className="font-serif text-sm font-light text-foreground hidden sm:block truncate max-w-xs">
+                  {post.title}
+                </h1>
+                <a
+                  href={post.embedUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border px-3 py-1.5 hover:border-foreground/40 whitespace-nowrap"
+                >
+                  <ExternalLink size={11} />
+                  在新分頁開啟
+                </a>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* iframe 全螢幕嵌入 */}
-        <div className="flex-1" style={{ height: "calc(100vh - 57px)" }}>
-          <iframe
-            src={post.embedUrl}
-            title={post.title}
-            className="w-full border-0"
-            style={{ height: "100%", display: "block" }}
-            allow="fullscreen"
-            loading="lazy"
-          />
-        </div>
+        {/* iframe 填滿剩餘高度 */}
+        <iframe
+          src={post.embedUrl}
+          title={post.title}
+          style={{
+            width: "100%",
+            height: iframeHeight,
+            border: "none",
+            display: "block",
+            flexShrink: 0,
+          }}
+          allow="fullscreen"
+          loading="lazy"
+        />
       </div>
     );
   }
@@ -133,14 +156,12 @@ export default function PostDetail() {
       {/* Content */}
       <article className={`flex-1 bg-background ${post.coverImageUrl ? "" : "pt-24"}`}>
         <div className="container max-w-3xl mx-auto py-12">
-          {/* Back link */}
           <Link href="/journal">
             <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-8">
               <ArrowLeft size={12} /> 返回遊記
             </span>
           </Link>
 
-          {/* Meta */}
           <div className="flex flex-wrap items-center gap-4 mb-4">
             <span className="text-xs text-muted-foreground tracking-widest flex items-center gap-1">
               <MapPin size={11} /> {post.category}
@@ -157,7 +178,6 @@ export default function PostDetail() {
             )}
           </div>
 
-          {/* Title */}
           <h1 className="font-serif text-3xl md:text-4xl font-light mb-4 leading-tight">
             {post.title}
           </h1>
@@ -170,13 +190,11 @@ export default function PostDetail() {
 
           <hr className="border-border mb-8" />
 
-          {/* Body */}
           <div
             className="prose-travel"
             dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, "<br/>") }}
           />
 
-          {/* Media gallery */}
           {post.media && post.media.length > 0 && (
             <div className="mt-12">
               <h3 className="font-serif text-lg font-light mb-6 text-muted-foreground">
@@ -196,7 +214,6 @@ export default function PostDetail() {
             </div>
           )}
 
-          {/* Footer nav */}
           <div className="mt-16 pt-8 border-t border-border">
             <Link href="/journal">
               <span className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
