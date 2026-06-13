@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Download, BookOpen } from "lucide-react";
+import { Download, BookOpen, ExternalLink, ArrowLeft, Eye } from "lucide-react";
 
 export default function Booklet() {
   const { data: booklets, isLoading } = trpc.booklets.publicList.useQuery();
@@ -12,6 +12,30 @@ export default function Booklet() {
   const [form, setForm] = useState({ name: "", email: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
+  const [embedOpen, setEmbedOpen] = useState(false);
+
+  // 動態計算 iframe 高度
+  const headerRef = useRef<HTMLDivElement>(null);
+  const [iframeHeight, setIframeHeight] = useState("calc(100dvh - 113px)");
+
+  useEffect(() => {
+    if (!embedOpen) return;
+    const updateHeight = () => {
+      if (headerRef.current) {
+        const h = headerRef.current.getBoundingClientRect().bottom;
+        setIframeHeight(`calc(100dvh - ${h}px)`);
+      }
+    };
+    updateHeight();
+    window.addEventListener("resize", updateHeight);
+    return () => window.removeEventListener("resize", updateHeight);
+  }, [embedOpen]);
+
+  // 切換 tab 時關閉 embed
+  const handleTabChange = (i: number) => {
+    setActiveTab(i);
+    setEmbedOpen(false);
+  };
 
   const subscribe = trpc.booklets.subscribe.useMutation({
     onSuccess: () => {
@@ -43,6 +67,58 @@ export default function Booklet() {
   const activeBooklet = booklets?.[activeTab];
   const isSubmitted = activeBooklet ? submitted[activeBooklet.slug] : false;
 
+  // ── 全螢幕 iframe 模式 ───────────────────────────────────────────────────
+  if (embedOpen && activeBooklet?.embedUrl) {
+    return (
+      <div style={{ height: "100dvh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        <div ref={headerRef} style={{ flexShrink: 0 }}>
+          <Navbar />
+          {/* 資訊列 */}
+          <div className="border-b border-border bg-background">
+            <div className="container py-3 flex items-center justify-between flex-wrap gap-2">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setEmbedOpen(false)}
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ArrowLeft size={12} /> 返回小冊子
+                </button>
+                <span className="text-muted-foreground/30 text-xs">|</span>
+                <span className="font-serif text-sm font-light text-foreground hidden sm:block truncate max-w-xs">
+                  {activeBooklet.title}
+                </span>
+              </div>
+              <a
+                href={activeBooklet.embedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border px-3 py-1.5 hover:border-foreground/40 whitespace-nowrap"
+              >
+                <ExternalLink size={11} />
+                在新分頁開啟
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <iframe
+          src={activeBooklet.embedUrl}
+          title={activeBooklet.title}
+          style={{
+            width: "100%",
+            height: iframeHeight,
+            border: "none",
+            display: "block",
+            flexShrink: 0,
+          }}
+          allow="fullscreen"
+          loading="lazy"
+        />
+      </div>
+    );
+  }
+
+  // ── 一般頁面模式 ─────────────────────────────────────────────────────────
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -86,7 +162,7 @@ export default function Booklet() {
               {booklets.map((b, i) => (
                 <button
                   key={b.id}
-                  onClick={() => setActiveTab(i)}
+                  onClick={() => handleTabChange(i)}
                   className={`px-6 py-3 text-xs tracking-[0.12em] border-b-2 transition-colors -mb-px ${
                     activeTab === i
                       ? "border-foreground text-foreground"
@@ -101,13 +177,26 @@ export default function Booklet() {
             {activeBooklet && (
               <div className="grid md:grid-cols-2 gap-12 items-start">
                 {/* Cover */}
-                <div className="aspect-[3/4] overflow-hidden bg-muted">
+                <div className="aspect-[3/4] overflow-hidden bg-muted relative group">
                   {activeBooklet.coverUrl ? (
-                    <img
-                      src={activeBooklet.coverUrl}
-                      alt={activeBooklet.title}
-                      className="w-full h-full object-cover"
-                    />
+                    <>
+                      <img
+                        src={activeBooklet.coverUrl}
+                        alt={activeBooklet.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* 若有 embedUrl，封面上顯示預覽按鈕 */}
+                      {activeBooklet.embedUrl && (
+                        <button
+                          onClick={() => setEmbedOpen(true)}
+                          className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors"
+                        >
+                          <span className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-2 bg-background/90 text-foreground text-xs tracking-widest px-5 py-3 border border-border">
+                            <Eye size={13} /> 預覽互動指南
+                          </span>
+                        </button>
+                      )}
+                    </>
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-secondary">
                       <BookOpen size={48} className="text-muted-foreground" />
@@ -121,9 +210,20 @@ export default function Booklet() {
                     {activeBooklet.title}
                   </h2>
                   {activeBooklet.description && (
-                    <p className="text-sm text-muted-foreground leading-relaxed mb-8">
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                       {activeBooklet.description}
                     </p>
+                  )}
+
+                  {/* 互動指南按鈕（若有 embedUrl） */}
+                  {activeBooklet.embedUrl && (
+                    <button
+                      onClick={() => setEmbedOpen(true)}
+                      className="inline-flex items-center gap-2 text-xs tracking-widest text-muted-foreground hover:text-foreground border border-border px-5 py-2.5 hover:border-foreground/40 transition-colors mb-8"
+                    >
+                      <Eye size={13} />
+                      開啟互動式旅遊指南
+                    </button>
                   )}
 
                   <div className="bg-secondary/30 border border-border p-6">

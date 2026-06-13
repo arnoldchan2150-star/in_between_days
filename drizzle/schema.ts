@@ -75,6 +75,7 @@ export const booklets = mysqlTable("booklets", {
   coverUrl: text("coverUrl"),
   fileUrl: text("fileUrl").notNull().default(""),
   fileKey: text("fileKey").notNull().default(""),
+  embedUrl: text("embedUrl"),
   active: boolean("active").default(true).notNull(),
   sortOrder: int("sortOrder").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
