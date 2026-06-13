@@ -15,6 +15,7 @@ import {
   deleteBooklet,
   deletePost,
   deletePostMedia,
+  updatePostMedia,
   getAllBooklets,
   getAllPosts,
   getAllSubscribers,
@@ -177,6 +178,7 @@ export const appRouter = router({
           category: z.enum(["南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"]).optional(),
           type: z.enum(["travel", "culture"]).optional(),
           published: z.boolean().optional(),
+          embedUrl: z.string().optional().nullable(),
         })
       )
       .mutation(async ({ input }) => {
@@ -224,6 +226,19 @@ export const appRouter = router({
         await deletePostMedia(input.id);
         return { success: true };
       }),
+    updateMedia: adminProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          caption: z.string().optional().nullable(),
+          sortOrder: z.number().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updatePostMedia(id, data as any);
+        return { success: true };
+      }),
     uploadCover: adminProcedure
       .input(
         z.object({
@@ -260,6 +275,7 @@ export const appRouter = router({
           coverUrl: z.string().optional(),
           fileUrl: z.string(),
           fileKey: z.string(),
+          embedUrl: z.string().optional().nullable(),
           active: z.boolean().default(true),
           sortOrder: z.number().default(0),
         })
@@ -277,6 +293,7 @@ export const appRouter = router({
           fileKey: z.string().optional(),
           active: z.boolean().optional(),
           sortOrder: z.number().optional(),
+          embedUrl: z.string().optional().nullable(),
         })
       )
       .mutation(async ({ input }) => {

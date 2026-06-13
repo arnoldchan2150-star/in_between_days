@@ -3,7 +3,7 @@ import { useParams, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import AdminLayout from "./AdminLayout";
 import { toast } from "sonner";
-import { ArrowLeft, Upload, X, GripVertical, ImagePlus } from "lucide-react";
+import { ArrowLeft, Upload, X, ImagePlus } from "lucide-react";
 import ImageUploader from "@/components/ImageUploader";
 
 const CATEGORIES = ["南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"] as const;
@@ -37,12 +37,14 @@ export default function AdminPostEditor() {
     published: false,
     coverImageUrl: "",
     coverImageKey: "",
+    embedUrl: "",
   });
   const [uploadingCover, setUploadingCover] = useState(false);
 
   // Media gallery state
   const [mediaItems, setMediaItems] = useState<MediaItem[]>([]);
   const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [savingCaptions, setSavingCaptions] = useState(false);
   const mediaInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -57,6 +59,7 @@ export default function AdminPostEditor() {
         published: existingPost.published,
         coverImageUrl: existingPost.coverImageUrl ?? "",
         coverImageKey: existingPost.coverImageKey ?? "",
+        embedUrl: existingPost.embedUrl ?? "",
       });
       // Load existing media
       if (existingPost.media && Array.isArray(existingPost.media)) {
@@ -68,7 +71,7 @@ export default function AdminPostEditor() {
   }, [existingPost]);
 
   const createMutation = trpc.posts.create.useMutation({
-    onSuccess: (newPost) => {
+    onSuccess: () => {
       toast.success("文章已建立");
       navigate("/admin/posts");
     },
@@ -86,14 +89,19 @@ export default function AdminPostEditor() {
   const uploadCoverMutation = trpc.posts.uploadCover.useMutation();
   const uploadMediaMutation = trpc.posts.uploadMedia.useMutation();
   const deleteMediaMutation = trpc.posts.deleteMedia.useMutation();
+  const updateMediaMutation = trpc.posts.updateMedia.useMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.title || !form.slug || !form.category) return;
+    const payload = {
+      ...form,
+      embedUrl: form.embedUrl.trim() || null,
+    };
     if (isEdit && postId) {
-      updateMutation.mutate({ id: postId, ...form });
+      updateMutation.mutate({ id: postId, ...payload });
     } else {
-      createMutation.mutate(form);
+      createMutation.mutate(payload);
     }
   };
 
@@ -112,7 +120,6 @@ export default function AdminPostEditor() {
       return;
     }
     setUploadingMedia(true);
-    const newItems: MediaItem[] = [];
     try {
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -126,24 +133,24 @@ export default function AdminPostEditor() {
           continue;
         }
         const base64 = await fileToBase64(file);
-        const result = await uploadMediaMutation.mutateAsync({
+        await uploadMediaMutation.mutateAsync({
           postId,
           filename: file.name,
           contentType: file.type,
           dataBase64: base64,
-          sortOrder: mediaItems.length + newItems.length,
+          sortOrder: mediaItems.length + i,
         });
-        // Fetch updated media list
-        const updated = await refetchPost();
-        if (updated.data?.media) {
-          const allMedia = (updated.data.media as MediaItem[]).sort(
-            (a, b) => a.sortOrder - b.sortOrder
-          );
-          setMediaItems(allMedia);
-        }
+      }
+      // Refresh media list
+      const updated = await refetchPost();
+      if (updated.data?.media) {
+        const allMedia = (updated.data.media as MediaItem[]).sort(
+          (a, b) => a.sortOrder - b.sortOrder
+        );
+        setMediaItems(allMedia);
       }
       toast.success(`已上傳 ${files.length} 張照片`);
-    } catch (err: unknown) {
+    } catch {
       toast.error("上傳失敗，請重試");
     } finally {
       setUploadingMedia(false);
@@ -165,6 +172,24 @@ export default function AdminPostEditor() {
     setMediaItems((prev) =>
       prev.map((m) => (m.id === id ? { ...m, caption } : m))
     );
+  };
+
+  // Save all captions to DB
+  const handleSaveCaptions = async () => {
+    if (mediaItems.length === 0) return;
+    setSavingCaptions(true);
+    try {
+      await Promise.all(
+        mediaItems.map((m) =>
+          updateMediaMutation.mutateAsync({ id: m.id, caption: m.caption ?? null })
+        )
+      );
+      toast.success("照片說明已儲存");
+    } catch {
+      toast.error("儲存說明失敗");
+    } finally {
+      setSavingCaptions(false);
+    }
   };
 
   const loading = createMutation.isPending || updateMutation.isPending;
@@ -306,6 +331,23 @@ export default function AdminPostEditor() {
             />
           </div>
 
+          {/* Embed URL */}
+          <div>
+            <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">
+              嵌入網址（embedUrl）
+            </label>
+            <input
+              type="url"
+              value={form.embedUrl}
+              onChange={(e) => setForm((f) => ({ ...f, embedUrl: e.target.value }))}
+              className="w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors font-mono"
+              placeholder="https://example.com（填入後文章將以 iframe 全螢幕嵌入方式展示）"
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              填入後，文章頁面將改為 iframe 嵌入模式，適合嵌入外部互動網站。留空則顯示一般文章內容。
+            </p>
+          </div>
+
           {/* Published */}
           <div className="flex items-center gap-3">
             <input
@@ -391,50 +433,60 @@ export default function AdminPostEditor() {
 
             {/* Photo grid */}
             {mediaItems.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {mediaItems.map((item, idx) => (
-                  <div key={item.id} className="group relative">
-                    <div className="aspect-[4/3] overflow-hidden bg-muted">
-                      <img
-                        src={item.url}
-                        alt={item.caption ?? `照片 ${idx + 1}`}
-                        className="w-full h-full object-cover"
+              <>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                  {mediaItems.map((item, idx) => (
+                    <div key={item.id} className="group relative">
+                      <div className="aspect-[4/3] overflow-hidden bg-muted">
+                        <img
+                          src={item.url}
+                          alt={item.caption ?? `照片 ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      {/* Delete button */}
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteMedia(item.id)}
+                        className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+                        title="刪除照片"
+                      >
+                        <X size={12} />
+                      </button>
+                      {/* Caption input */}
+                      <input
+                        type="text"
+                        value={item.caption ?? ""}
+                        onChange={(e) => handleCaptionChange(item.id, e.target.value)}
+                        placeholder="照片說明（選填）"
+                        className="w-full mt-1.5 border border-border bg-background px-2 py-1.5 text-xs focus:outline-none focus:border-foreground transition-colors"
                       />
                     </div>
-                    {/* Delete button */}
-                    <button
-                      type="button"
-                      onClick={() => handleDeleteMedia(item.id)}
-                      className="absolute top-2 right-2 bg-black/60 text-white p-1 rounded opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
-                      title="刪除照片"
-                    >
-                      <X size={12} />
-                    </button>
-                    {/* Caption input */}
-                    <input
-                      type="text"
-                      value={item.caption ?? ""}
-                      onChange={(e) => handleCaptionChange(item.id, e.target.value)}
-                      placeholder="照片說明（選填）"
-                      className="w-full mt-1.5 border border-border bg-background px-2 py-1.5 text-xs focus:outline-none focus:border-foreground transition-colors"
-                    />
+                  ))}
+                  {/* Add more button in grid */}
+                  <div
+                    className="aspect-[4/3] border border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:border-foreground transition-colors"
+                    onClick={() => mediaInputRef.current?.click()}
+                  >
+                    <ImagePlus size={20} className="text-muted-foreground mb-1" />
+                    <span className="text-xs text-muted-foreground">新增更多</span>
                   </div>
-                ))}
-                {/* Add more button in grid */}
-                <div
-                  className="aspect-[4/3] border border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:border-foreground transition-colors"
-                  onClick={() => mediaInputRef.current?.click()}
-                >
-                  <ImagePlus size={20} className="text-muted-foreground mb-1" />
-                  <span className="text-xs text-muted-foreground">新增更多</span>
                 </div>
-              </div>
-            )}
 
-            {mediaItems.length > 0 && (
-              <p className="text-xs text-muted-foreground mt-3">
-                共 {mediaItems.length} 張照片 · 照片說明修改後將在下次儲存文章時一併更新
-              </p>
+                <div className="flex items-center justify-between mt-3">
+                  <p className="text-xs text-muted-foreground">
+                    共 {mediaItems.length} 張照片
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleSaveCaptions}
+                    disabled={savingCaptions}
+                    className="text-xs border border-border px-4 py-1.5 hover:border-foreground transition-colors disabled:opacity-50"
+                  >
+                    {savingCaptions ? "儲存中..." : "儲存照片說明"}
+                  </button>
+                </div>
+              </>
             )}
           </div>
         )}
