@@ -39,7 +39,7 @@ const DESTINATIONS = [
 ];
 
 const FALLBACK_IMGS = [
-  "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=75&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=800&q=75&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=75&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=75&auto=format&fit=crop",
 ];
@@ -67,7 +67,7 @@ export default function Home() {
           <p className="text-xs tracking-[0.3em] uppercase mb-4 opacity-70">
             In-Between Days
           </p>
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-6" style={{fontSize: '20px'}}>
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light leading-tight mb-6">
             走走停停，在旅途間隙，
             <br />
             遇見世界，也遇見自己。
@@ -95,7 +95,7 @@ export default function Home() {
               <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-2">
                 最新遊記
               </p>
-              <h2 className="font-serif text-2xl font-light">近期文章</h2>
+              <h2 className="font-serif text-2xl font-light">近期旅行故事</h2>
             </div>
             <Link href="/journal">
               <span className="text-xs text-muted-foreground hover:text-foreground tracking-wider transition-colors cursor-pointer flex items-center gap-1">
