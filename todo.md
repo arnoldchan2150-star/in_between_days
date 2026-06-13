@@ -58,3 +58,8 @@
 - [ ] AdminPostEditor：封面圖改為 ImageUploader
 - [ ] AdminBooklets：小冊子封面改為 ImageUploader
 - [ ] AdminAbout：個人照片改為 ImageUploader
+
+## 文章多圖相簿功能
+- [ ] 確認 post_media 資料表與後端 API
+- [ ] 後台文章編輯器加入多圖上傳相簿管理（新增、排序、刪除）
+- [ ] 前台 PostDetail 頁面以相簿方式展示文章照片
