@@ -155,7 +155,7 @@ export const appRouter = router({
           coverImageUrl: z.string().optional(),
           coverImageKey: z.string().optional(),
           category: z.enum(["南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"]),
-          type: z.enum(["travel", "culture"]).default("travel"),
+          type: z.enum(["travel", "culture", "snow"]).default("travel"),
           published: z.boolean().default(false),
         })
       )
@@ -176,7 +176,7 @@ export const appRouter = router({
           coverImageUrl: z.string().optional().nullable(),
           coverImageKey: z.string().optional().nullable(),
           category: z.enum(["南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"]).optional(),
-          type: z.enum(["travel", "culture"]).optional(),
+          type: z.enum(["travel", "culture", "snow"]).optional(),
           published: z.boolean().optional(),
           embedUrl: z.string().optional().nullable(),
         })

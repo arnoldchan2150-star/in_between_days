@@ -33,7 +33,7 @@ export default function AdminPostEditor() {
     excerpt: "",
     content: "",
     category: "亞洲" as Category,
-    type: "travel" as "travel" | "culture",
+    type: "travel" as "travel" | "culture" | "snow",
     published: false,
     coverImageUrl: "",
     coverImageKey: "",
@@ -271,13 +271,14 @@ export default function AdminPostEditor() {
                 onChange={(e) =>
                   setForm((f) => ({
                     ...f,
-                    type: e.target.value as "travel" | "culture",
+                    type: e.target.value as "travel" | "culture" | "snow",
                   }))
                 }
                 className="w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors"
               >
                 <option value="travel">遊記</option>
-                <option value="culture">文化（電影/書籍）</option>
+                <option value="culture">靈感拾光（電影/書籍）</option>
+                <option value="snow">雪季映像（滑雪）</option>
               </select>
             </div>
           </div>

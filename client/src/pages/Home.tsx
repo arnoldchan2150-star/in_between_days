@@ -73,7 +73,7 @@ export default function Home() {
             遇見世界，也遇見自己。
           </h1>
           <div className="flex flex-wrap gap-4">
-            <Link href="/journal">
+            <Link href="/destinations">
               <span className="inline-flex items-center gap-2 border border-white/60 px-6 py-2.5 text-xs tracking-widest hover:bg-white hover:text-foreground transition-colors cursor-pointer">
                 閱讀遊記 <ArrowRight size={14} />
               </span>
@@ -93,11 +93,11 @@ export default function Home() {
           <div className="flex items-baseline justify-between mb-12">
             <div>
               <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-2">
-                最新遊記
+                最新故事
               </p>
               <h2 className="font-serif text-2xl font-light">近期旅行故事</h2>
             </div>
-            <Link href="/journal">
+            <Link href="/destinations">
               <span className="text-xs text-muted-foreground hover:text-foreground tracking-wider transition-colors cursor-pointer flex items-center gap-1">
                 全部遊記 <ArrowRight size={12} />
               </span>
@@ -116,7 +116,7 @@ export default function Home() {
                 ))
               : latestPosts.length > 0
               ? latestPosts.map((post, i) => (
-                  <Link key={post.id} href={`/journal/${post.slug}`}>
+                  <Link key={post.id} href={`/destinations/${post.slug}`}>
                     <article className="group cursor-pointer">
                       <div className="aspect-[4/3] overflow-hidden mb-4 bg-muted">
                         <img

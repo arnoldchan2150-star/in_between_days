@@ -7,10 +7,10 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 
 // Public pages
 import Home from "./pages/Home";
-import Journal from "./pages/Journal";
-import PostDetail from "./pages/PostDetail";
 import Destinations from "./pages/Destinations";
+import PostDetail from "./pages/PostDetail";
 import Culture from "./pages/Culture";
+import Snow from "./pages/Snow";
 import Booklet from "./pages/Booklet";
 import About from "./pages/About";
 
@@ -28,10 +28,12 @@ function Router() {
     <Switch>
       {/* Public routes */}
       <Route path="/" component={Home} />
-      <Route path="/journal" component={Journal} />
-      <Route path="/journal/:slug" component={PostDetail} />
       <Route path="/destinations" component={Destinations} />
+      <Route path="/destinations/:slug" component={PostDetail} />
       <Route path="/culture" component={Culture} />
+      <Route path="/culture/:slug" component={PostDetail} />
+      <Route path="/snow" component={Snow} />
+      <Route path="/snow/:slug" component={PostDetail} />
       <Route path="/booklet" component={Booklet} />
       <Route path="/about" component={About} />
 

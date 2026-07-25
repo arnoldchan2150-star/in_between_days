@@ -75,3 +75,14 @@
 - [x] 後端新增 posts.updateMedia tRPC 路由（更新 caption / sortOrder）
 - [x] 後端新增 updatePostMedia DB helper
 - [x] AdminPostEditor：加入「儲存照片說明」按鈕，點擊後將所有 caption 持久化至資料庫
+
+
+## 頁面重構與新功能
+- [x] 將「電影 X 書籍」頁面重新命名為「靈感拾光」
+- [x] 整合「目的地」和「遊記」為「目的地遊記」頁面（混合展示）
+- [x] 新增「雪季映像」頁面，展示滑雪相關內容
+- [x] 更新資料庫 schema，支援新的內容分類（culture/travel/snow）
+- [x] 實作「雪季映像」頁面的影片/文章分類篩選功能
+- [ ] 支援 YouTube 嵌入和自主上傳影片
+- [ ] 更新後台管理介面，支援新的內容管理
+- [x] 更新前台導覽結構
