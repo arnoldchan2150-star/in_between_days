@@ -233,33 +233,9 @@ export default function PostDetail() {
             )}
           </div>
 
-          <h1 className="font-serif text-3xl md:text-4xl font-light mb-4 leading-tight">
-            {post.title}
-          </h1>
-
-          {post.excerpt && (
-            <p className="text-muted-foreground text-base leading-relaxed mb-8 border-l-2 border-border pl-4 italic">
-              {post.excerpt}
-            </p>
-          )}
-
-          <hr className="border-border mb-8" />
-
-          <div
-            className="prose-travel"
-            dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, "<br/>") }}
-          />
-
-          {/* ── Embedded Video ── */}
+          {/* ── Embedded Video (Top) ── */}
           {post.embedUrl && (
-            <div className="mt-14">
-              <div className="flex items-center gap-3 mb-6">
-                <hr className="flex-1 border-border" />
-                <span className="font-serif text-sm text-muted-foreground tracking-widest">
-                  影片
-                </span>
-                <hr className="flex-1 border-border" />
-              </div>
+            <div className="mb-12">
               <div className="aspect-video bg-muted overflow-hidden rounded-sm">
                 <iframe
                   src={post.embedUrl}
@@ -276,6 +252,23 @@ export default function PostDetail() {
               </div>
             </div>
           )}
+
+          <h1 className="font-serif text-3xl md:text-4xl font-light mb-4 leading-tight">
+            {post.title}
+          </h1>
+
+          {post.excerpt && (
+            <p className="text-muted-foreground text-base leading-relaxed mb-8 border-l-2 border-border pl-4 italic">
+              {post.excerpt}
+            </p>
+          )}
+
+          <hr className="border-border mb-8" />
+
+          <div
+            className="prose-travel"
+            dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, "<br/>") }}
+          />
 
           {/* ── Photo Gallery ── */}
           {sortedMedia.length > 0 && (
