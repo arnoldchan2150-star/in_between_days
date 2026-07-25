@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Play, FileText } from "lucide-react";
+import { Play, FileText, ArrowRight } from "lucide-react";
 
 const FALLBACK_IMGS = [
   "https://images.unsplash.com/photo-1551632786-de41ec16a82f?w=800&q=70&auto=format&fit=crop",
@@ -83,7 +83,7 @@ export default function Snow() {
                 <button
                   key={filter.value}
                   onClick={() => setFilterType(filter.value as any)}
-                  className={`text-xs tracking-[0.12em] px-3 py-1.5 border transition-colors ${
+                  className={`text-xs tracking-[0.12em] px-3 py-1.5 border transition-colors whitespace-nowrap ${
                     filterType === filter.value
                       ? "border-foreground bg-foreground text-background"
                       : "border-border text-muted-foreground hover:border-foreground"
@@ -97,27 +97,32 @@ export default function Snow() {
         </div>
       </section>
 
-      {/* Content */}
+      {/* Content - Left Image Right Text Layout */}
       <section className="flex-1 py-16 bg-background">
         <div className="container">
           {isLoading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i}>
-                  <Skeleton className="aspect-[4/3] mb-4" />
-                  <Skeleton className="h-4 w-16 mb-2" />
-                  <Skeleton className="h-5 w-full mb-2" />
+            <div className="space-y-12">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="grid md:grid-cols-2 gap-8 items-center">
+                  <Skeleton className="aspect-[4/3]" />
+                  <div>
+                    <Skeleton className="h-4 w-16 mb-3" />
+                    <Skeleton className="h-6 w-full mb-3" />
+                    <Skeleton className="h-4 w-full mb-2" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
                 </div>
               ))}
             </div>
           ) : filtered.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="space-y-16">
               {filtered.map((post, i) => {
                 const isVideo = !!post.embedUrl;
                 return (
                   <Link key={post.id} href={`/snow/${post.slug}`}>
-                    <article className="group cursor-pointer">
-                      <div className="aspect-[4/3] overflow-hidden mb-4 bg-muted relative">
+                    <article className="group grid md:grid-cols-2 gap-8 items-center cursor-pointer">
+                      {/* Left: Image/Video */}
+                      <div className="aspect-[4/3] overflow-hidden bg-muted relative rounded-sm">
                         <img
                           src={post.coverImageUrl || FALLBACK_IMGS[i % FALLBACK_IMGS.length]}
                           alt={post.title}
@@ -126,29 +131,44 @@ export default function Snow() {
                         {/* Video badge */}
                         {isVideo && (
                           <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/50 transition-colors">
-                            <Play size={32} className="text-white fill-white" />
+                            <Play size={48} className="text-white fill-white" />
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center gap-2 mb-2">
-                        {isVideo ? (
-                          <span className="text-xs text-muted-foreground flex items-center gap-1">
-                            <Play size={12} /> 影片
-                          </span>
-                        ) : (
-                          <span className="text-xs text-muted-foreground flex items-center gap-1">
-                            <FileText size={12} /> 文章
-                          </span>
+
+                      {/* Right: Text */}
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center gap-2">
+                          {isVideo ? (
+                            <span className="text-xs text-muted-foreground flex items-center gap-1 bg-foreground/10 px-2 py-1 rounded-sm">
+                              <Play size={12} /> 影片
+                            </span>
+                          ) : (
+                            <span className="text-xs text-muted-foreground flex items-center gap-1 bg-foreground/10 px-2 py-1 rounded-sm">
+                              <FileText size={12} /> 文章
+                            </span>
+                          )}
+                          {post.category && (
+                            <span className="text-xs text-muted-foreground">{post.category}</span>
+                          )}
+                        </div>
+
+                        <h2 className="font-serif text-2xl font-light group-hover:text-muted-foreground transition-colors">
+                          {post.title}
+                        </h2>
+
+                        {post.excerpt && (
+                          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                            {post.excerpt}
+                          </p>
                         )}
+
+                        <div className="pt-2">
+                          <span className="inline-flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors">
+                            {isVideo ? "觀看影片" : "閱讀文章"} <ArrowRight size={12} />
+                          </span>
+                        </div>
                       </div>
-                      <h2 className="font-serif text-lg font-light group-hover:text-muted-foreground transition-colors">
-                        {post.title}
-                      </h2>
-                      {post.excerpt && (
-                        <p className="text-xs text-muted-foreground mt-2 line-clamp-2">
-                          {post.excerpt}
-                        </p>
-                      )}
                     </article>
                   </Link>
                 );

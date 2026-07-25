@@ -186,69 +186,7 @@ export default function PostDetail() {
     );
   }
 
-  // ── iframe 嵌入模式 ──────────────────────────────────────────────────────
-  if (post.embedUrl) {
-    return (
-      <div className="overflow-hidden" style={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
-        <div ref={headerRef} style={{ flexShrink: 0 }}>
-          <Navbar />
-          <div className="border-b border-border bg-background">
-            <div className="container py-3 flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-4">
-                <Link href="/journal">
-                  <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                    <ArrowLeft size={12} /> 返回遊記
-                  </span>
-                </Link>
-                <span className="text-muted-foreground/30 text-xs">|</span>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs text-muted-foreground tracking-widest flex items-center gap-1">
-                    <MapPin size={11} /> {post.category}
-                  </span>
-                  {post.publishedAt && (
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Calendar size={11} />
-                      {new Date(post.publishedAt).toLocaleDateString("zh-TW", {
-                        year: "numeric",
-                        month: "long",
-                      })}
-                    </span>
-                  )}
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <h1 className="font-serif text-sm font-light text-foreground hidden sm:block truncate max-w-xs">
-                  {post.title}
-                </h1>
-                <a
-                  href={post.embedUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors border border-border px-3 py-1.5 hover:border-foreground/40 whitespace-nowrap"
-                >
-                  <ExternalLink size={11} />
-                  在新分頁開啟
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <iframe
-          src={post.embedUrl}
-          title={post.title}
-          style={{
-            width: "100%",
-            height: iframeHeight,
-            border: "none",
-            display: "block",
-            flexShrink: 0,
-          }}
-          allow="fullscreen"
-          loading="lazy"
-        />
-      </div>
-    );
-  }
+  // ── 一般文章模式（支援 embedUrl 嵌入）────────────────────────────────────────────────────────
 
   // ── 一般文章模式 ─────────────────────────────────────────────────────────
   const mediaItems: MediaItem[] = (post.media ?? []) as MediaItem[];
@@ -311,6 +249,33 @@ export default function PostDetail() {
             className="prose-travel"
             dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, "<br/>") }}
           />
+
+          {/* ── Embedded Video ── */}
+          {post.embedUrl && (
+            <div className="mt-14">
+              <div className="flex items-center gap-3 mb-6">
+                <hr className="flex-1 border-border" />
+                <span className="font-serif text-sm text-muted-foreground tracking-widest">
+                  影片
+                </span>
+                <hr className="flex-1 border-border" />
+              </div>
+              <div className="aspect-video bg-muted overflow-hidden rounded-sm">
+                <iframe
+                  src={post.embedUrl}
+                  title={post.title}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    border: "none",
+                  }}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          )}
 
           {/* ── Photo Gallery ── */}
           {sortedMedia.length > 0 && (
