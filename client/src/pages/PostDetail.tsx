@@ -1,5 +1,5 @@
 import { useParams, Link } from "wouter";
-import { ArrowLeft, Calendar, MapPin, ExternalLink, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, X, ChevronLeft, ChevronRight, Play } from "lucide-react";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
@@ -11,6 +11,7 @@ type MediaItem = {
   url: string;
   caption?: string | null;
   sortOrder: number;
+  mediaType?: "image" | "video";
 };
 
 // ── Lightbox Component ────────────────────────────────────────────────────────
@@ -47,6 +48,8 @@ function Lightbox({
   const item = items[current];
   if (!item) return null;
 
+  const isVideo = item.mediaType === "video";
+
   return (
     <div
       className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
@@ -75,17 +78,27 @@ function Lightbox({
         </button>
       )}
 
-      {/* Image */}
+      {/* Media */}
       <div
         className="max-w-[90vw] max-h-[85vh] flex flex-col items-center"
         onClick={(e) => e.stopPropagation()}
       >
-        <img
-          src={item.url}
-          alt={item.caption ?? `照片 ${current + 1}`}
-          className="max-w-full max-h-[75vh] object-contain select-none"
-          draggable={false}
-        />
+        {isVideo ? (
+          <video
+            src={item.url}
+            controls
+            autoPlay
+            className="max-w-full max-h-[75vh] object-contain bg-black"
+            style={{ maxWidth: "90vw" }}
+          />
+        ) : (
+          <img
+            src={item.url}
+            alt={item.caption ?? `照片 ${current + 1}`}
+            className="max-w-full max-h-[75vh] object-contain select-none"
+            draggable={false}
+          />
+        )}
         {item.caption && (
           <p className="text-white/60 text-sm mt-3 text-center max-w-lg px-4">
             {item.caption}
@@ -110,11 +123,17 @@ function Lightbox({
             <button
               key={m.id}
               onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
-              className={`flex-shrink-0 w-12 h-9 overflow-hidden transition-opacity ${
+              className={`flex-shrink-0 w-12 h-9 overflow-hidden transition-opacity relative ${
                 i === current ? "opacity-100 ring-1 ring-white" : "opacity-40 hover:opacity-70"
               }`}
             >
-              <img src={m.url} alt="" className="w-full h-full object-cover" />
+              {m.mediaType === "video" ? (
+                <div className="w-full h-full bg-black/60 flex items-center justify-center">
+                  <Play size={14} className="text-white fill-white" />
+                </div>
+              ) : (
+                <img src={m.url} alt="" className="w-full h-full object-cover" />
+              )}
             </button>
           ))}
         </div>
@@ -186,11 +205,15 @@ export default function PostDetail() {
     );
   }
 
-  // ── 一般文章模式（支援 embedUrl 嵌入）────────────────────────────────────────────────────────
-
-  // ── 一般文章模式 ─────────────────────────────────────────────────────────
   const mediaItems: MediaItem[] = (post.media ?? []) as MediaItem[];
   const sortedMedia = [...mediaItems].sort((a, b) => a.sortOrder - b.sortOrder);
+
+  // Separate photos and videos
+  const photoItems = sortedMedia.filter((m) => (m.mediaType ?? "image") === "image");
+  const videoItems = sortedMedia.filter((m) => m.mediaType === "video");
+
+  // All lightbox items: photos only (videos have inline player)
+  const lightboxItems = photoItems;
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -233,7 +256,7 @@ export default function PostDetail() {
             )}
           </div>
 
-          {/* ── Embedded Video (Top) ── */}
+          {/* ── Embedded Video (YouTube / iframe) ── */}
           {post.embedUrl && (
             <div className="mb-12">
               <div className="aspect-video bg-muted overflow-hidden rounded-sm">
@@ -250,6 +273,35 @@ export default function PostDetail() {
                   loading="lazy"
                 />
               </div>
+            </div>
+          )}
+
+          {/* ── Uploaded Videos (native player) ── */}
+          {videoItems.length > 0 && (
+            <div className="mb-12 space-y-6">
+              {videoItems.map((v, idx) => (
+                <div key={v.id}>
+                  <div className="aspect-video bg-black overflow-hidden rounded-sm">
+                    <video
+                      src={v.url}
+                      controls
+                      className="w-full h-full object-contain"
+                      preload="metadata"
+                      playsInline
+                    />
+                  </div>
+                  {v.caption && (
+                    <p className="text-xs text-muted-foreground mt-2 text-center italic">
+                      {v.caption}
+                    </p>
+                  )}
+                  {videoItems.length > 1 && (
+                    <p className="text-xs text-muted-foreground mt-1 text-center">
+                      影片 {idx + 1} / {videoItems.length}
+                    </p>
+                  )}
+                </div>
+              ))}
             </div>
           )}
 
@@ -271,7 +323,7 @@ export default function PostDetail() {
           />
 
           {/* ── Photo Gallery ── */}
-          {sortedMedia.length > 0 && (
+          {photoItems.length > 0 && (
             <div className="mt-14">
               <div className="flex items-center gap-3 mb-6">
                 <hr className="flex-1 border-border" />
@@ -283,12 +335,11 @@ export default function PostDetail() {
 
               {/* Masonry-style grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {sortedMedia.map((m, idx) => (
+                {photoItems.map((m, idx) => (
                   <div
                     key={m.id}
                     className={`overflow-hidden cursor-zoom-in group relative ${
-                      // Make first photo span 2 columns if there are 3+ photos
-                      idx === 0 && sortedMedia.length >= 3 ? "col-span-2 md:col-span-1" : ""
+                      idx === 0 && photoItems.length >= 3 ? "col-span-2 md:col-span-1" : ""
                     }`}
                     onClick={() => setLightboxIndex(idx)}
                   >
@@ -313,7 +364,7 @@ export default function PostDetail() {
               </div>
 
               <p className="text-xs text-muted-foreground mt-3 text-center">
-                點擊照片放大 · 共 {sortedMedia.length} 張
+                點擊照片放大 · 共 {photoItems.length} 張
               </p>
             </div>
           )}
@@ -330,10 +381,10 @@ export default function PostDetail() {
 
       <Footer />
 
-      {/* Lightbox */}
-      {lightboxIndex !== null && (
+      {/* Lightbox (photos only) */}
+      {lightboxIndex !== null && lightboxItems.length > 0 && (
         <Lightbox
-          items={sortedMedia}
+          items={lightboxItems}
           initialIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
         />

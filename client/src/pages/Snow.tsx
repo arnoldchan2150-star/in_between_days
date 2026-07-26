@@ -21,7 +21,8 @@ export default function Snow() {
     type: "snow",
   });
 
-  // 根據 embedUrl 判斷是否為影片
+  // 根據 embedUrl 或 hasVideo 判斷是否為影片
+  // embedUrl = YouTube/外部嵌入；hasVideo 由後端媒體資料判斷（前台 list 不帶 media，以 embedUrl 為主）
   const posts = allPosts || [];
   const videos = posts.filter((p) => p.embedUrl);
   const articles = posts.filter((p) => !p.embedUrl);

@@ -205,16 +205,44 @@ export const appRouter = router({
           dataBase64: z.string(),
           caption: z.string().optional(),
           sortOrder: z.number().optional(),
+          mediaType: z.enum(["image", "video"]).default("image"),
         })
       )
       .mutation(async ({ input }) => {
         const buffer = Buffer.from(input.dataBase64, "base64");
-        const key = `posts/${input.postId}/${Date.now()}-${input.filename}`;
+        const folder = input.mediaType === "video" ? "videos" : "photos";
+        const key = `posts/${input.postId}/${folder}/${Date.now()}-${input.filename}`;
         const { url } = await storagePut(key, buffer, input.contentType);
         await addPostMedia({
           postId: input.postId,
           url,
           storageKey: key,
+          mediaType: input.mediaType,
+          caption: input.caption,
+          sortOrder: input.sortOrder ?? 0,
+        });
+        return { url, key };
+      }),
+    uploadVideo: adminProcedure
+      .input(
+        z.object({
+          postId: z.number(),
+          filename: z.string(),
+          contentType: z.string(),
+          dataBase64: z.string(),
+          caption: z.string().optional(),
+          sortOrder: z.number().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const buffer = Buffer.from(input.dataBase64, "base64");
+        const key = `posts/${input.postId}/videos/${Date.now()}-${input.filename}`;
+        const { url } = await storagePut(key, buffer, input.contentType);
+        await addPostMedia({
+          postId: input.postId,
+          url,
+          storageKey: key,
+          mediaType: "video",
           caption: input.caption,
           sortOrder: input.sortOrder ?? 0,
         });
