@@ -81,19 +81,33 @@ export default function AdminBooklets() {
   const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    // Reset input so the same file can be re-selected after an error
+    e.target.value = "";
+    // Validate file type
+    if (file.type !== "application/pdf" && !file.name.toLowerCase().endsWith(".pdf")) {
+      toast.error("請選擇 PDF 格式的檔案");
+      return;
+    }
+    // Validate file size (max 20 MB)
+    const MAX_PDF_MB = 20;
+    if (file.size > MAX_PDF_MB * 1024 * 1024) {
+      toast.error(`PDF 大小不能超過 ${MAX_PDF_MB}MB（目前：${(file.size / 1024 / 1024).toFixed(1)}MB）`);
+      return;
+    }
     setUploadingPdf(true);
     try {
       const dataBase64 = await fileToBase64(file);
       const result = await uploadMutation.mutateAsync({
         filename: file.name,
-        contentType: file.type,
+        contentType: "application/pdf",
         dataBase64,
         type: "pdf",
       });
       setForm((f) => ({ ...f, fileUrl: result.url, fileKey: result.key }));
       toast.success("PDF 上傳成功");
-    } catch {
-      toast.error("PDF 上傳失敗");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "PDF 上傳失敗，請稍後再試";
+      toast.error(message);
     } finally {
       setUploadingPdf(false);
     }
