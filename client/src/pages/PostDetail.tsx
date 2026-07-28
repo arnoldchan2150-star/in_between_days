@@ -142,6 +142,15 @@ function Lightbox({
   );
 }
 
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function getBackLink(type?: string): { href: string; label: string } {
+  switch (type) {
+    case "culture": return { href: "/culture", label: "返回靈感拾光" };
+    case "snow":    return { href: "/snow",    label: "返回雪季映像" };
+    default:        return { href: "/destinations", label: "返回遊記" };
+  }
+}
+
 // ── Main Component ────────────────────────────────────────────────────────────
 export default function PostDetail() {
   const params = useParams<{ slug: string }>();
@@ -193,7 +202,7 @@ export default function PostDetail() {
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <p className="font-serif text-xl text-muted-foreground mb-4">找不到這篇文章</p>
-            <Link href="/journal">
+            <Link href="/destinations">
               <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-1 justify-center">
                 <ArrowLeft size={14} /> 返回遊記列表
               </span>
@@ -234,11 +243,13 @@ export default function PostDetail() {
       {/* Content */}
       <article className={`flex-1 bg-background ${post.coverImageUrl ? "" : "pt-24"}`}>
         <div className="container max-w-3xl mx-auto py-12">
-          <Link href="/journal">
-            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-8">
-              <ArrowLeft size={12} /> 返回遊記
-            </span>
-          </Link>
+          {(() => { const bl = getBackLink(post.type); return (
+            <Link href={bl.href}>
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-8">
+                <ArrowLeft size={12} /> {bl.label}
+              </span>
+            </Link>
+          ); })()}
 
           <div className="flex flex-wrap items-center gap-4 mb-4">
             <span className="text-xs text-muted-foreground tracking-widest flex items-center gap-1">
@@ -370,11 +381,13 @@ export default function PostDetail() {
           )}
 
           <div className="mt-16 pt-8 border-t border-border">
-            <Link href="/journal">
-              <span className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                <ArrowLeft size={14} /> 更多旅行故事
-              </span>
-            </Link>
+            {(() => { const bl = getBackLink(post.type); return (
+              <Link href={bl.href}>
+                <span className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                  <ArrowLeft size={14} /> {bl.label}
+                </span>
+              </Link>
+            ); })()}
           </div>
         </div>
       </article>
