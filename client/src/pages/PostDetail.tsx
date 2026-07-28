@@ -164,6 +164,10 @@ export default function PostDetail() {
 
   useEffect(() => {
     if (!post?.embedUrl) return;
+    const url = post.embedUrl;
+    // Standalone HTML page → fullpage mode, no iframe height calculation needed
+    if (url.endsWith(".html") || url.includes(".html?")) return;
+    // Otherwise (YouTube etc.) → calculate iframe height
     const updateHeight = () => {
       if (headerRef.current) {
         const h = headerRef.current.getBoundingClientRect().bottom;
@@ -174,6 +178,10 @@ export default function PostDetail() {
     window.addEventListener("resize", updateHeight);
     return () => window.removeEventListener("resize", updateHeight);
   }, [post?.embedUrl]);
+
+  // Full-page HTML mode: render as full-viewport iframe with floating back button
+  const isFullPageHtml = post?.embedUrl &&
+    (post.embedUrl.endsWith(".html") || post.embedUrl.includes(".html?"));
 
   if (isLoading) {
     return (
@@ -223,6 +231,59 @@ export default function PostDetail() {
 
   // All lightbox items: photos only (videos have inline player)
   const lightboxItems = photoItems;
+
+  // ── Full-page HTML mode ───────────────────────────────────────────────────
+  if (isFullPageHtml) {
+    const bl = getBackLink(post.type);
+    return (
+      <div style={{ position: "fixed", inset: 0, zIndex: 0 }}>
+        {/* Full-viewport iframe — no navbar, no footer, no border */}
+        <iframe
+          src={post.embedUrl!}
+          title={post.title}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            border: "none",
+          }}
+          allowFullScreen
+          loading="lazy"
+        />
+        {/* Floating back button — top-left corner */}
+        <div
+          style={{
+            position: "fixed",
+            top: "16px",
+            left: "16px",
+            zIndex: 50,
+          }}
+        >
+          <Link href={bl.href}>
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                fontSize: "12px",
+                color: "rgba(255,255,255,0.85)",
+                background: "rgba(0,0,0,0.45)",
+                backdropFilter: "blur(8px)",
+                padding: "6px 14px",
+                borderRadius: "999px",
+                cursor: "pointer",
+                textDecoration: "none",
+                letterSpacing: "0.05em",
+              }}
+            >
+              <ArrowLeft size={12} /> {bl.label}
+            </span>
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
