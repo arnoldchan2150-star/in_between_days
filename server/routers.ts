@@ -346,7 +346,19 @@ export const appRouter = router({
       )
       .mutation(async ({ input }) => {
         const buffer = Buffer.from(input.dataBase64, "base64");
-        const key = `booklets/${input.type}/${Date.now()}-${input.filename}`;
+        // S3 keys must be ASCII-safe; strip non-ASCII chars from the filename
+        // while preserving the extension so MIME detection still works.
+        const ext = input.filename.includes(".")
+          ? "." + input.filename.split(".").pop()!.replace(/[^a-zA-Z0-9]/g, "")
+          : "";
+        const safeName = input.filename
+          .replace(/\.[^.]+$/, "")          // strip extension
+          .replace(/[^\x20-\x7E]/g, "")     // remove non-ASCII
+          .replace(/[^a-zA-Z0-9._-]/g, "-") // replace unsafe chars
+          .replace(/-+/g, "-")              // collapse dashes
+          .replace(/^-|-$/g, "")            // trim leading/trailing dashes
+          || "file";                         // fallback if name becomes empty
+        const key = `booklets/${input.type}/${Date.now()}-${safeName}${ext}`;
         const { url } = await storagePut(key, buffer, input.contentType);
         return { url, key };
       }),
