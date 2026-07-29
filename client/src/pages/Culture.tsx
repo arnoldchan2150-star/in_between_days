@@ -23,10 +23,10 @@ export default function Culture() {
           <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-2">
             Culture
           </p>
-          <h1 className="font-serif text-3xl font-light">電影 × 書籍</h1>
+          <h1 className="font-serif text-3xl font-light">靈感拾光</h1>
           <p className="text-sm text-muted-foreground mt-3 max-w-lg leading-relaxed">
-            旅行不只是移動，更是一種閱讀。那些讓我想起某個城市的電影、某段旅程的書，
-            以及旅途中的文字碎片。
+            旅行中的灵感來自計畫、電影、書籍和生活的片段。
+            這些不同形式的文化作品，每一件都是旅途中的一段羅羅時光。
           </p>
         </div>
       </section>

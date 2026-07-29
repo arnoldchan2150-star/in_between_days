@@ -3,9 +3,9 @@ import { Link, useLocation } from "wouter";
 import { Menu, X } from "lucide-react";
 
 const NAV_LINKS = [
-  { href: "/journal", label: "遊記" },
-  { href: "/destinations", label: "目的地" },
-  { href: "/culture", label: "電影 × 書籍" },
+  { href: "/destinations", label: "目的地遊記" },
+  { href: "/snow", label: "雪季映像" },
+  { href: "/culture", label: "靈感拾光" },
   { href: "/booklet", label: "旅遊小冊子" },
   { href: "/about", label: "關於我" },
 ];

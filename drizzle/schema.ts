@@ -41,7 +41,7 @@ export const posts = mysqlTable("posts", {
     "中亞",
     "東南亞",
   ]).notNull(),
-  type: mysqlEnum("type", ["travel", "culture"]).default("travel").notNull(),
+  type: mysqlEnum("type", ["travel", "culture", "snow"]).default("travel").notNull(),
   published: boolean("published").default(false).notNull(),
   publishedAt: timestamp("publishedAt"),
   embedUrl: text("embedUrl"),
