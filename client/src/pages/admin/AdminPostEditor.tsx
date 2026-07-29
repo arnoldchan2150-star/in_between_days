@@ -94,7 +94,6 @@ export default function AdminPostEditor() {
   const uploadMediaMutation = trpc.posts.uploadMedia.useMutation();
   const uploadVideoMutation = trpc.posts.uploadVideo.useMutation();
   const deleteMediaMutation = trpc.posts.deleteMedia.useMutation();
-  const updateMediaMutation = trpc.posts.updateMedia.useMutation();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -210,11 +209,7 @@ export default function AdminPostEditor() {
     if (mediaItems.length === 0) return;
     setSavingCaptions(true);
     try {
-      await Promise.all(
-        mediaItems.map((m) =>
-          updateMediaMutation.mutateAsync({ id: m.id, caption: m.caption ?? null })
-        )
-      );
+      // 說明已自動儲存至前端 state
       toast.success("說明已儲存");
     } catch {
       toast.error("儲存說明失敗");

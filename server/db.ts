@@ -138,7 +138,7 @@ export async function deletePost(id: number): Promise<void> {
 export async function getPostMedia(postId: number): Promise<PostMedia[]> {
   const db = await getDb();
   if (!db) return [];
-  return db
+  return await db
     .select()
     .from(postMedia)
     .where(eq(postMedia.postId, postId))
