@@ -1,5 +1,5 @@
 import { useParams, Link } from "wouter";
-import { ArrowLeft, Calendar, MapPin, X, ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, ExternalLink, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef, useEffect, useState, useCallback } from "react";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
@@ -11,7 +11,6 @@ type MediaItem = {
   url: string;
   caption?: string | null;
   sortOrder: number;
-  mediaType?: "image" | "video";
 };
 
 // ── Lightbox Component ────────────────────────────────────────────────────────
@@ -48,8 +47,6 @@ function Lightbox({
   const item = items[current];
   if (!item) return null;
 
-  const isVideo = item.mediaType === "video";
-
   return (
     <div
       className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center"
@@ -78,27 +75,17 @@ function Lightbox({
         </button>
       )}
 
-      {/* Media */}
+      {/* Image */}
       <div
         className="max-w-[90vw] max-h-[85vh] flex flex-col items-center"
         onClick={(e) => e.stopPropagation()}
       >
-        {isVideo ? (
-          <video
-            src={item.url}
-            controls
-            autoPlay
-            className="max-w-full max-h-[75vh] object-contain bg-black"
-            style={{ maxWidth: "90vw" }}
-          />
-        ) : (
-          <img
-            src={item.url}
-            alt={item.caption ?? `照片 ${current + 1}`}
-            className="max-w-full max-h-[75vh] object-contain select-none"
-            draggable={false}
-          />
-        )}
+        <img
+          src={item.url}
+          alt={item.caption ?? `照片 ${current + 1}`}
+          className="max-w-full max-h-[75vh] object-contain select-none"
+          draggable={false}
+        />
         {item.caption && (
           <p className="text-white/60 text-sm mt-3 text-center max-w-lg px-4">
             {item.caption}
@@ -123,32 +110,17 @@ function Lightbox({
             <button
               key={m.id}
               onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
-              className={`flex-shrink-0 w-12 h-9 overflow-hidden transition-opacity relative ${
+              className={`flex-shrink-0 w-12 h-9 overflow-hidden transition-opacity ${
                 i === current ? "opacity-100 ring-1 ring-white" : "opacity-40 hover:opacity-70"
               }`}
             >
-              {m.mediaType === "video" ? (
-                <div className="w-full h-full bg-black/60 flex items-center justify-center">
-                  <Play size={14} className="text-white fill-white" />
-                </div>
-              ) : (
-                <img src={m.url} alt="" className="w-full h-full object-cover" />
-              )}
+              <img src={m.url} alt="" className="w-full h-full object-cover" />
             </button>
           ))}
         </div>
       )}
     </div>
   );
-}
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
-function getBackLink(type?: string): { href: string; label: string } {
-  switch (type) {
-    case "culture": return { href: "/culture", label: "返回靈感拾光" };
-    case "snow":    return { href: "/snow",    label: "返回雪季映像" };
-    default:        return { href: "/destinations", label: "返回遊記" };
-  }
 }
 
 // ── Main Component ────────────────────────────────────────────────────────────
@@ -164,10 +136,6 @@ export default function PostDetail() {
 
   useEffect(() => {
     if (!post?.embedUrl) return;
-    const url = post.embedUrl;
-    // Standalone HTML page → fullpage mode, no iframe height calculation needed
-    if (url.endsWith(".html") || url.includes(".html?")) return;
-    // Otherwise (YouTube etc.) → calculate iframe height
     const updateHeight = () => {
       if (headerRef.current) {
         const h = headerRef.current.getBoundingClientRect().bottom;
@@ -178,10 +146,6 @@ export default function PostDetail() {
     window.addEventListener("resize", updateHeight);
     return () => window.removeEventListener("resize", updateHeight);
   }, [post?.embedUrl]);
-
-  // Full-page HTML mode: render as full-viewport iframe with floating back button
-  const isFullPageHtml = post?.embedUrl &&
-    (post.embedUrl.endsWith(".html") || post.embedUrl.includes(".html?"));
 
   if (isLoading) {
     return (
@@ -210,7 +174,7 @@ export default function PostDetail() {
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <p className="font-serif text-xl text-muted-foreground mb-4">找不到這篇文章</p>
-            <Link href="/destinations">
+            <Link href="/journal">
               <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-1 justify-center">
                 <ArrowLeft size={14} /> 返回遊記列表
               </span>
@@ -222,26 +186,11 @@ export default function PostDetail() {
     );
   }
 
+  // ── 一般文章模式（支援 embedUrl 嵌入）────────────────────────────────────────────────────────
+
+  // ── 一般文章模式 ─────────────────────────────────────────────────────────
   const mediaItems: MediaItem[] = (post.media ?? []) as MediaItem[];
   const sortedMedia = [...mediaItems].sort((a, b) => a.sortOrder - b.sortOrder);
-
-  // Separate photos and videos
-  const photoItems = sortedMedia.filter((m) => (m.mediaType ?? "image") === "image");
-  const videoItems = sortedMedia.filter((m) => m.mediaType === "video");
-
-  // All lightbox items: photos only (videos have inline player)
-  const lightboxItems = photoItems;
-
-  // ── Full-page HTML mode: redirect directly to CDN URL ──────────────────────
-  if (isFullPageHtml) {
-    // Redirect directly to the HTML page — no iframe, no wrapper
-    window.location.replace(post.embedUrl!);
-    return (
-      <div style={{ position: "fixed", inset: 0, zIndex: 0, background: "#fff", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <p style={{ color: "#888", fontSize: "14px" }}>正在開啟…</p>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -262,13 +211,11 @@ export default function PostDetail() {
       {/* Content */}
       <article className={`flex-1 bg-background ${post.coverImageUrl ? "" : "pt-24"}`}>
         <div className="container max-w-3xl mx-auto py-12">
-          {(() => { const bl = getBackLink(post.type); return (
-            <Link href={bl.href}>
-              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-8">
-                <ArrowLeft size={12} /> {bl.label}
-              </span>
-            </Link>
-          ); })()}
+          <Link href="/journal">
+            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-8">
+              <ArrowLeft size={12} /> 返回遊記
+            </span>
+          </Link>
 
           <div className="flex flex-wrap items-center gap-4 mb-4">
             <span className="text-xs text-muted-foreground tracking-widest flex items-center gap-1">
@@ -285,55 +232,6 @@ export default function PostDetail() {
               </span>
             )}
           </div>
-
-          {/* ── Embedded Video (YouTube / iframe) ── */}
-          {post.embedUrl && (
-            <div className="mb-12">
-              <div className="aspect-video bg-muted overflow-hidden rounded-sm">
-                <iframe
-                  src={post.embedUrl}
-                  title={post.title}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    border: "none",
-                  }}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* ── Uploaded Videos (native player) ── */}
-          {videoItems.length > 0 && (
-            <div className="mb-12 space-y-6">
-              {videoItems.map((v, idx) => (
-                <div key={v.id}>
-                  <div className="aspect-video bg-black overflow-hidden rounded-sm">
-                    <video
-                      src={v.url}
-                      controls
-                      className="w-full h-full object-contain"
-                      preload="metadata"
-                      playsInline
-                    />
-                  </div>
-                  {v.caption && (
-                    <p className="text-xs text-muted-foreground mt-2 text-center italic">
-                      {v.caption}
-                    </p>
-                  )}
-                  {videoItems.length > 1 && (
-                    <p className="text-xs text-muted-foreground mt-1 text-center">
-                      影片 {idx + 1} / {videoItems.length}
-                    </p>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
 
           <h1 className="font-serif text-3xl md:text-4xl font-light mb-4 leading-tight">
             {post.title}
@@ -352,8 +250,35 @@ export default function PostDetail() {
             dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, "<br/>") }}
           />
 
+          {/* ── Embedded Video ── */}
+          {post.embedUrl && (
+            <div className="mt-14">
+              <div className="flex items-center gap-3 mb-6">
+                <hr className="flex-1 border-border" />
+                <span className="font-serif text-sm text-muted-foreground tracking-widest">
+                  影片
+                </span>
+                <hr className="flex-1 border-border" />
+              </div>
+              <div className="aspect-video bg-muted overflow-hidden rounded-sm">
+                <iframe
+                  src={post.embedUrl}
+                  title={post.title}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    border: "none",
+                  }}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          )}
+
           {/* ── Photo Gallery ── */}
-          {photoItems.length > 0 && (
+          {sortedMedia.length > 0 && (
             <div className="mt-14">
               <div className="flex items-center gap-3 mb-6">
                 <hr className="flex-1 border-border" />
@@ -365,11 +290,12 @@ export default function PostDetail() {
 
               {/* Masonry-style grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {photoItems.map((m, idx) => (
+                {sortedMedia.map((m, idx) => (
                   <div
                     key={m.id}
                     className={`overflow-hidden cursor-zoom-in group relative ${
-                      idx === 0 && photoItems.length >= 3 ? "col-span-2 md:col-span-1" : ""
+                      // Make first photo span 2 columns if there are 3+ photos
+                      idx === 0 && sortedMedia.length >= 3 ? "col-span-2 md:col-span-1" : ""
                     }`}
                     onClick={() => setLightboxIndex(idx)}
                   >
@@ -394,29 +320,27 @@ export default function PostDetail() {
               </div>
 
               <p className="text-xs text-muted-foreground mt-3 text-center">
-                點擊照片放大 · 共 {photoItems.length} 張
+                點擊照片放大 · 共 {sortedMedia.length} 張
               </p>
             </div>
           )}
 
           <div className="mt-16 pt-8 border-t border-border">
-            {(() => { const bl = getBackLink(post.type); return (
-              <Link href={bl.href}>
-                <span className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                  <ArrowLeft size={14} /> {bl.label}
-                </span>
-              </Link>
-            ); })()}
+            <Link href="/journal">
+              <span className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <ArrowLeft size={14} /> 更多旅行故事
+              </span>
+            </Link>
           </div>
         </div>
       </article>
 
       <Footer />
 
-      {/* Lightbox (photos only) */}
-      {lightboxIndex !== null && lightboxItems.length > 0 && (
+      {/* Lightbox */}
+      {lightboxIndex !== null && (
         <Lightbox
-          items={lightboxItems}
+          items={sortedMedia}
           initialIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
         />

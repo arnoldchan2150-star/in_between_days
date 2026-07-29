@@ -7,15 +7,12 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 
 // Public pages
 import Home from "./pages/Home";
-import Journal from "./pages/Journal";
-import PostDetail from "./pages/PostDetail";
 import Destinations from "./pages/Destinations";
-import Snow from "./pages/Snow";
+import PostDetail from "./pages/PostDetail";
 import Culture from "./pages/Culture";
+import Snow from "./pages/Snow";
 import Booklet from "./pages/Booklet";
 import About from "./pages/About";
-import EasternEurope from "./pages/EasternEurope";
-import KoktokaySkiGuide from "./pages/KoktokaySkiGuide";
 
 // Admin pages
 import AdminLogin from "./pages/AdminLogin";
@@ -31,15 +28,12 @@ function Router() {
     <Switch>
       {/* Public routes */}
       <Route path="/" component={Home} />
-      <Route path="/journal" component={Journal} />
-      <Route path="/journal/:slug" component={PostDetail} />
       <Route path="/destinations" component={Destinations} />
       <Route path="/destinations/:slug" component={PostDetail} />
+      <Route path="/culture" component={Culture} />
+      <Route path="/culture/:slug" component={PostDetail} />
       <Route path="/snow" component={Snow} />
       <Route path="/snow/:slug" component={PostDetail} />
-      <Route path="/culture" component={Culture} />
-      <Route path="/eastern-europe" component={EasternEurope} />
-      <Route path="/koktokay-ski-guide" component={KoktokaySkiGuide} />
       <Route path="/booklet" component={Booklet} />
       <Route path="/about" component={About} />
 

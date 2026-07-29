@@ -88,7 +88,7 @@ export default function AdminPosts() {
                       {post.category}
                     </td>
                     <td className="px-4 py-3 text-xs text-muted-foreground hidden md:table-cell">
-                      {post.type === "travel" ? "遊記" : "文化"}
+                      {post.type === "travel" ? "遊記" : post.type === "culture" ? "靈感" : "雪季"}
                     </td>
                     <td className="px-4 py-3">
                       <button

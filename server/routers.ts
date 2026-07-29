@@ -15,6 +15,7 @@ import {
   deleteBooklet,
   deletePost,
   deletePostMedia,
+  updatePostMedia,
   getAllBooklets,
   getAllPosts,
   getAllSubscribers,
@@ -177,6 +178,7 @@ export const appRouter = router({
           category: z.enum(["南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"]).optional(),
           type: z.enum(["travel", "culture", "snow"]).optional(),
           published: z.boolean().optional(),
+          embedUrl: z.string().optional().nullable(),
         })
       )
       .mutation(async ({ input }) => {
@@ -203,44 +205,16 @@ export const appRouter = router({
           dataBase64: z.string(),
           caption: z.string().optional(),
           sortOrder: z.number().optional(),
-          mediaType: z.enum(["image", "video"]).default("image"),
         })
       )
       .mutation(async ({ input }) => {
         const buffer = Buffer.from(input.dataBase64, "base64");
-        const folder = input.mediaType === "video" ? "videos" : "photos";
-        const key = `posts/${input.postId}/${folder}/${Date.now()}-${input.filename}`;
+        const key = `posts/${input.postId}/${Date.now()}-${input.filename}`;
         const { url } = await storagePut(key, buffer, input.contentType);
         await addPostMedia({
           postId: input.postId,
           url,
           storageKey: key,
-          mediaType: input.mediaType,
-          caption: input.caption,
-          sortOrder: input.sortOrder ?? 0,
-        });
-        return { url, key };
-      }),
-    uploadVideo: adminProcedure
-      .input(
-        z.object({
-          postId: z.number(),
-          filename: z.string(),
-          contentType: z.string(),
-          dataBase64: z.string(),
-          caption: z.string().optional(),
-          sortOrder: z.number().optional(),
-        })
-      )
-      .mutation(async ({ input }) => {
-        const buffer = Buffer.from(input.dataBase64, "base64");
-        const key = `posts/${input.postId}/videos/${Date.now()}-${input.filename}`;
-        const { url } = await storagePut(key, buffer, input.contentType);
-        await addPostMedia({
-          postId: input.postId,
-          url,
-          storageKey: key,
-          mediaType: "video",
           caption: input.caption,
           sortOrder: input.sortOrder ?? 0,
         });
@@ -250,6 +224,19 @@ export const appRouter = router({
       .input(z.object({ id: z.number() }))
       .mutation(async ({ input }) => {
         await deletePostMedia(input.id);
+        return { success: true };
+      }),
+    updateMedia: adminProcedure
+      .input(
+        z.object({
+          id: z.number(),
+          caption: z.string().optional().nullable(),
+          sortOrder: z.number().optional(),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updatePostMedia(id, data as any);
         return { success: true };
       }),
     uploadCover: adminProcedure
@@ -288,6 +275,7 @@ export const appRouter = router({
           coverUrl: z.string().optional(),
           fileUrl: z.string(),
           fileKey: z.string(),
+          embedUrl: z.string().optional().nullable(),
           active: z.boolean().default(true),
           sortOrder: z.number().default(0),
         })
@@ -305,6 +293,7 @@ export const appRouter = router({
           fileKey: z.string().optional(),
           active: z.boolean().optional(),
           sortOrder: z.number().optional(),
+          embedUrl: z.string().optional().nullable(),
         })
       )
       .mutation(async ({ input }) => {
@@ -329,19 +318,7 @@ export const appRouter = router({
       )
       .mutation(async ({ input }) => {
         const buffer = Buffer.from(input.dataBase64, "base64");
-        // S3 keys must be ASCII-safe; strip non-ASCII chars from the filename
-        // while preserving the extension so MIME detection still works.
-        const ext = input.filename.includes(".")
-          ? "." + input.filename.split(".").pop()!.replace(/[^a-zA-Z0-9]/g, "")
-          : "";
-        const safeName = input.filename
-          .replace(/\.[^.]+$/, "")          // strip extension
-          .replace(/[^\x20-\x7E]/g, "")     // remove non-ASCII
-          .replace(/[^a-zA-Z0-9._-]/g, "-") // replace unsafe chars
-          .replace(/-+/g, "-")              // collapse dashes
-          .replace(/^-|-$/g, "")            // trim leading/trailing dashes
-          || "file";                         // fallback if name becomes empty
-        const key = `booklets/${input.type}/${Date.now()}-${safeName}${ext}`;
+        const key = `booklets/${input.type}/${Date.now()}-${input.filename}`;
         const { url } = await storagePut(key, buffer, input.contentType);
         return { url, key };
       }),
