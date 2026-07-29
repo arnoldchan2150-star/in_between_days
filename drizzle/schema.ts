@@ -58,6 +58,7 @@ export const postMedia = mysqlTable("post_media", {
   postId: int("postId").notNull(),
   url: text("url").notNull(),
   storageKey: text("storageKey").notNull(),
+  mediaType: mysqlEnum("mediaType", ["image", "video"]).default("image").notNull(),
   caption: text("caption"),
   sortOrder: int("sortOrder").default(0),
   createdAt: timestamp("createdAt").defaultNow().notNull(),

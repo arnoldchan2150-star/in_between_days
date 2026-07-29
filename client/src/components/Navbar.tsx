@@ -4,8 +4,10 @@ import { Menu, X } from "lucide-react";
 
 const NAV_LINKS = [
   { href: "/destinations", label: "目的地遊記" },
-  { href: "/snow", label: "雪季映像" },
+  { href: "/eastern-europe", label: "東歐漫遊" },
   { href: "/culture", label: "靈感拾光" },
+  { href: "/snow", label: "雪季映像" },
+  { href: "/koktokay-ski-guide", label: "可可托海攻略" },
   { href: "/booklet", label: "旅遊小冊子" },
   { href: "/about", label: "關於我" },
 ];
