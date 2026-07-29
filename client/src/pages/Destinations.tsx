@@ -26,9 +26,9 @@ export default function Destinations() {
     setActiveCategory(cat);
   }, [search]);
 
-  // 混合展示 travel 和 culture 類型的文章
   const { data: posts, isLoading } = trpc.posts.list.useQuery({
     category: activeCategory === "全部" ? undefined : activeCategory,
+    type: "travel",
   });
 
   return (
@@ -39,12 +39,9 @@ export default function Destinations() {
       <section className="pt-32 pb-12 bg-background border-b border-border">
         <div className="container">
           <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-2">
-            Destinations & Journeys
+            Destinations
           </p>
-          <h1 className="font-serif text-3xl font-light">目的地遊記</h1>
-          <p className="text-sm text-muted-foreground mt-3">
-            探索世界各地的旅行故事與文化發現
-          </p>
+          <h1 className="font-serif text-3xl font-light">旅行目的地</h1>
         </div>
       </section>
 
@@ -85,10 +82,7 @@ export default function Destinations() {
           ) : posts && posts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {posts.map((post, i) => (
-                <Link
-                  key={post.id}
-                  href={`/destinations/${post.slug}`}
-                >
+                <Link key={post.id} href={`/journal/${post.slug}`}>
                   <article className="group cursor-pointer">
                     <div className="aspect-[4/3] overflow-hidden mb-4 bg-muted">
                       <img
@@ -97,14 +91,9 @@ export default function Destinations() {
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     </div>
-                    <div className="flex items-center gap-2 mb-2">
-                      <p className="text-xs text-muted-foreground tracking-widest">
-                        {post.category}
-                      </p>
-                      <span className="text-xs text-muted-foreground">
-                        {post.type === "travel" ? "🗺️ 遊記" : "📚 靈感"}
-                      </span>
-                    </div>
+                    <p className="text-xs text-muted-foreground tracking-widest mb-2">
+                      {post.category}
+                    </p>
                     <h2 className="font-serif text-lg font-light group-hover:text-muted-foreground transition-colors">
                       {post.title}
                     </h2>
@@ -116,10 +105,10 @@ export default function Destinations() {
             <div className="text-center py-24">
               <p className="font-serif text-xl text-muted-foreground font-light mb-2">
                 {activeCategory !== "全部"
-                  ? `尚無「${activeCategory}」的故事`
-                  : "故事即將上線"}
+                  ? `尚無「${activeCategory}」的旅行故事`
+                  : "旅行故事即將上線"}
               </p>
-              <p className="text-sm text-muted-foreground">內容正在整理中，敬請期待</p>
+              <p className="text-sm text-muted-foreground">遊記正在整理中，敬請期待</p>
             </div>
           )}
         </div>

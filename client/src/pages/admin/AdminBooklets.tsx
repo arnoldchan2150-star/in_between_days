@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import AdminLayout from "./AdminLayout";
 import { toast } from "sonner";
-import { Plus, Trash2, Upload, BookOpen, Eye, EyeOff, Pencil, X } from "lucide-react";
+import { Plus, Trash2, Upload, BookOpen, Eye, EyeOff } from "lucide-react";
 import ImageUploader from "@/components/ImageUploader";
 
 function fileToBase64(file: File): Promise<string> {
@@ -17,37 +17,21 @@ function fileToBase64(file: File): Promise<string> {
   });
 }
 
-type BookletForm = {
-  title: string;
-  slug: string;
-  description: string;
-  fileUrl: string;
-  fileKey: string;
-  coverUrl: string;
-  embedUrl: string;
-  active: boolean;
-  sortOrder: number;
-};
-
-const emptyForm: BookletForm = {
-  title: "",
-  slug: "",
-  description: "",
-  fileUrl: "",
-  fileKey: "",
-  coverUrl: "",
-  embedUrl: "",
-  active: true,
-  sortOrder: 0,
-};
-
 export default function AdminBooklets() {
   const { data: booklets, isLoading, refetch } = trpc.booklets.adminList.useQuery();
   const utils = trpc.useUtils();
 
   const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [form, setForm] = useState<BookletForm>(emptyForm);
+  const [form, setForm] = useState({
+    title: "",
+    slug: "",
+    description: "",
+    fileUrl: "",
+    fileKey: "",
+    coverUrl: "",
+    active: true,
+    sortOrder: 0,
+  });
   const [uploadingPdf, setUploadingPdf] = useState(false);
   const [uploadingCover, setUploadingCover] = useState(false);
   const pdfRef = useRef<HTMLInputElement>(null);
@@ -57,7 +41,7 @@ export default function AdminBooklets() {
     onSuccess: () => {
       toast.success("小冊子已建立");
       setShowForm(false);
-      setForm(emptyForm);
+      setForm({ title: "", slug: "", description: "", fileUrl: "", fileKey: "", coverUrl: "", active: true, sortOrder: 0 });
       refetch();
     },
     onError: (err) => toast.error(err.message),
@@ -72,10 +56,8 @@ export default function AdminBooklets() {
   const updateMutation = trpc.booklets.update.useMutation({
     onSuccess: () => {
       toast.success("更新成功");
-      setEditingId(null);
       utils.booklets.adminList.invalidate();
     },
-    onError: (err) => toast.error(err.message),
   });
 
   const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,42 +87,7 @@ export default function AdminBooklets() {
       toast.error("請填寫標題、Slug 並上傳 PDF");
       return;
     }
-    createMutation.mutate({
-      ...form,
-      embedUrl: form.embedUrl.trim() || null,
-    });
-  };
-
-  const handleEditStart = (b: typeof booklets extends (infer T)[] | undefined ? T : never) => {
-    if (!b) return;
-    setEditingId(b.id);
-    setForm({
-      title: b.title,
-      slug: b.slug,
-      description: b.description ?? "",
-      fileUrl: b.fileUrl ?? "",
-      fileKey: b.fileKey ?? "",
-      coverUrl: b.coverUrl ?? "",
-      embedUrl: (b as any).embedUrl ?? "",
-      active: b.active,
-      sortOrder: b.sortOrder,
-    });
-  };
-
-  const handleEditSave = () => {
-    if (!editingId) return;
-    updateMutation.mutate({
-      id: editingId,
-      title: form.title,
-      slug: form.slug,
-      description: form.description || null,
-      fileUrl: form.fileUrl,
-      fileKey: form.fileKey,
-      coverUrl: form.coverUrl || null,
-      embedUrl: form.embedUrl.trim() || null,
-      active: form.active,
-      sortOrder: form.sortOrder,
-    });
+    createMutation.mutate(form);
   };
 
   return (
@@ -149,7 +96,7 @@ export default function AdminBooklets() {
         <div className="flex items-center justify-between mb-8">
           <p className="text-sm text-muted-foreground">共 {booklets?.length ?? 0} 本小冊子</p>
           <button
-            onClick={() => { setShowForm((v) => !v); setEditingId(null); }}
+            onClick={() => setShowForm((v) => !v)}
             className="inline-flex items-center gap-2 bg-foreground text-background px-4 py-2 text-xs tracking-wider hover:bg-foreground/80 transition-colors"
           >
             <Plus size={12} /> 新增小冊子
@@ -157,77 +104,111 @@ export default function AdminBooklets() {
         </div>
 
         {/* Create Form */}
-        {showForm && !editingId && (
+        {showForm && (
           <div className="border border-border p-6 mb-8 bg-secondary/10">
             <h3 className="font-serif text-base font-light mb-5">新增小冊子</h3>
-            <BookletFormFields
-              form={form}
-              setForm={setForm}
-              uploadMutation={uploadMutation}
-              uploadingPdf={uploadingPdf}
-              setUploadingPdf={setUploadingPdf}
-              uploadingCover={uploadingCover}
-              setUploadingCover={setUploadingCover}
-              pdfRef={pdfRef}
-              handlePdfUpload={handlePdfUpload}
-            />
-            <div className="flex gap-3 mt-4">
-              <button
-                type="button"
-                onClick={handleCreate}
-                disabled={createMutation.isPending}
-                className="bg-foreground text-background px-5 py-2 text-xs tracking-widest hover:bg-foreground/80 transition-colors disabled:opacity-50"
-              >
-                {createMutation.isPending ? "建立中..." : "建立小冊子"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setShowForm(false)}
-                className="border border-border px-5 py-2 text-xs tracking-widest hover:border-foreground transition-colors"
-              >
-                取消
-              </button>
-            </div>
-          </div>
-        )}
+            <form onSubmit={handleCreate} className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">標題 *</label>
+                  <input
+                    type="text"
+                    value={form.title}
+                    onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                    required
+                    className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground"
+                    placeholder="熊野古道旅遊指南"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">Slug *</label>
+                  <input
+                    type="text"
+                    value={form.slug}
+                    onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
+                    required
+                    className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground font-mono"
+                    placeholder="kumano-kodo"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">描述</label>
+                <textarea
+                  value={form.description}
+                  onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
+                  rows={2}
+                  className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground resize-none"
+                  placeholder="小冊子簡介"
+                />
+              </div>
 
-        {/* Edit Form */}
-        {editingId && (
-          <div className="border border-border p-6 mb-8 bg-secondary/10">
-            <div className="flex items-center justify-between mb-5">
-              <h3 className="font-serif text-base font-light">編輯小冊子</h3>
-              <button onClick={() => setEditingId(null)} className="text-muted-foreground hover:text-foreground">
-                <X size={16} />
-              </button>
-            </div>
-            <BookletFormFields
-              form={form}
-              setForm={setForm}
-              uploadMutation={uploadMutation}
-              uploadingPdf={uploadingPdf}
-              setUploadingPdf={setUploadingPdf}
-              uploadingCover={uploadingCover}
-              setUploadingCover={setUploadingCover}
-              pdfRef={pdfRef}
-              handlePdfUpload={handlePdfUpload}
-            />
-            <div className="flex gap-3 mt-4">
-              <button
-                type="button"
-                onClick={handleEditSave}
-                disabled={updateMutation.isPending}
-                className="bg-foreground text-background px-5 py-2 text-xs tracking-widest hover:bg-foreground/80 transition-colors disabled:opacity-50"
-              >
-                {updateMutation.isPending ? "儲存中..." : "儲存變更"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setEditingId(null)}
-                className="border border-border px-5 py-2 text-xs tracking-widest hover:border-foreground transition-colors"
-              >
-                取消
-              </button>
-            </div>
+              {/* PDF + Cover 並排 */}
+              <div className="grid grid-cols-2 gap-4 items-start">
+                {/* PDF 上傳 */}
+                <div>
+                  <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">PDF 檔案 *</label>
+                  {form.fileUrl ? (
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground border border-border px-3 py-2">
+                      <BookOpen size={12} />
+                      <span className="truncate flex-1">PDF 已上傳</span>
+                      <button
+                        type="button"
+                        onClick={() => setForm((f) => ({ ...f, fileUrl: "", fileKey: "" }))}
+                        className="text-destructive hover:underline flex-shrink-0"
+                      >
+                        移除
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => pdfRef.current?.click()}
+                      disabled={uploadingPdf}
+                      className="w-full flex items-center justify-center gap-2 border border-dashed border-border px-4 py-6 text-xs text-muted-foreground hover:border-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                    >
+                      <Upload size={14} />
+                      {uploadingPdf ? "上傳中..." : "點擊上傳 PDF"}
+                    </button>
+                  )}
+                  <input ref={pdfRef} type="file" accept=".pdf" onChange={handlePdfUpload} className="hidden" />
+                </div>
+
+                {/* 封面圖片 — 使用 ImageUploader */}
+                <ImageUploader
+                  label="封面圖片"
+                  currentUrl={form.coverUrl}
+                  uploading={uploadingCover}
+                  aspectRatio="3/4"
+                  onUpload={async (params) => {
+                    setUploadingCover(true);
+                    try {
+                      return await uploadMutation.mutateAsync({ ...params, type: "cover" });
+                    } finally {
+                      setUploadingCover(false);
+                    }
+                  }}
+                  onUploaded={(url) => setForm((f) => ({ ...f, coverUrl: url }))}
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  disabled={createMutation.isPending}
+                  className="bg-foreground text-background px-5 py-2 text-xs tracking-widest hover:bg-foreground/80 transition-colors disabled:opacity-50"
+                >
+                  {createMutation.isPending ? "建立中..." : "建立小冊子"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="border border-border px-5 py-2 text-xs tracking-widest hover:border-foreground transition-colors"
+                >
+                  取消
+                </button>
+              </div>
+            </form>
           </div>
         )}
 
@@ -255,24 +236,11 @@ export default function AdminBooklets() {
                   {b.description && (
                     <p className="text-xs text-muted-foreground mt-1 line-clamp-1">{b.description}</p>
                   )}
-                  {(b as any).embedUrl && (
-                    <p className="text-xs text-muted-foreground mt-0.5 font-mono truncate">
-                      🔗 {(b as any).embedUrl}
-                    </p>
-                  )}
                 </div>
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
-                    onClick={() => handleEditStart(b)}
-                    className="p-1 text-muted-foreground hover:text-foreground transition-colors"
-                    title="編輯"
-                  >
-                    <Pencil size={13} />
-                  </button>
-                  <button
                     onClick={() => updateMutation.mutate({ id: b.id, active: !b.active })}
                     className={`text-xs px-2 py-0.5 ${b.active ? "text-foreground" : "text-muted-foreground"}`}
-                    title={b.active ? "隱藏" : "顯示"}
                   >
                     {b.active ? <Eye size={14} /> : <EyeOff size={14} />}
                   </button>
@@ -281,7 +249,6 @@ export default function AdminBooklets() {
                       if (confirm(`確定刪除「${b.title}」？`)) deleteMutation.mutate({ id: b.id });
                     }}
                     className="p-1 text-muted-foreground hover:text-destructive transition-colors"
-                    title="刪除"
                   >
                     <Trash2 size={13} />
                   </button>
@@ -296,133 +263,5 @@ export default function AdminBooklets() {
         )}
       </div>
     </AdminLayout>
-  );
-}
-
-// ── Shared form fields component ──────────────────────────────────────────────
-function BookletFormFields({
-  form,
-  setForm,
-  uploadMutation,
-  uploadingPdf,
-  setUploadingPdf,
-  uploadingCover,
-  setUploadingCover,
-  pdfRef,
-  handlePdfUpload,
-}: {
-  form: BookletForm;
-  setForm: React.Dispatch<React.SetStateAction<BookletForm>>;
-  uploadMutation: ReturnType<typeof trpc.booklets.uploadFile.useMutation>;
-  uploadingPdf: boolean;
-  setUploadingPdf: (v: boolean) => void;
-  uploadingCover: boolean;
-  setUploadingCover: (v: boolean) => void;
-  pdfRef: React.RefObject<HTMLInputElement | null>;
-  handlePdfUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">標題 *</label>
-          <input
-            type="text"
-            value={form.title}
-            onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-            required
-            className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground"
-            placeholder="熊野古道旅遊指南"
-          />
-        </div>
-        <div>
-          <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">Slug *</label>
-          <input
-            type="text"
-            value={form.slug}
-            onChange={(e) => setForm((f) => ({ ...f, slug: e.target.value }))}
-            required
-            className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground font-mono"
-            placeholder="kumano-kodo"
-          />
-        </div>
-      </div>
-      <div>
-        <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">描述</label>
-        <textarea
-          value={form.description}
-          onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-          rows={2}
-          className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground resize-none"
-          placeholder="小冊子簡介"
-        />
-      </div>
-
-      {/* Embed URL */}
-      <div>
-        <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">
-          嵌入網址（embedUrl）
-        </label>
-        <input
-          type="url"
-          value={form.embedUrl}
-          onChange={(e) => setForm((f) => ({ ...f, embedUrl: e.target.value }))}
-          className="w-full border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground font-mono"
-          placeholder="https://example.com（填入後小冊子頁面將顯示「開啟互動式旅遊指南」按鈕）"
-        />
-        <p className="text-xs text-muted-foreground mt-1">
-          填入後，小冊子頁面將顯示「開啟互動式旅遊指南」按鈕，點擊可全螢幕嵌入外部網站。
-        </p>
-      </div>
-
-      {/* PDF + Cover 並排 */}
-      <div className="grid grid-cols-2 gap-4 items-start">
-        {/* PDF 上傳 */}
-        <div>
-          <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">PDF 檔案 *</label>
-          {form.fileUrl ? (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground border border-border px-3 py-2">
-              <BookOpen size={12} />
-              <span className="truncate flex-1">PDF 已上傳</span>
-              <button
-                type="button"
-                onClick={() => setForm((f) => ({ ...f, fileUrl: "", fileKey: "" }))}
-                className="text-destructive hover:underline flex-shrink-0"
-              >
-                移除
-              </button>
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={() => pdfRef.current?.click()}
-              disabled={uploadingPdf}
-              className="w-full flex items-center justify-center gap-2 border border-dashed border-border px-4 py-6 text-xs text-muted-foreground hover:border-foreground hover:text-foreground transition-colors disabled:opacity-50"
-            >
-              <Upload size={14} />
-              {uploadingPdf ? "上傳中..." : "點擊上傳 PDF"}
-            </button>
-          )}
-          <input ref={pdfRef} type="file" accept=".pdf" onChange={handlePdfUpload} className="hidden" />
-        </div>
-
-        {/* 封面圖片 — 使用 ImageUploader */}
-        <ImageUploader
-          label="封面圖片"
-          currentUrl={form.coverUrl}
-          uploading={uploadingCover}
-          aspectRatio="3/4"
-          onUpload={async (params) => {
-            setUploadingCover(true);
-            try {
-              return await uploadMutation.mutateAsync({ ...params, type: "cover" });
-            } finally {
-              setUploadingCover(false);
-            }
-          }}
-          onUploaded={(url) => setForm((f) => ({ ...f, coverUrl: url }))}
-        />
-      </div>
-    </div>
   );
 }

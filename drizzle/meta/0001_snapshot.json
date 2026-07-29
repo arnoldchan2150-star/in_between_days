@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "badefe8e-3b9e-408b-99d2-306b1073eab7",
-  "prevId": "dd986b0f-7ac1-4e7b-8238-24ea267f807d",
+  "id": "8141980e-c230-4092-ba74-53b2df39abf1",
+  "prevId": "17845bc9-5553-4802-85db-b8f72b54bf8c",
   "tables": {
     "about_page": {
       "name": "about_page",
@@ -70,68 +70,6 @@
         }
       },
       "uniqueConstraints": {},
-      "checkConstraint": {}
-    },
-    "admin_credentials": {
-      "name": "admin_credentials",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": true
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(320)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "passwordHash": {
-          "name": "passwordHash",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "createdAt": {
-          "name": "createdAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": "(now())"
-        },
-        "updatedAt": {
-          "name": "updatedAt",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "onUpdate": true,
-          "default": "(now())"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {
-        "admin_credentials_id": {
-          "name": "admin_credentials_id",
-          "columns": [
-            "id"
-          ]
-        }
-      },
-      "uniqueConstraints": {
-        "admin_credentials_email_unique": {
-          "name": "admin_credentials_email_unique",
-          "columns": [
-            "email"
-          ]
-        }
-      },
       "checkConstraint": {}
     },
     "booklet_subscribers": {
@@ -211,22 +149,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "slug": {
-          "name": "slug",
-          "type": "varchar(128)",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
         "description": {
           "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "coverUrl": {
-          "name": "coverUrl",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -237,22 +161,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "('')"
+          "autoincrement": false
         },
         "fileKey": {
           "name": "fileKey",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "('')"
-        },
-        "embedUrl": {
-          "name": "embedUrl",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
           "autoincrement": false
         },
         "active": {
@@ -262,14 +177,6 @@
           "notNull": true,
           "autoincrement": false,
           "default": true
-        },
-        "sortOrder": {
-          "name": "sortOrder",
-          "type": "int",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false,
-          "default": 0
         },
         "createdAt": {
           "name": "createdAt",
@@ -299,14 +206,7 @@
           ]
         }
       },
-      "uniqueConstraints": {
-        "booklets_slug_unique": {
-          "name": "booklets_slug_unique",
-          "columns": [
-            "slug"
-          ]
-        }
-      },
+      "uniqueConstraints": {},
       "checkConstraint": {}
     },
     "post_media": {
@@ -438,7 +338,7 @@
         },
         "type": {
           "name": "type",
-          "type": "enum('travel','culture','snow')",
+          "type": "enum('travel','culture')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -455,13 +355,6 @@
         "publishedAt": {
           "name": "publishedAt",
           "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "embedUrl": {
-          "name": "embedUrl",
-          "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

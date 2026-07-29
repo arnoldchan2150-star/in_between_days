@@ -22,9 +22,9 @@ export default function Footer() {
             </p>
             <div className="flex flex-col gap-2.5">
               {[
-                { href: "/destinations", label: "目的地遊記" },
-                { href: "/culture", label: "靈感拾光" },
-                { href: "/snow", label: "雪季映像" },
+                { href: "/journal", label: "旅行遊記" },
+                { href: "/destinations", label: "目的地" },
+                { href: "/culture", label: "電影 × 書籍" },
                 { href: "/booklet", label: "旅遊小冊子" },
                 { href: "/about", label: "關於我" },
               ].map((link) => (

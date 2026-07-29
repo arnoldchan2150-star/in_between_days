@@ -53,42 +53,8 @@
 - [x] 發布為永久網站（請點擊管理介面的 Publish 按鈕）
 
 ## 圖片上傳功能（從網址改為本地上傳）
-- [x] 後端：建立 upload.image tRPC 路由，接收 base64 並上傳至 S3
-- [x] 前端：建立 ImageUploader 共用元件（拖放 / 點擊選擇）
-- [x] AdminPostEditor：封面圖改為 ImageUploader
-- [x] AdminBooklets：小冊子封面改為 ImageUploader
-- [x] AdminAbout：個人照片改為 ImageUploader
-
-## 文章多圖相簿功能
-- [x] 確認 post_media 資料表與後端 API
-- [x] 後台文章編輯器加入多圖上傳相簿管理（新增、排序、刪除）
-- [x] 前台 PostDetail 頁面以相簿方式展示文章照片
-
-## 後台 embedUrl 輸入欄
-- [x] AdminPostEditor：加入「嵌入網址（embedUrl）」輸入欄，支援從後台設定 iframe 嵌入網址
-- [x] AdminBooklets：加入「嵌入網址（embedUrl）」輸入欄，支援從後台設定互動式旅遊指南嵌入網址
-- [x] AdminBooklets：加入完整編輯功能（Pencil 按鈕開啟編輯表單）
-- [x] 後端 posts.update 路由加入 embedUrl 欄位支援
-- [x] 後端 booklets.create 與 booklets.update 路由加入 embedUrl 欄位支援
-
-## 相簿 caption 儲存修復
-- [x] 後端新增 posts.updateMedia tRPC 路由（更新 caption / sortOrder）
-- [x] 後端新增 updatePostMedia DB helper
-- [x] AdminPostEditor：加入「儲存照片說明」按鈕，點擊後將所有 caption 持久化至資料庫
-
-
-## 頁面重構與新功能
-- [x] 將「電影 X 書籍」頁面重新命名為「靈感拾光」
-- [x] 整合「目的地」和「遊記」為「目的地遊記」頁面（混合展示）
-- [x] 新增「雪季映像」頁面，展示滑雪相關內容
-- [x] 更新資料庫 schema，支援新的內容分類（culture/travel/snow）
-- [x] 實作「雪季映像」頁面的影片/文章分類篩選功能
-- [x] 支援 YouTube 嵌入
-- [ ] 支援自主上傳影片（后端上傳路由、前端上傳組件）
-
-## 雪季映像頁面重新設計
-- [x] 改為左圖右文排版（影片/圖片在左，文字說明在右）
-- [x] 支援頁面內嵌入影片播放（非全螢幕）
-- [x] 支援同一篇文章既有文字又有影片（影片在上方，文字在下方）
-- [x] 更新後台管理介面，支援新的內容管理（AdminPosts 顯示新的类型）
-- [x] 更新前台導覽結構
+- [ ] 後端：建立 upload.image tRPC 路由，接收 base64 並上傳至 S3
+- [ ] 前端：建立 ImageUploader 共用元件（拖放 / 點擊選擇）
+- [ ] AdminPostEditor：封面圖改為 ImageUploader
+- [ ] AdminBooklets：小冊子封面改為 ImageUploader
+- [ ] AdminAbout：個人照片改為 ImageUploader

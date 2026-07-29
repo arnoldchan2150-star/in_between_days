@@ -23,7 +23,7 @@ export default function Culture() {
           <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-2">
             Culture
           </p>
-          <h1 className="font-serif text-3xl font-light">靈感拾光</h1>
+          <h1 className="font-serif text-3xl font-light">電影 × 書籍</h1>
           <p className="text-sm text-muted-foreground mt-3 max-w-lg leading-relaxed">
             旅行不只是移動，更是一種閱讀。那些讓我想起某個城市的電影、某段旅程的書，
             以及旅途中的文字碎片。
@@ -51,7 +51,7 @@ export default function Culture() {
           ) : posts && posts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
               {posts.map((post, i) => (
-                <Link key={post.id} href={`/culture/${post.slug}`}>
+                <Link key={post.id} href={`/journal/${post.slug}`}>
                   <article className="group cursor-pointer flex gap-6">
                     <div className="w-32 h-44 flex-shrink-0 overflow-hidden bg-muted">
                       <img
@@ -88,7 +88,7 @@ export default function Culture() {
           ) : (
             <div className="text-center py-24">
               <p className="font-serif text-xl text-muted-foreground font-light mb-2">
-                靈感拾光即將上線
+                文化專欄即將上線
               </p>
               <p className="text-sm text-muted-foreground">
                 電影與書籍的旅行筆記正在整理中，敬請期待

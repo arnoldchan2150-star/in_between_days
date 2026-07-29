@@ -157,12 +157,6 @@ export async function deletePostMedia(id: number): Promise<void> {
   await db.delete(postMedia).where(eq(postMedia.id, id));
 }
 
-export async function updatePostMedia(id: number, data: Partial<InsertPostMedia>): Promise<void> {
-  const db = await getDb();
-  if (!db) throw new Error("DB unavailable");
-  await db.update(postMedia).set(data).where(eq(postMedia.id, id));
-}
-
 // ── Booklets ───────────────────────────────────────────────────────────────
 export async function getAllBooklets(): Promise<Booklet[]> {
   const db = await getDb();
