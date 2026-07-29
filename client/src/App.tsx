@@ -14,8 +14,7 @@ import Snow from "./pages/Snow";
 import Culture from "./pages/Culture";
 import Booklet from "./pages/Booklet";
 import About from "./pages/About";
-import EasternEurope from "./pages/EasternEurope";
-import KoktokaySkiGuide from "./pages/KoktokaySkiGuide";
+
 
 // Admin pages
 import AdminLogin from "./pages/AdminLogin";
@@ -38,8 +37,6 @@ function Router() {
       <Route path="/snow" component={Snow} />
       <Route path="/snow/:slug" component={PostDetail} />
       <Route path="/culture" component={Culture} />
-      <Route path="/eastern-europe" component={EasternEurope} />
-      <Route path="/koktokay-ski-guide" component={KoktokaySkiGuide} />
       <Route path="/booklet" component={Booklet} />
       <Route path="/about" component={About} />
 
