@@ -3,8 +3,7 @@ import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { toast } from "sonner";
-import { Download, BookOpen, ExternalLink, ArrowLeft, Eye, MapPin, Route } from "lucide-react";
+import { BookOpen, ExternalLink, ArrowLeft, Eye, MapPin, Route } from "lucide-react";
 
 const BOOKLET_META: Record<string, { destination: string; journey: string; format: string }> = {
   "mt-kinabalu-guide": {
@@ -30,9 +29,6 @@ function getBookletMeta(slug: string, hasEmbed: boolean) {
 export default function Booklet() {
   const { data: booklets, isLoading } = trpc.booklets.publicList.useQuery();
   const [activeTab, setActiveTab] = useState(0);
-  const [form, setForm] = useState({ name: "", email: "" });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState<Record<string, boolean>>({});
   const [embedOpen, setEmbedOpen] = useState(false);
 
   // 動態計算 iframe 高度
@@ -58,35 +54,7 @@ export default function Booklet() {
     setEmbedOpen(false);
   };
 
-  const subscribe = trpc.booklets.subscribe.useMutation({
-    onSuccess: () => {
-      const slug = booklets?.[activeTab]?.slug ?? "";
-      setSubmitted((prev) => ({ ...prev, [slug]: true }));
-      setForm({ name: "", email: "" });
-      toast.success("訂閱成功！小冊子已寄送至您的信箱。");
-    },
-    onError: (err) => {
-      toast.error(err.message || "訂閱失敗，請稍後再試");
-    },
-  });
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.name.trim() || !form.email.trim()) return;
-    setSubmitting(true);
-    try {
-      await subscribe.mutateAsync({
-        name: form.name,
-        email: form.email,
-        bookletSlug: booklets?.[activeTab]?.slug,
-      });
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
   const activeBooklet = booklets?.[activeTab];
-  const isSubmitted = activeBooklet ? submitted[activeBooklet.slug] : false;
   const activeMeta = activeBooklet
     ? getBookletMeta(activeBooklet.slug, Boolean(activeBooklet.embedUrl))
     : null;
@@ -275,67 +243,6 @@ export default function Booklet() {
                     </div>
                   )}
 
-                  <div className="bg-secondary/30 border border-border p-6">
-                    {isSubmitted ? (
-                      <div className="text-center py-4">
-                        <Download size={32} className="text-muted-foreground mx-auto mb-3" />
-                        <p className="font-serif text-lg font-light mb-1">
-                          小冊子已寄出！
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          請檢查您的信箱，PDF 已寄送至您填寫的地址。
-                        </p>
-                      </div>
-                    ) : (
-                      <>
-                        <p className="text-xs text-muted-foreground tracking-wider mb-4">
-                          免費領取 PDF 小冊子
-                        </p>
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                          <div>
-                            <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">
-                              您的姓名
-                            </label>
-                            <input
-                              type="text"
-                              value={form.name}
-                              onChange={(e) =>
-                                setForm((f) => ({ ...f, name: e.target.value }))
-                              }
-                              placeholder="請輸入姓名"
-                              required
-                              className="w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors"
-                            />
-                          </div>
-                          <div>
-                            <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">
-                              電子信箱
-                            </label>
-                            <input
-                              type="email"
-                              value={form.email}
-                              onChange={(e) =>
-                                setForm((f) => ({ ...f, email: e.target.value }))
-                              }
-                              placeholder="your@email.com"
-                              required
-                              className="w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors"
-                            />
-                          </div>
-                          <button
-                            type="submit"
-                            disabled={submitting}
-                            className="w-full bg-foreground text-background py-3 text-xs tracking-widest hover:bg-foreground/80 transition-colors disabled:opacity-50"
-                          >
-                            {submitting ? "寄送中..." : "立即免費領取"}
-                          </button>
-                          <p className="text-xs text-muted-foreground/60 text-center">
-                            您的信箱不會被用於任何商業用途
-                          </p>
-                        </form>
-                      </>
-                    )}
-                  </div>
                 </div>
               </div>
             )}
