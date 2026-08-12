@@ -306,14 +306,14 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-3">
-                旅行 × 電影 × 書籍
+                靈感拾光
               </p>
               <h2 className="font-serif text-2xl font-light mb-4">
-                用閱讀延伸旅行的邊界
+                靈感拾光
               </h2>
               <p className="text-sm text-muted-foreground leading-relaxed mb-6">
-                旅行不只是移動，更是一種閱讀。在這裡，我分享那些讓我想起某個城市的電影、
-                某段旅程的書，以及旅途中的文字碎片。
+                有時候，我只想用一本書、一部電影、一杯咖啡、一個情節去記住一個地方。
+                記不起，記得起，不過是我旅途中的一些小小碎片。
               </p>
               <Link href="/culture">
                 <span className="inline-flex items-center gap-2 border border-foreground px-6 py-2.5 text-xs tracking-widest hover:bg-foreground hover:text-background transition-colors cursor-pointer">
@@ -323,7 +323,7 @@ export default function Home() {
             </div>
             <div className="aspect-[4/3] overflow-hidden">
               <img
-                src="https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=75&auto=format&fit=crop"
+                src="/manus-storage/Scan9609_147afab2.webp"
                 alt="書籍與旅行"
                 className="w-full h-full object-cover"
               />

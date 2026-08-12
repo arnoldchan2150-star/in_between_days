@@ -35,8 +35,8 @@ export default function Culture() {
           </p>
           <h1 className="font-serif text-3xl font-light">靈感拾光</h1>
           <p className="text-sm text-muted-foreground mt-3 max-w-lg leading-relaxed">
-            旅行不只是移動，更是一種閱讀。那些讓我想起某個城市的電影、某段旅程的書，
-            以及旅途中的文字碎片。
+            有時候，我只想用一本書、一部電影、一杯咖啡、一個情節去記住一個地方。
+            記不起，記得起，不過是我旅途中的一些小小碎片。
           </p>
         </div>
       </section>
