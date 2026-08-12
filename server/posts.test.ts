@@ -96,3 +96,20 @@ describe("post media upload", () => {
     ).rejects.toThrow();
   });
 });
+
+
+describe("site subscribers router", () => {
+  it("validates email format", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    await expect(
+      caller.subscribers.siteSubscribe({ name: "Test", email: "not-an-email" })
+    ).rejects.toThrow();
+  });
+
+  it("rejects an empty subscriber name", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    await expect(
+      caller.subscribers.siteSubscribe({ name: "   ", email: "reader@example.com" })
+    ).rejects.toThrow();
+  });
+});

@@ -1,5 +1,7 @@
 import { Link } from "wouter";
-import { ArrowRight } from "lucide-react";
+import { useState, type FormEvent } from "react";
+import { ArrowRight, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -46,8 +48,25 @@ const FALLBACK_IMGS = [
 
 export default function Home() {
   const { data: posts, isLoading: postsLoading } = trpc.posts.list.useQuery({});
+  const [showSubscribeForm, setShowSubscribeForm] = useState(false);
+  const [subscriberName, setSubscriberName] = useState("");
+  const [subscriberEmail, setSubscriberEmail] = useState("");
+  const subscribeMutation = trpc.subscribers.siteSubscribe.useMutation({
+    onSuccess: () => {
+      toast.success("訂閱成功，日後有新的旅程會透過 Email 與你分享。");
+      setSubscriberName("");
+      setSubscriberEmail("");
+      setShowSubscribeForm(false);
+    },
+    onError: (error) => toast.error(error.message || "訂閱失敗，請稍後再試。"),
+  });
 
   const latestPosts = posts?.slice(0, 3) ?? [];
+
+  const handleSubscribe = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    subscribeMutation.mutate({ name: subscriberName, email: subscriberEmail });
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -208,26 +227,75 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Booklet CTA */}
+      {/* Newsletter CTA */}
       <section className="py-20 bg-secondary/30">
         <div className="container">
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-3">
-              免費旅遊小冊子
+              立即訂閱
             </p>
             <h2 className="font-serif text-2xl font-light mb-4">
-              帶走一份旅行的溫度
+              把新的旅程寄到你的信箱
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-              精心整理的旅行指南，收錄行程規劃、在地推薦與旅行心得，
+              訂閱 In-Between Days，日後有新的遊記、滑雪攻略與旅遊靈感，
               <br />
-              留下你的信箱，即刻免費寄送。
+              我會透過 Email 與你分享。
             </p>
-            <Link href="/booklet">
-              <span className="inline-flex items-center gap-2 bg-foreground text-background px-8 py-3 text-xs tracking-widest hover:bg-foreground/80 transition-colors cursor-pointer">
-                立即領取 <ArrowRight size={14} />
-              </span>
-            </Link>
+
+            {!showSubscribeForm ? (
+              <button
+                type="button"
+                onClick={() => setShowSubscribeForm(true)}
+                className="inline-flex items-center gap-2 bg-foreground text-background px-8 py-3 text-xs tracking-widest hover:bg-foreground/80 transition-colors"
+              >
+                立即訂閱 <ArrowRight size={14} />
+              </button>
+            ) : (
+              <form onSubmit={handleSubscribe} className="max-w-md mx-auto text-left space-y-3">
+                <label className="block">
+                  <span className="sr-only">姓名</span>
+                  <input
+                    type="text"
+                    value={subscriberName}
+                    onChange={(event) => setSubscriberName(event.target.value)}
+                    placeholder="你的姓名"
+                    required
+                    maxLength={128}
+                    className="w-full border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-foreground"
+                  />
+                </label>
+                <label className="block">
+                  <span className="sr-only">Email</span>
+                  <input
+                    type="email"
+                    value={subscriberEmail}
+                    onChange={(event) => setSubscriberEmail(event.target.value)}
+                    placeholder="你的 Email"
+                    required
+                    maxLength={320}
+                    className="w-full border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-foreground"
+                  />
+                </label>
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                  <button
+                    type="submit"
+                    disabled={subscribeMutation.isPending}
+                    className="inline-flex items-center justify-center gap-2 bg-foreground text-background px-8 py-3 text-xs tracking-widest hover:bg-foreground/80 transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {subscribeMutation.isPending && <Loader2 size={14} className="animate-spin" />}
+                    {subscribeMutation.isPending ? "訂閱中" : "立即訂閱"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowSubscribeForm(false)}
+                    className="px-4 py-3 text-xs tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    取消
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       </section>

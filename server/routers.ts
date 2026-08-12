@@ -9,6 +9,7 @@ import { ENV } from "./_core/env";
 import { storagePut } from "./storage";
 import {
   addPostMedia,
+  addSiteSubscriber,
   addSubscriber,
   createBooklet,
   createPost,
@@ -18,6 +19,7 @@ import {
   updatePostMedia,
   getAllBooklets,
   getAllPosts,
+  getAllSiteSubscribers,
   getAllSubscribers,
   getAboutPage,
   getBookletById,
@@ -374,6 +376,27 @@ export const appRouter = router({
   // ── Subscribers ───────────────────────────────────────────────────────────
   subscribers: router({
     list: adminProcedure.query(() => getAllSubscribers()),
+    siteList: adminProcedure.query(() => getAllSiteSubscribers()),
+    siteSubscribe: publicProcedure
+      .input(
+        z.object({
+          name: z.string().trim().min(1).max(128),
+          email: z.string().trim().email().max(320),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const email = input.email.trim().toLowerCase();
+        try {
+          const subscriber = await addSiteSubscriber({ name: input.name.trim(), email });
+          return { success: true, subscriber };
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          if (message.includes("Duplicate entry") || message.includes("ER_DUP_ENTRY")) {
+            throw new TRPCError({ code: "CONFLICT", message: "這個 Email 已經訂閱過了" });
+          }
+          throw error;
+        }
+      }),
   }),
 
   // ── About ─────────────────────────────────────────────────────────────────

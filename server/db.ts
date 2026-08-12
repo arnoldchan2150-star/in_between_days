@@ -9,6 +9,7 @@ import {
   InsertBookletSubscriber,
   InsertPost,
   InsertPostMedia,
+  InsertSiteSubscriber,
   InsertUser,
   Post,
   PostMedia,
@@ -18,6 +19,7 @@ import {
   booklets,
   postMedia,
   posts,
+  siteSubscribers,
   users,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
@@ -251,6 +253,28 @@ export async function getAllSubscribers() {
     .leftJoin(booklets, eq(booklets.id, bookletSubscribers.bookletId))
     .orderBy(desc(bookletSubscribers.createdAt));
   return rows;
+}
+
+// ── Site Update Subscribers ────────────────────────────────────────────────
+export async function addSiteSubscriber(data: InsertSiteSubscriber): Promise<{ id: number; name: string; email: string }> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.insert(siteSubscribers).values(data);
+  const result = await db
+    .select({ id: siteSubscribers.id, name: siteSubscribers.name, email: siteSubscribers.email })
+    .from(siteSubscribers)
+    .where(eq(siteSubscribers.email, data.email))
+    .limit(1);
+  return result[0]!;
+}
+
+export async function getAllSiteSubscribers() {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(siteSubscribers)
+    .orderBy(desc(siteSubscribers.createdAt));
 }
 
 // ── About Page ─────────────────────────────────────────────────────────────

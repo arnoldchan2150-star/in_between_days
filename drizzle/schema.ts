@@ -99,6 +99,19 @@ export const bookletSubscribers = mysqlTable("booklet_subscribers", {
 export type BookletSubscriber = typeof bookletSubscribers.$inferSelect;
 export type InsertBookletSubscriber = typeof bookletSubscribers.$inferInsert;
 
+// ── Site Update Subscribers ────────────────────────────────────────────────
+export const siteSubscribers = mysqlTable("site_subscribers", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 128 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  unsubscribedAt: timestamp("unsubscribedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type SiteSubscriber = typeof siteSubscribers.$inferSelect;
+export type InsertSiteSubscriber = typeof siteSubscribers.$inferInsert;
+
 // ── About Page ─────────────────────────────────────────────────────────────
 export const aboutPage = mysqlTable("about_page", {
   id: int("id").autoincrement().primaryKey(),
