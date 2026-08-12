@@ -99,11 +99,14 @@ export const bookletSubscribers = mysqlTable("booklet_subscribers", {
 export type BookletSubscriber = typeof bookletSubscribers.$inferSelect;
 export type InsertBookletSubscriber = typeof bookletSubscribers.$inferInsert;
 
-// ── Site Update Subscribers ────────────────────────────────────────────────
+// ── Site Update Subscribers & Newsletters ──────────────────────────────────
 export const siteSubscribers = mysqlTable("site_subscribers", {
   id: int("id").autoincrement().primaryKey(),
   name: varchar("name", { length: 128 }).notNull(),
   email: varchar("email", { length: 320 }).notNull().unique(),
+  confirmed: boolean("confirmed").default(false).notNull(),
+  confirmationToken: varchar("confirmationToken", { length: 128 }),
+  unsubscribeToken: varchar("unsubscribeToken", { length: 128 }),
   unsubscribedAt: timestamp("unsubscribedAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -111,6 +114,28 @@ export const siteSubscribers = mysqlTable("site_subscribers", {
 
 export type SiteSubscriber = typeof siteSubscribers.$inferSelect;
 export type InsertSiteSubscriber = typeof siteSubscribers.$inferInsert;
+
+export const siteNewsletters = mysqlTable("site_newsletters", {
+  id: int("id").autoincrement().primaryKey(),
+  subject: varchar("subject", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  sentAt: timestamp("sentAt"),
+  recipientCount: int("recipientCount").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SiteNewsletter = typeof siteNewsletters.$inferSelect;
+export type InsertSiteNewsletter = typeof siteNewsletters.$inferInsert;
+
+export const siteSettings = mysqlTable("site_settings", {
+  id: int("id").autoincrement().primaryKey(),
+  settingKey: varchar("settingKey", { length: 128 }).notNull().unique(),
+  settingValue: text("settingValue").notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type SiteSetting = typeof siteSettings.$inferSelect;
+export type InsertSiteSetting = typeof siteSettings.$inferInsert;
 
 // ── About Page ─────────────────────────────────────────────────────────────
 export const aboutPage = mysqlTable("about_page", {

@@ -3614,9 +3614,10 @@
 - [x] 驗證東歐文章、一般文章與分類列表，並保存新的 Checkpoint
 
 
-## 首頁網站更新訂閱
-- [x] 將首頁「免費旅遊小冊子」區塊改為「立即訂閱」並更新說明文案
-- [x] 建立姓名與 Email 訂閱表單及前端驗證
-- [x] 建立網站更新訂閱者資料表與後端 API
-- [x] 在後台訂閱者列表顯示網站更新訂閱者
-- [x] 驗證訂閱表單展開、Email 格式驗證、重複 Email 防護與資料表狀態
+## 網站更新電子報系統與合規訂閱
+- [x] 首頁「立即訂閱」表單與雙欄展開互動
+- [x] 資料庫擴充：confirmed、confirmationToken、unsubscribeToken、siteNewsletters、siteSettings
+- [x] 雙向合規 Email：訂閱確認信 (/api/newsletter/confirm) 與一鍵取消訂閱 (/api/newsletter/unsubscribe)
+- [x] 後台電子報撰寫、預覽、手動發送給已驗證訂閱者與發送紀錄
+- [x] 寄送頻率設定（每月精選 vs 每發布新文章時）
+- [x] TypeScript 型別檢查通過與 15 項 Vitest 測試通過

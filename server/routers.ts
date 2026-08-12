@@ -9,7 +9,6 @@ import { ENV } from "./_core/env";
 import { storagePut } from "./storage";
 import {
   addPostMedia,
-  addSiteSubscriber,
   addSubscriber,
   createBooklet,
   createPost,
@@ -19,7 +18,6 @@ import {
   updatePostMedia,
   getAllBooklets,
   getAllPosts,
-  getAllSiteSubscribers,
   getAllSubscribers,
   getAboutPage,
   getBookletById,
@@ -33,6 +31,16 @@ import {
   updateBooklet,
   updatePost,
   upsertAboutPage,
+  insertSiteSubscriber,
+  confirmSiteSubscriber,
+  unsubscribeSiteSubscriber,
+  getSiteSubscribers,
+  getConfirmedSiteSubscribers,
+  getSiteSetting,
+  setSiteSetting,
+  createNewsletter,
+  getNewsletters,
+  updateNewsletterSent,
 } from "./db";
 import {
   adminLogin,
@@ -43,6 +51,8 @@ import {
 import {
   notifyOwnerNewSubscriber,
   sendBookletToSubscriber,
+  sendSiteSubscriptionConfirmation,
+  sendNewsletterBroadcast,
 } from "./email";
 
 // ── Admin guard ────────────────────────────────────────────────────────────
@@ -373,10 +383,10 @@ export const appRouter = router({
       }),
   }),
 
-  // ── Subscribers ───────────────────────────────────────────────────────────
+  // ── Subscribers & Newsletters ─────────────────────────────────────────────
   subscribers: router({
     list: adminProcedure.query(() => getAllSubscribers()),
-    siteList: adminProcedure.query(() => getAllSiteSubscribers()),
+    siteList: adminProcedure.query(() => getSiteSubscribers()),
     siteSubscribe: publicProcedure
       .input(
         z.object({
@@ -384,18 +394,68 @@ export const appRouter = router({
           email: z.string().trim().email().max(320),
         })
       )
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         const email = input.email.trim().toLowerCase();
+        const origin = ctx.req.headers.origin || "https://" + ctx.req.headers.host;
         try {
-          const subscriber = await addSiteSubscriber({ name: input.name.trim(), email });
-          return { success: true, subscriber };
+          const res = await insertSiteSubscriber({ name: input.name.trim(), email });
+          if (res.confirmationToken) {
+            const confirmUrl = `${origin}/api/newsletter/confirm?token=${res.confirmationToken}`;
+            await sendSiteSubscriptionConfirmation({
+              subscriberName: input.name.trim(),
+              subscriberEmail: email,
+              confirmUrl,
+            });
+          }
+          return { success: true, reactivated: res.reactivated };
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
-          if (message.includes("Duplicate entry") || message.includes("ER_DUP_ENTRY")) {
-            throw new TRPCError({ code: "CONFLICT", message: "這個 Email 已經訂閱過了" });
-          }
-          throw error;
+          throw new TRPCError({ code: "BAD_REQUEST", message });
         }
+      }),
+    confirm: publicProcedure
+      .input(z.object({ token: z.string() }))
+      .mutation(async ({ input }) => {
+        const ok = await confirmSiteSubscriber(input.token);
+        return { success: ok };
+      }),
+    unsubscribe: publicProcedure
+      .input(z.object({ token: z.string() }))
+      .mutation(async ({ input }) => {
+        const ok = await unsubscribeSiteSubscriber(input.token);
+        return { success: ok };
+      }),
+    getSettings: adminProcedure.query(async () => {
+      const frequency = await getSiteSetting("newsletter_frequency", "monthly");
+      return { frequency };
+    }),
+    updateSettings: adminProcedure
+      .input(z.object({ frequency: z.enum(["monthly", "per_post"]) }))
+      .mutation(async ({ input }) => {
+        await setSiteSetting("newsletter_frequency", input.frequency);
+        return { success: true };
+      }),
+    listNewsletters: adminProcedure.query(() => getNewsletters()),
+    createAndSendNewsletter: adminProcedure
+      .input(z.object({ subject: z.string().min(1), content: z.string().min(1) }))
+      .mutation(async ({ input, ctx }) => {
+        const newsletterId = await createNewsletter({ subject: input.subject, content: input.content });
+        const confirmedSubs = await getConfirmedSiteSubscribers();
+        const origin = ctx.req.headers.origin || "https://" + ctx.req.headers.host;
+        let count = 0;
+        for (const sub of confirmedSubs) {
+          const unsubscribeUrl = `${origin}/api/newsletter/unsubscribe?token=${sub.unsubscribeToken}`;
+          const sent = await sendNewsletterBroadcast({
+            subscriberEmail: sub.email,
+            subscriberName: sub.name,
+            subject: input.subject,
+            contentHtml: input.content,
+            unsubscribeUrl,
+          });
+          if (sent) count++;
+        }
+        await updateNewsletterSent(newsletterId, count);
+        return { success: true, recipientCount: count };
       }),
   }),
 

@@ -1,5 +1,5 @@
-import { and, asc, desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
+import { and, asc, desc, eq, isNull } from "drizzle-orm";
 import {
   AboutPage,
   Booklet,
@@ -20,6 +20,8 @@ import {
   postMedia,
   posts,
   siteSubscribers,
+  siteNewsletters,
+  siteSettings,
   users,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
@@ -255,26 +257,113 @@ export async function getAllSubscribers() {
   return rows;
 }
 
-// ── Site Update Subscribers ────────────────────────────────────────────────
-export async function addSiteSubscriber(data: InsertSiteSubscriber): Promise<{ id: number; name: string; email: string }> {
+// ── Site Update Subscribers & Newsletters ──────────────────────────────────
+export async function insertSiteSubscriber(data: { name: string; email: string }) {
   const db = await getDb();
   if (!db) throw new Error("DB unavailable");
-  await db.insert(siteSubscribers).values(data);
-  const result = await db
-    .select({ id: siteSubscribers.id, name: siteSubscribers.name, email: siteSubscribers.email })
-    .from(siteSubscribers)
-    .where(eq(siteSubscribers.email, data.email))
-    .limit(1);
-  return result[0]!;
+
+  const [existing] = await db.select().from(siteSubscribers).where(eq(siteSubscribers.email, data.email)).limit(1);
+  const confirmationToken = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+  const unsubscribeToken = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+
+  if (existing) {
+    if (existing.unsubscribedAt || !existing.confirmed) {
+      await db.update(siteSubscribers)
+        .set({
+          unsubscribedAt: null,
+          name: data.name,
+          confirmed: false,
+          confirmationToken,
+          unsubscribeToken,
+        })
+        .where(eq(siteSubscribers.id, existing.id));
+      return { id: existing.id, confirmationToken, reactivated: true };
+    }
+    throw new Error("此 Email 已經訂閱過網站更新通知。");
+  }
+
+  const [result] = await db.insert(siteSubscribers).values({
+    name: data.name,
+    email: data.email,
+    confirmed: false,
+    confirmationToken,
+    unsubscribeToken,
+  });
+  return { id: result.insertId, confirmationToken, reactivated: false };
 }
 
-export async function getAllSiteSubscribers() {
+export async function confirmSiteSubscriber(token: string) {
+  const db = await getDb();
+  if (!db) return false;
+  const [sub] = await db.select().from(siteSubscribers).where(eq(siteSubscribers.confirmationToken, token)).limit(1);
+  if (!sub) return false;
+  await db.update(siteSubscribers)
+    .set({ confirmed: true, confirmationToken: null })
+    .where(eq(siteSubscribers.id, sub.id));
+  return true;
+}
+
+export async function unsubscribeSiteSubscriber(token: string) {
+  const db = await getDb();
+  if (!db) return false;
+  const [sub] = await db.select().from(siteSubscribers).where(eq(siteSubscribers.unsubscribeToken, token)).limit(1);
+  if (!sub) return false;
+  await db.update(siteSubscribers)
+    .set({ unsubscribedAt: new Date() })
+    .where(eq(siteSubscribers.id, sub.id));
+  return true;
+}
+
+export async function getSiteSubscribers() {
   const db = await getDb();
   if (!db) return [];
-  return db
-    .select()
-    .from(siteSubscribers)
-    .orderBy(desc(siteSubscribers.createdAt));
+  return db.select().from(siteSubscribers).orderBy(desc(siteSubscribers.createdAt));
+}
+
+export async function getConfirmedSiteSubscribers() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(siteSubscribers)
+    .where(and(eq(siteSubscribers.confirmed, true), isNull(siteSubscribers.unsubscribedAt)));
+}
+
+export async function getSiteSetting(key: string, defaultValue: string) {
+  const db = await getDb();
+  if (!db) return defaultValue;
+  const [row] = await db.select().from(siteSettings).where(eq(siteSettings.settingKey, key)).limit(1);
+  return row ? row.settingValue : defaultValue;
+}
+
+export async function setSiteSetting(key: string, value: string) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const [row] = await db.select().from(siteSettings).where(eq(siteSettings.settingKey, key)).limit(1);
+  if (row) {
+    await db.update(siteSettings).set({ settingValue: value }).where(eq(siteSettings.settingKey, key));
+  } else {
+    await db.insert(siteSettings).values({ settingKey: key, settingValue: value });
+  }
+}
+
+export async function createNewsletter(data: { subject: string; content: string }) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const [result] = await db.insert(siteNewsletters).values(data);
+  return result.insertId;
+}
+
+export async function getNewsletters() {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(siteNewsletters).orderBy(desc(siteNewsletters.createdAt));
+}
+
+export async function updateNewsletterSent(id: number, recipientCount: number) {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(siteNewsletters)
+    .set({ sentAt: new Date(), recipientCount })
+    .where(eq(siteNewsletters.id, id));
 }
 
 // ── About Page ─────────────────────────────────────────────────────────────

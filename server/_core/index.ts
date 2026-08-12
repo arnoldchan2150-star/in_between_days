@@ -36,6 +36,88 @@ async function startServer() {
   app.use(express.urlencoded({ limit: "50mb", extended: true }));
   registerStorageProxy(app);
   registerOAuthRoutes(app);
+
+  // Newsletter confirmation and unsubscription endpoints
+  app.get("/api/newsletter/confirm", async (req, res) => {
+    const token = typeof req.query.token === "string" ? req.query.token : "";
+    if (!token) {
+      return res.status(400).send("無效的確認連結");
+    }
+    try {
+      const { confirmSiteSubscriber } = await import("../db");
+      const ok = await confirmSiteSubscriber(token);
+      if (ok) {
+        res.send(`
+          <!DOCTYPE html>
+          <html lang="zh-TW">
+          <head>
+            <meta charset="utf-8">
+            <title>訂閱確認成功 | In-Between Days</title>
+            <style>
+              body { font-family: 'Noto Serif TC', serif; background: #fbf9f5; color: #3a3a3a; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+              .card { background: #fff; padding: 40px; border: 1px solid #e0e0e0; max-width: 480px; text-align: center; }
+              h1 { font-weight: 400; font-size: 22px; margin-bottom: 16px; letter-spacing: 0.05em; }
+              p { font-size: 14px; line-height: 1.6; color: #666; margin-bottom: 24px; }
+              a { display: inline-block; padding: 10px 24px; background: #3a3a3a; color: #fff; text-decoration: none; font-size: 13px; letter-spacing: 0.05em; }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h1>訂閱確認成功</h1>
+              <p>感謝您的確認！您已成功訂閱 In-Between Days 網站更新通知，未來有新遊記或小冊子發布時，將會準時寄送到您的信箱。</p>
+              <a href="/">返回首頁</a>
+            </div>
+          </body>
+          </html>
+        `);
+      } else {
+        res.status(400).send("確認連結無效或已過期。");
+      }
+    } catch (err) {
+      res.status(500).send("伺服器錯誤，請稍後再試。");
+    }
+  });
+
+  app.get("/api/newsletter/unsubscribe", async (req, res) => {
+    const token = typeof req.query.token === "string" ? req.query.token : "";
+    if (!token) {
+      return res.status(400).send("無效的取消訂閱連結");
+    }
+    try {
+      const { unsubscribeSiteSubscriber } = await import("../db");
+      const ok = await unsubscribeSiteSubscriber(token);
+      if (ok) {
+        res.send(`
+          <!DOCTYPE html>
+          <html lang="zh-TW">
+          <head>
+            <meta charset="utf-8">
+            <title>已取消訂閱 | In-Between Days</title>
+            <style>
+              body { font-family: 'Noto Serif TC', serif; background: #fbf9f5; color: #3a3a3a; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+              .card { background: #fff; padding: 40px; border: 1px solid #e0e0e0; max-width: 480px; text-align: center; }
+              h1 { font-weight: 400; font-size: 22px; margin-bottom: 16px; letter-spacing: 0.05em; }
+              p { font-size: 14px; line-height: 1.6; color: #666; margin-bottom: 24px; }
+              a { display: inline-block; padding: 10px 24px; background: #3a3a3a; color: #fff; text-decoration: none; font-size: 13px; letter-spacing: 0.05em; }
+            </style>
+          </head>
+          <body>
+            <div class="card">
+              <h1>已成功取消訂閱</h1>
+              <p>您已不再接收 In-Between Days 的網站更新信件。如果這是誤會，隨時歡迎重新回到首頁訂閱。</p>
+              <a href="/">返回首頁</a>
+            </div>
+          </body>
+          </html>
+        `);
+      } else {
+        res.status(400).send("取消訂閱連結無效或已失效。");
+      }
+    } catch (err) {
+      res.status(500).send("伺服器錯誤，請稍後再試。");
+    }
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",

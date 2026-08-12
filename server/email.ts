@@ -87,3 +87,64 @@ export async function notifyOwnerNewSubscriber(opts: {
     html,
   });
 }
+
+export async function sendSiteSubscriptionConfirmation(opts: {
+  subscriberName: string;
+  subscriberEmail: string;
+  confirmUrl: string;
+}): Promise<boolean> {
+  const { subscriberName, subscriberEmail, confirmUrl } = opts;
+  const html = `
+    <div style="font-family: 'Noto Serif TC', serif; max-width: 600px; margin: 0 auto; color: #3a3a3a; padding: 20px;">
+      <h2 style="font-weight: 400; letter-spacing: 0.05em; border-bottom: 1px solid #e0e0e0; padding-bottom: 12px;">歡迎訂閱 In-Between Days</h2>
+      <p>親愛的 ${subscriberName}，您好：</p>
+      <p>感謝您訂閱 In-Between Days 網站更新通知。為了確保這是您的信箱並啟用訂閱，請點擊下方按鈕完成確認：</p>
+      <p style="margin: 30px 0;">
+        <a href="${confirmUrl}" 
+           style="display: inline-block; padding: 12px 28px; background: #3a3a3a; color: #fff; text-decoration: none; letter-spacing: 0.05em; font-size: 14px;">
+          確認訂閱
+        </a>
+      </p>
+      <p style="color: #666; font-size: 0.9em;">如果您並未發起此訂閱，請直接忽略這封信件即可。</p>
+      <p style="color: #888; font-size: 0.85em; margin-top: 40px; border-top: 1px solid #eee; pt: 15px;">
+        — In-Between Days・走走停停，在旅途間隙，遇見世界，也遇見自己。
+      </p>
+    </div>
+  `;
+  return sendEmail({
+    to: subscriberEmail,
+    subject: `【In-Between Days】請確認您的網站更新訂閱`,
+    html,
+  });
+}
+
+export async function sendNewsletterBroadcast(opts: {
+  subscriberEmail: string;
+  subscriberName: string;
+  subject: string;
+  contentHtml: string;
+  unsubscribeUrl: string;
+}): Promise<boolean> {
+  const { subscriberEmail, subscriberName, subject, contentHtml, unsubscribeUrl } = opts;
+  const html = `
+    <div style="font-family: 'Noto Serif TC', serif; max-width: 650px; margin: 0 auto; color: #3a3a3a; line-height: 1.7; padding: 20px;">
+      <div style="border-bottom: 1px solid #e0e0e0; padding-bottom: 16px; margin-bottom: 24px;">
+        <span style="font-size: 12px; letter-spacing: 0.1em; color: #777; text-transform: uppercase;">In-Between Days Newsletter</span>
+      </div>
+      <div style="font-size: 15px; color: #2c2c2c;">
+        ${contentHtml}
+      </div>
+      <div style="margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #888; text-align: center;">
+        <p>親愛的 ${subscriberName}，您收到這封信是因為您曾訂閱 In-Between Days 的網站更新。</p>
+        <p style="margin-top: 8px;">
+          <a href="${unsubscribeUrl}" style="color: #666; text-decoration: underline;">取消訂閱</a>
+        </p>
+      </div>
+    </div>
+  `;
+  return sendEmail({
+    to: subscriberEmail,
+    subject: `【In-Between Days】${subject}`,
+    html,
+  });
+}
