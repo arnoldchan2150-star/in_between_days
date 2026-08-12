@@ -3647,3 +3647,9 @@
 - [x] 將靈感拾光頁首標題與介紹改為使用者提供的文字
 - [x] 上傳並套用 Scan9609.webp 作為靈感拾光頁面主圖
 - [x] 驗證桌機手機版圖片載入與文案排版，並保存新的 Checkpoint
+
+
+## 聯絡 Email 更新
+- [x] 將全站 hello@inbetweendays.com 顯示文字改為 365inwien@gmail.com
+- [x] 將所有 mailto 連結同步更新
+- [x] 驗證首頁、頁尾與其他聯絡入口並保存新的 Checkpoint

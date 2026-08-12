@@ -44,10 +44,10 @@ export default function Footer() {
             </p>
             <div className="flex flex-col gap-2.5">
               <a
-                href="mailto:hello@inbetweendays.com"
+                href="mailto:365inwien@gmail.com"
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
-                hello@inbetweendays.com
+                365inwien@gmail.com
               </a>
               <Link href="/booklet">
                 <span className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">

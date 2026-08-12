@@ -113,10 +113,10 @@ export default function About() {
                 <div className="mt-10 pt-8 border-t border-border">
                   <p className="text-xs text-muted-foreground tracking-wider mb-3">聯絡我</p>
                   <a
-                    href="mailto:hello@inbetweendays.com"
+                    href="mailto:365inwien@gmail.com"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    hello@inbetweendays.com
+                    365inwien@gmail.com
                   </a>
                 </div>
               </div>
