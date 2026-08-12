@@ -92,3 +92,3498 @@
 - [x] 支援同一篇文章既有文字又有影片
 - [x] 更新後台管理介面，支援新的內容管理（AdminPosts 顯示新的类型）
 - [x] 更新前台導覽結構
+
+
+## 雪季攻略詳細頁調整
+- [x] 雪季映像列表不顯示可可托海攻略的完整 HTML 嵌入框
+- [x] 點擊可可托海攻略標題後進入文章詳細頁並載入完整攻略 HTML
+- [x] 驗證雪季列表、攻略詳細頁與其他文章頁面均可正常載入
+- [x] 執行測試並保存新的 Checkpoint
+
+---
+
+## Reusable workflow: embedded article detail pages
+- [x] Keep embedded HTML/video content out of category cards and render it on the article detail route after title navigation
+- [x] Verify both category listing and detail route before checkpointing changes
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+---
+
+## Skill candidate: embedded_article_detail_flow
+- [x] Document a reusable workflow for category cards that link to detail pages containing embedded HTML or video content
+- [x] Include validation steps for route parameters, iframe/embed rendering, loading states, and regression tests
+- [x] Include safe checkpoint and rollback guidance for future edits
+## End skill candidate
+
+
+## 回歸驗證補充
+- [x] 驗證至少 1 篇一般文章詳細頁與 1 篇含影片文章詳細頁，確認修復 post_media.mediaType 後皆可正常載入
+- [x] 套用 post_media.mediaType migration，修復 posts.bySlug 的媒體查詢錯誤
+- [x] 儲存新的 Checkpoint（含雪季攻略詳細頁調整與 schema 修復）
+- [ ] 清理 todo.md 中重複的 embedded_article_detail_flow 區塊（保留歷史紀錄，不刪除既有項目）
+
+## Skill delivery
+- [x] 建立並驗證 embedded-article-detail-flow 技能

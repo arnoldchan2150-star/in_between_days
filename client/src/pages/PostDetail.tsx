@@ -13,6 +13,17 @@ type MediaItem = {
   sortOrder: number;
 };
 
+function isVideoEmbedUrl(url?: string | null) {
+  if (!url) return false;
+  const normalized = url.toLowerCase();
+  return (
+    normalized.includes("youtube.com/") ||
+    normalized.includes("youtube-nocookie.com/") ||
+    normalized.includes("youtu.be/") ||
+    normalized.includes("vimeo.com/")
+  );
+}
+
 // ── Lightbox Component ────────────────────────────────────────────────────────
 function Lightbox({
   items,
@@ -186,7 +197,59 @@ export default function PostDetail() {
     );
   }
 
-  // ── 一般文章模式（支援 embedUrl 嵌入）────────────────────────────────────────────────────────
+  // 外部攻略 HTML 在文章詳細頁載入，不在分類列表或文章卡片內呈現。
+  // 影片仍採一般文章模式，保留文章文字與嵌入播放器。
+  const isHtmlEmbed = !!post.embedUrl && !isVideoEmbedUrl(post.embedUrl);
+  if (isHtmlEmbed) {
+    const backHref = post.type === "snow" ? "/snow" : "/journal";
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <header ref={headerRef} className="border-b border-border bg-background">
+          <div className="container py-6 md:py-8">
+            <Link href={backHref}>
+              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-5">
+                <ArrowLeft size={12} /> 返回{post.type === "snow" ? "雪季映像" : "遊記"}
+              </span>
+            </Link>
+            <div className="flex flex-wrap items-center gap-3 mb-3">
+              <span className="text-xs text-muted-foreground tracking-widest flex items-center gap-1">
+                <MapPin size={11} /> {post.category}
+              </span>
+              {post.publishedAt && (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Calendar size={11} />
+                  {new Date(post.publishedAt).toLocaleDateString("zh-TW", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              )}
+            </div>
+            <h1 className="font-serif text-2xl md:text-4xl font-light leading-tight">
+              {post.title}
+            </h1>
+            {post.excerpt && (
+              <p className="text-sm text-muted-foreground leading-relaxed mt-3 max-w-3xl">
+                {post.excerpt}
+              </p>
+            )}
+          </div>
+        </header>
+        <main className="flex-1 bg-background">
+          <iframe
+            src={post.embedUrl ?? undefined}
+            title={post.title}
+            style={{ width: "100%", height: iframeHeight, border: "none", display: "block" }}
+            allow="fullscreen"
+            loading="eager"
+          />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   // ── 一般文章模式 ─────────────────────────────────────────────────────────
   const mediaItems: MediaItem[] = (post.media ?? []) as MediaItem[];
@@ -251,7 +314,7 @@ export default function PostDetail() {
           />
 
           {/* ── Embedded Video ── */}
-          {post.embedUrl && (
+          {isVideoEmbedUrl(post.embedUrl) && (
             <div className="mt-14">
               <div className="flex items-center gap-3 mb-6">
                 <hr className="flex-1 border-border" />
@@ -262,7 +325,7 @@ export default function PostDetail() {
               </div>
               <div className="aspect-video bg-muted overflow-hidden rounded-sm">
                 <iframe
-                  src={post.embedUrl}
+                  src={post.embedUrl ?? undefined}
                   title={post.title}
                   style={{
                     width: "100%",

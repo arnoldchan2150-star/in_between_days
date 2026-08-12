@@ -21,10 +21,27 @@ export default function Snow() {
     type: "snow",
   });
 
-  // 根據 embedUrl 判斷是否為影片
+  const isVideoEmbedUrl = (url?: string | null) => {
+    if (!url) return false;
+    const normalized = url.toLowerCase();
+    return (
+      normalized.includes("youtube.com/") ||
+      normalized.includes("youtube-nocookie.com/") ||
+      normalized.includes("youtu.be/") ||
+      normalized.includes("vimeo.com/")
+    );
+  };
+
+  // 只有 YouTube / Vimeo 嵌入才視為影片；其他 embedUrl 視為文章攻略 HTML
   const posts = allPosts || [];
-  const videos = posts.filter((p) => p.embedUrl);
-  const articles = posts.filter((p) => !p.embedUrl);
+  const videos = posts.filter((p) => isVideoEmbedUrl(p.embedUrl));
+  const articles = posts.filter((p) => !isVideoEmbedUrl(p.embedUrl));
+
+  const getPostKindLabel = (post: (typeof posts)[number]) => {
+    if (isVideoEmbedUrl(post.embedUrl)) return "影片";
+    if (post.embedUrl) return "攻略";
+    return "文章";
+  };
 
   // 篩選
   let filtered = posts;
@@ -117,7 +134,8 @@ export default function Snow() {
           ) : filtered.length > 0 ? (
             <div className="space-y-16">
               {filtered.map((post, i) => {
-                const isVideo = !!post.embedUrl;
+                const isVideo = isVideoEmbedUrl(post.embedUrl);
+                const kindLabel = getPostKindLabel(post);
                 return (
                   <Link key={post.id} href={`/snow/${post.slug}`}>
                     <article className="group grid md:grid-cols-2 gap-8 items-center cursor-pointer">
@@ -139,15 +157,9 @@ export default function Snow() {
                       {/* Right: Text */}
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center gap-2">
-                          {isVideo ? (
-                            <span className="text-xs text-muted-foreground flex items-center gap-1 bg-foreground/10 px-2 py-1 rounded-sm">
-                              <Play size={12} /> 影片
-                            </span>
-                          ) : (
-                            <span className="text-xs text-muted-foreground flex items-center gap-1 bg-foreground/10 px-2 py-1 rounded-sm">
-                              <FileText size={12} /> 文章
-                            </span>
-                          )}
+                          <span className="text-xs text-muted-foreground flex items-center gap-1 bg-foreground/10 px-2 py-1 rounded-sm">
+                            {isVideo ? <Play size={12} /> : <FileText size={12} />} {kindLabel}
+                          </span>
                           {post.category && (
                             <span className="text-xs text-muted-foreground">{post.category}</span>
                           )}
@@ -165,7 +177,7 @@ export default function Snow() {
 
                         <div className="pt-2">
                           <span className="inline-flex items-center gap-2 text-xs text-muted-foreground group-hover:text-foreground transition-colors">
-                            {isVideo ? "觀看影片" : "閱讀文章"} <ArrowRight size={12} />
+                            {isVideo ? "觀看影片" : post.embedUrl ? "閱讀攻略" : "閱讀文章"} <ArrowRight size={12} />
                           </span>
                         </div>
                       </div>
