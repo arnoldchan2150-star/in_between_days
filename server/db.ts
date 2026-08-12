@@ -9,6 +9,8 @@ import {
   InsertBookletSubscriber,
   InsertPost,
   InsertPostMedia,
+  InsertPostBlock,
+  PostBlock,
   InsertSiteSubscriber,
   InsertUser,
   Post,
@@ -18,6 +20,7 @@ import {
   bookletSubscribers,
   booklets,
   postMedia,
+  postBlocks,
   posts,
   siteSubscribers,
   siteNewsletters,
@@ -135,6 +138,7 @@ export async function deletePost(id: number): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("DB unavailable");
   await db.delete(postMedia).where(eq(postMedia.postId, id));
+  await db.delete(postBlocks).where(eq(postBlocks.postId, id));
   await db.delete(posts).where(eq(posts.id, id));
 }
 
@@ -418,4 +422,28 @@ export async function updateAdminCredential(email: string, passwordHash: string)
     .update(adminCredentials)
     .set({ passwordHash })
     .where(eq(adminCredentials.email, email));
+}
+
+
+// ── Post Blocks (Medium-style editor) ────────────────────────────────────────
+export async function getPostBlocks(postId: number): Promise<PostBlock[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(postBlocks).where(eq(postBlocks.postId, postId)).orderBy(asc(postBlocks.sortOrder));
+}
+
+export async function savePostBlocks(postId: number, blocks: Array<{ blockType: string; content?: string | null; caption?: string | null; sortOrder: number }>): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.delete(postBlocks).where(eq(postBlocks.postId, postId));
+  if (!blocks || blocks.length === 0) return;
+  for (const block of blocks) {
+    await db.insert(postBlocks).values({
+      postId,
+      blockType: block.blockType,
+      content: block.content || null,
+      caption: block.caption || null,
+      sortOrder: block.sortOrder,
+    });
+  }
 }

@@ -3653,3 +3653,11 @@
 - [x] 將全站 hello@inbetweendays.com 顯示文字改為 365inwien@gmail.com
 - [x] 將所有 mailto 連結同步更新
 - [x] 驗證首頁、頁尾與其他聯絡入口並保存新的 Checkpoint
+
+
+## Medium 風格文章區塊編輯器
+- [x] 建立 post_blocks 資料表，支援段落、圖片、標題、引言與影片區塊
+- [x] 後台文章編輯器加入區塊化編輯、上下排序與媒體選取介面
+- [x] 前台文章詳細頁支援區塊流渲染（段落、置中／滿版圖片、說明文字、引言、影片）
+- [x] 支援舊文章自動相容（無區塊時自動以原有 content 與 post_media 渲染）
+- [x] 執行 migration、測試、桌機手機版驗證並保存新的 Checkpoint

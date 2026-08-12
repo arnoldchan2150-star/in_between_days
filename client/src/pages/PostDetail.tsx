@@ -14,6 +14,14 @@ type MediaItem = {
   mediaType?: "image" | "video";
 };
 
+type PostBlock = {
+  id: number;
+  blockType: "paragraph" | "image" | "heading" | "quote" | "video";
+  content?: string | null;
+  caption?: string | null;
+  sortOrder: number;
+};
+
 function isVideoEmbedUrl(url?: string | null) {
   if (!url) return false;
   const normalized = url.toLowerCase();
@@ -227,6 +235,7 @@ export default function PostDetail() {
   const sortedMedia = [...mediaItems].sort((a, b) => a.sortOrder - b.sortOrder);
   const imageMedia = sortedMedia.filter((item) => item.mediaType !== "video");
   const videoMedia = sortedMedia.filter((item) => item.mediaType === "video");
+  const blocks = ([...(post.blocks ?? [])] as PostBlock[]).sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -281,13 +290,75 @@ export default function PostDetail() {
 
           <hr className="border-border mb-8" />
 
-          <div
-            className="prose-travel"
-            dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, "<br/>") }}
-          />
+          {blocks.length > 0 ? (
+            <div className="space-y-10 md:space-y-12">
+              {blocks.map((block) => {
+                const content = block.content?.trim();
+                if (!content) return null;
+
+                if (block.blockType === "paragraph") {
+                  return (
+                    <p key={block.id} className="whitespace-pre-wrap font-serif text-[17px] leading-[2] text-foreground/90">
+                      {content}
+                    </p>
+                  );
+                }
+
+                if (block.blockType === "heading") {
+                  return (
+                    <h2 key={block.id} className="font-serif text-2xl md:text-3xl font-light leading-tight pt-2">
+                      {content}
+                    </h2>
+                  );
+                }
+
+                if (block.blockType === "quote") {
+                  return (
+                    <blockquote key={block.id} className="border-l-2 border-foreground/50 pl-5 md:pl-7 font-serif text-xl md:text-2xl italic leading-relaxed text-foreground/80">
+                      {content}
+                    </blockquote>
+                  );
+                }
+
+                if (block.blockType === "image") {
+                  return (
+                    <figure key={block.id} className="my-12 md:-mx-8 lg:-mx-16">
+                      <img src={content} alt={block.caption || post.title} className="block w-full max-h-[760px] object-cover bg-muted" loading="lazy" />
+                      {block.caption && <figcaption className="mt-3 px-2 text-center text-xs leading-relaxed text-muted-foreground">{block.caption}</figcaption>}
+                    </figure>
+                  );
+                }
+
+                return (
+                  <figure key={block.id} className="my-12">
+                    <div className="aspect-video overflow-hidden bg-muted">
+                      {isVideoEmbedUrl(content) ? (
+                        <iframe
+                          src={content}
+                          title={block.caption || post.title}
+                          className="h-full w-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowFullScreen
+                          loading="lazy"
+                        />
+                      ) : (
+                        <video src={content} controls preload="metadata" className="h-full w-full object-contain" />
+                      )}
+                    </div>
+                    {block.caption && <figcaption className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">{block.caption}</figcaption>}
+                  </figure>
+                );
+              })}
+            </div>
+          ) : (
+            <div
+              className="prose-travel"
+              dangerouslySetInnerHTML={{ __html: post.content.replace(/\n/g, "<br/>") }}
+            />
+          )}
 
           {/* ── Embedded Video ── */}
-          {isVideoEmbedUrl(post.embedUrl) && (
+          {blocks.length === 0 && isVideoEmbedUrl(post.embedUrl) && (
             <div className="mt-14">
               <div className="flex items-center gap-3 mb-6">
                 <hr className="flex-1 border-border" />
@@ -314,7 +385,7 @@ export default function PostDetail() {
           )}
 
           {/* ── Self-hosted Video Gallery ── */}
-          {videoMedia.length > 0 && (
+          {blocks.length === 0 && videoMedia.length > 0 && (
             <div className="mt-14">
               <div className="flex items-center gap-3 mb-6">
                 <hr className="flex-1 border-border" />
@@ -340,7 +411,7 @@ export default function PostDetail() {
           )}
 
           {/* ── Photo Gallery ── */}
-          {imageMedia.length > 0 && (
+          {blocks.length === 0 && imageMedia.length > 0 && (
             <div className="mt-14">
               <div className="flex items-center gap-3 mb-6">
                 <hr className="flex-1 border-border" />

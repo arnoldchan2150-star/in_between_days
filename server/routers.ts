@@ -25,6 +25,8 @@ import {
   getPostById,
   getPostBySlug,
   getPostMedia,
+  getPostBlocks,
+  savePostBlocks,
   getPublicBooklets,
   getPublishedPosts,
   markSubscriberSent,
@@ -147,7 +149,8 @@ export const appRouter = router({
         const post = await getPostBySlug(input.slug);
         if (!post) throw new TRPCError({ code: "NOT_FOUND" });
         const media = await getPostMedia(post.id);
-        return { ...post, media };
+        const blocks = await getPostBlocks(post.id);
+        return { ...post, media, blocks };
       }),
     byId: adminProcedure
       .input(z.object({ id: z.number() }))
@@ -155,7 +158,31 @@ export const appRouter = router({
         const post = await getPostById(input.id);
         if (!post) throw new TRPCError({ code: "NOT_FOUND" });
         const media = await getPostMedia(post.id);
-        return { ...post, media };
+        const blocks = await getPostBlocks(post.id);
+        return { ...post, media, blocks };
+      }),
+    blocks: publicProcedure
+      .input(z.object({ postId: z.number() }))
+      .query(async ({ input }) => {
+        return getPostBlocks(input.postId);
+      }),
+    saveBlocks: adminProcedure
+      .input(
+        z.object({
+          postId: z.number(),
+          blocks: z.array(
+            z.object({
+              blockType: z.enum(["paragraph", "image", "heading", "quote", "video"]),
+              content: z.string().optional().nullable(),
+              caption: z.string().optional().nullable(),
+              sortOrder: z.number(),
+            })
+          ),
+        })
+      )
+      .mutation(async ({ input }) => {
+        await savePostBlocks(input.postId, input.blocks);
+        return { success: true };
       }),
     create: adminProcedure
       .input(
@@ -169,6 +196,7 @@ export const appRouter = router({
           category: z.enum(["南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"]),
           type: z.enum(["travel", "culture", "snow"]).default("travel"),
           published: z.boolean().default(false),
+          embedUrl: z.string().optional().nullable(),
         })
       )
       .mutation(async ({ input }) => {

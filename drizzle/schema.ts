@@ -67,6 +67,19 @@ export const postMedia = mysqlTable("post_media", {
 export type PostMedia = typeof postMedia.$inferSelect;
 export type InsertPostMedia = typeof postMedia.$inferInsert;
 
+export const postBlocks = mysqlTable('post_blocks', {
+  id: int('id').autoincrement().primaryKey(),
+  postId: int('postId').notNull(),
+  blockType: varchar('blockType', { length: 32 }).notNull(), // paragraph, image, heading, quote, video
+  content: text('content'), // text, image url, heading text, quote text, or video embed url
+  caption: varchar('caption', { length: 255 }), // image caption or video title
+  sortOrder: int('sortOrder').notNull().default(0),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+});
+
+export type PostBlock = typeof postBlocks.$inferSelect;
+export type InsertPostBlock = typeof postBlocks.$inferInsert;
+
 // ── Booklets ───────────────────────────────────────────────────────────────
 export const booklets = mysqlTable("booklets", {
   id: int("id").autoincrement().primaryKey(),

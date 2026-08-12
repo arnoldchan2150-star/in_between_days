@@ -113,3 +113,33 @@ describe("site subscribers router", () => {
     ).rejects.toThrow();
   });
 });
+
+
+describe("post blocks router", () => {
+  it("rejects unsupported block types before touching the database", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    await expect(
+      caller.posts.saveBlocks({
+        postId: 1,
+        blocks: [
+          {
+            blockType: "gallery" as never,
+            content: "https://example.com/photo.jpg",
+            caption: null,
+            sortOrder: 0,
+          },
+        ],
+      })
+    ).rejects.toThrow();
+  });
+
+  it("does not allow unauthenticated users to save blocks", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    await expect(
+      caller.posts.saveBlocks({
+        postId: 1,
+        blocks: [],
+      })
+    ).rejects.toThrow();
+  });
+});

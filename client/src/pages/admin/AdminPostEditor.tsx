@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { ArrowLeft, Upload, X, ImagePlus, Film } from "lucide-react";
 import ImageUploader from "@/components/ImageUploader";
 import MediaUploader from "@/components/MediaUploader";
+import PostBlocksEditor, { type EditablePostBlock } from "@/components/PostBlocksEditor";
 
 const CATEGORIES = ["南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"] as const;
 type Category = (typeof CATEGORIES)[number];
@@ -335,6 +336,14 @@ export default function AdminPostEditor() {
               placeholder="在這裡輸入文章內容..."
             />
           </div>
+
+          {isEdit && postId && (
+            <PostBlocksEditor
+              postId={postId}
+              initialBlocks={(existingPost?.blocks ?? []) as EditablePostBlock[]}
+              mediaItems={mediaItems}
+            />
+          )}
 
           {/* Embed URL */}
           <div>
