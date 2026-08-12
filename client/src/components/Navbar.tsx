@@ -6,7 +6,7 @@ const NAV_LINKS = [
   { href: "/destinations", label: "目的地遊記" },
   { href: "/culture", label: "靈感拾光" },
   { href: "/snow", label: "雪季映像" },
-  { href: "/booklet", label: "旅遊小冊子" },
+  { href: "/booklet", label: "行旅資料庫" },
   { href: "/about", label: "關於我" },
 ];
 

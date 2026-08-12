@@ -99,7 +99,7 @@ export default function Home() {
             </Link>
             <Link href="/booklet">
               <span className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/30 px-6 py-2.5 text-xs tracking-widest hover:bg-white/20 transition-colors cursor-pointer">
-                領取旅遊小冊子
+                探索行旅資料庫
               </span>
             </Link>
           </div>

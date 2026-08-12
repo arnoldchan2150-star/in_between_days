@@ -1,4 +1,6 @@
 import { Link } from "wouter";
+import { useMemo, useState } from "react";
+import { Search } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -11,7 +13,15 @@ const FALLBACK_IMGS = [
 ];
 
 export default function Culture() {
+  const [searchQuery, setSearchQuery] = useState("");
   const { data: posts, isLoading } = trpc.posts.list.useQuery({ type: "culture" });
+  const filteredPosts = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return posts ?? [];
+    return (posts ?? []).filter((post) =>
+      [post.title, post.excerpt, post.category].some((value) => value?.toLowerCase().includes(query))
+    );
+  }, [posts, searchQuery]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -28,6 +38,23 @@ export default function Culture() {
             旅行不只是移動，更是一種閱讀。那些讓我想起某個城市的電影、某段旅程的書，
             以及旅途中的文字碎片。
           </p>
+        </div>
+      </section>
+
+      {/* Search */}
+      <section className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="container py-4">
+          <label className="relative block max-w-xl">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="搜尋電影、書籍或靈感文章..."
+              aria-label="搜尋靈感拾光"
+              className="w-full border border-border bg-background pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors"
+            />
+          </label>
         </div>
       </section>
 
@@ -48,9 +75,9 @@ export default function Culture() {
                 </div>
               ))}
             </div>
-          ) : posts && posts.length > 0 ? (
+          ) : filteredPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-              {posts.map((post, i) => (
+              {filteredPosts.map((post, i) => (
                 <Link key={post.id} href={`/culture/${post.slug}`}>
                   <article className="group cursor-pointer flex gap-6">
                     <div className="w-32 h-44 flex-shrink-0 overflow-hidden bg-muted">
@@ -88,10 +115,10 @@ export default function Culture() {
           ) : (
             <div className="text-center py-24">
               <p className="font-serif text-xl text-muted-foreground font-light mb-2">
-                靈感拾光即將上線
+                {searchQuery.trim() ? "未找到相符的靈感文章" : "靈感拾光即將上線"}
               </p>
-              <p className="text-sm text-muted-foreground">
-                電影與書籍的旅行筆記正在整理中，敬請期待
+                <p className="text-sm text-muted-foreground">
+                {searchQuery.trim() ? "請嘗試其他搜尋詞" : "電影與書籍的旅行筆記正在整理中，敬請期待"}
               </p>
             </div>
           )}

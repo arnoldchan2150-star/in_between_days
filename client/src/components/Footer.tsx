@@ -25,7 +25,7 @@ export default function Footer() {
                 { href: "/destinations", label: "目的地遊記" },
                 { href: "/culture", label: "靈感拾光" },
                 { href: "/snow", label: "雪季映像" },
-                { href: "/booklet", label: "旅遊小冊子" },
+                { href: "/booklet", label: "行旅資料庫" },
                 { href: "/about", label: "關於我" },
               ].map((link) => (
                 <Link key={link.href} href={link.href}>
@@ -51,7 +51,7 @@ export default function Footer() {
               </a>
               <Link href="/booklet">
                 <span className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                  訂閱旅遊小冊子
+                  瀏覽行旅資料庫
                 </span>
               </Link>
             </div>

@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useSearch } from "wouter";
+import { Search } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -27,9 +28,18 @@ export default function Destinations() {
   }, [search]);
 
   // 混合展示 travel 和 culture 類型的文章
+  const [searchQuery, setSearchQuery] = useState("");
   const { data: posts, isLoading } = trpc.posts.list.useQuery({
     category: activeCategory === "全部" ? undefined : activeCategory,
   });
+
+  const filteredPosts = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return posts ?? [];
+    return (posts ?? []).filter((post) =>
+      [post.title, post.excerpt, post.category].some((value) => value?.toLowerCase().includes(query))
+    );
+  }, [posts, searchQuery]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -48,10 +58,21 @@ export default function Destinations() {
         </div>
       </section>
 
-      {/* Category Filter */}
+      {/* Search & Category Filter */}
       <section className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="container">
-          <div className="flex gap-6 overflow-x-auto py-4">
+        <div className="container py-4 space-y-4">
+          <label className="relative block max-w-xl">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder="搜尋目的地、標題或旅行故事..."
+              aria-label="搜尋目的地遊記"
+              className="w-full border border-border bg-background pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors"
+            />
+          </label>
+          <div className="flex gap-6 overflow-x-auto">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
@@ -82,9 +103,9 @@ export default function Destinations() {
                 </div>
               ))}
             </div>
-          ) : posts && posts.length > 0 ? (
+          ) : filteredPosts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {posts.map((post, i) => (
+              {filteredPosts.map((post, i) => (
                 <Link
                   key={post.id}
                   href={`/destinations/${post.slug}`}
@@ -115,11 +136,13 @@ export default function Destinations() {
           ) : (
             <div className="text-center py-24">
               <p className="font-serif text-xl text-muted-foreground font-light mb-2">
-                {activeCategory !== "全部"
-                  ? `尚無「${activeCategory}」的故事`
-                  : "故事即將上線"}
+                {searchQuery.trim()
+                  ? "未找到相符的旅行故事"
+                  : activeCategory !== "全部"
+                    ? `尚無「${activeCategory}」的故事`
+                    : "故事即將上線"}
               </p>
-              <p className="text-sm text-muted-foreground">內容正在整理中，敬請期待</p>
+              <p className="text-sm text-muted-foreground">{searchQuery.trim() ? "請嘗試其他搜尋詞" : "內容正在整理中，敬請期待"}</p>
             </div>
           )}
         </div>
