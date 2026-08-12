@@ -142,22 +142,7 @@ export default function PostDetail() {
 
   const { data: post, isLoading, error } = trpc.posts.bySlug.useQuery({ slug }, { enabled: !!slug });
 
-  const headerRef = useRef<HTMLDivElement>(null);
-  const [iframeHeight, setIframeHeight] = useState("calc(100vh - 113px)");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-
-  useEffect(() => {
-    if (!post?.embedUrl) return;
-    const updateHeight = () => {
-      if (headerRef.current) {
-        const h = headerRef.current.getBoundingClientRect().bottom;
-        setIframeHeight(`calc(100dvh - ${h}px)`);
-      }
-    };
-    updateHeight();
-    window.addEventListener("resize", updateHeight);
-    return () => window.removeEventListener("resize", updateHeight);
-  }, [post?.embedUrl]);
 
   if (isLoading) {
     return (
@@ -198,56 +183,41 @@ export default function PostDetail() {
     );
   }
 
-  // 外部攻略 HTML 在文章詳細頁載入，不在分類列表或文章卡片內呈現。
+  // 外部攻略 HTML 在文章詳細頁以全畫面 iframe 載入，不在文章內容區顯示框架。
   // 影片仍採一般文章模式，保留文章文字與嵌入播放器。
   const isHtmlEmbed = !!post.embedUrl && !isVideoEmbedUrl(post.embedUrl);
   if (isHtmlEmbed) {
-    const backHref = post.type === "snow" ? "/snow" : "/journal";
+    const isSnow = post.type === "snow";
+    const isCulture = post.type === "culture";
+    const backHref = isSnow ? "/snow" : isCulture ? "/culture" : "/destinations";
+    const backLabel = isSnow ? "雪季映像" : isCulture ? "靈感拾光" : "目的地遊記";
+
     return (
-      <div className="min-h-screen flex flex-col bg-background">
-        <Navbar />
-        <header ref={headerRef} className="border-b border-border bg-background">
-          <div className="container py-6 md:py-8">
+      <div className="fixed inset-0 z-40 bg-background">
+        <div className="absolute inset-x-0 top-0 z-10 pointer-events-none">
+          <div className="pointer-events-auto flex items-center justify-between gap-4 border-b border-border/60 bg-background/90 px-4 py-3 backdrop-blur-md md:px-8">
             <Link href={backHref}>
-              <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-5">
-                <ArrowLeft size={12} /> 返回{post.type === "snow" ? "雪季映像" : "遊記"}
+              <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <ArrowLeft size={13} /> 返回{backLabel}
               </span>
             </Link>
-            <div className="flex flex-wrap items-center gap-3 mb-3">
-              <span className="text-xs text-muted-foreground tracking-widest flex items-center gap-1">
-                <MapPin size={11} /> {post.category}
-              </span>
-              {post.publishedAt && (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Calendar size={11} />
-                  {new Date(post.publishedAt).toLocaleDateString("zh-TW", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </span>
-              )}
-            </div>
-            <h1 className="font-serif text-2xl md:text-4xl font-light leading-tight">
-              {post.title}
-            </h1>
-            {post.excerpt && (
-              <p className="text-sm text-muted-foreground leading-relaxed mt-3 max-w-3xl">
-                {post.excerpt}
-              </p>
-            )}
+            <a
+              href={post.embedUrl ?? undefined}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <ExternalLink size={12} /> 在新分頁開啟
+            </a>
           </div>
-        </header>
-        <main className="flex-1 bg-background">
-          <iframe
-            src={post.embedUrl ?? undefined}
-            title={post.title}
-            style={{ width: "100%", height: iframeHeight, border: "none", display: "block" }}
-            allow="fullscreen"
-            loading="eager"
-          />
-        </main>
-        <Footer />
+        </div>
+        <iframe
+          src={post.embedUrl ?? undefined}
+          title={post.title}
+          className="block h-[100dvh] w-full border-0"
+          allow="fullscreen"
+          loading="eager"
+        />
       </div>
     );
   }
