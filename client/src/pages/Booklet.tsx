@@ -4,7 +4,28 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Download, BookOpen, ExternalLink, ArrowLeft, Eye } from "lucide-react";
+import { Download, BookOpen, ExternalLink, ArrowLeft, Eye, MapPin, Route } from "lucide-react";
+
+const BOOKLET_META: Record<string, { destination: string; journey: string; format: string }> = {
+  "mt-kinabalu-guide": {
+    destination: "沙巴・馬來西亞",
+    journey: "登山指南",
+    format: "PDF 小冊子",
+  },
+  "kumano-kodo-nakahechi": {
+    destination: "和歌山・日本",
+    journey: "6 日 7 夜",
+    format: "互動指南",
+  },
+};
+
+function getBookletMeta(slug: string, hasEmbed: boolean) {
+  return BOOKLET_META[slug] ?? {
+    destination: "旅行目的地",
+    journey: "實用指南",
+    format: hasEmbed ? "互動指南" : "PDF 小冊子",
+  };
+}
 
 export default function Booklet() {
   const { data: booklets, isLoading } = trpc.booklets.publicList.useQuery();
@@ -66,6 +87,9 @@ export default function Booklet() {
 
   const activeBooklet = booklets?.[activeTab];
   const isSubmitted = activeBooklet ? submitted[activeBooklet.slug] : false;
+  const activeMeta = activeBooklet
+    ? getBookletMeta(activeBooklet.slug, Boolean(activeBooklet.embedUrl))
+    : null;
 
   // ── 全螢幕 iframe 模式 ───────────────────────────────────────────────────
   if (embedOpen && activeBooklet?.embedUrl) {
@@ -145,7 +169,7 @@ export default function Booklet() {
             <Skeleton className="h-8 w-32" />
           </div>
           <div className="grid md:grid-cols-2 gap-12">
-            <Skeleton className="aspect-[3/4]" />
+            <Skeleton className="aspect-[4/5]" />
             <div className="space-y-4">
               <Skeleton className="h-6 w-3/4" />
               <Skeleton className="h-4 w-full" />
@@ -177,7 +201,7 @@ export default function Booklet() {
             {activeBooklet && (
               <div className="grid md:grid-cols-2 gap-12 items-start">
                 {/* Cover */}
-                <div className="aspect-[3/4] overflow-hidden bg-muted relative group">
+                <div className="aspect-[4/5] overflow-hidden bg-muted relative group">
                   {activeBooklet.coverUrl ? (
                     <>
                       <img
@@ -209,21 +233,46 @@ export default function Booklet() {
                   <h2 className="font-serif text-2xl font-light mb-4">
                     {activeBooklet.title}
                   </h2>
+
+                  {activeMeta && (
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      <span className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 text-xs text-muted-foreground">
+                        <MapPin size={12} /> {activeMeta.destination}
+                      </span>
+                      <span className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 text-xs text-muted-foreground">
+                        <Route size={12} /> {activeMeta.journey}
+                      </span>
+                      <span className="inline-flex items-center border border-border px-3 py-1.5 text-xs text-muted-foreground">
+                        {activeMeta.format}
+                      </span>
+                    </div>
+                  )}
                   {activeBooklet.description && (
                     <p className="text-sm text-muted-foreground leading-relaxed mb-6">
                       {activeBooklet.description}
                     </p>
                   )}
 
-                  {/* 互動指南按鈕（若有 embedUrl） */}
+                  {/* 主要操作與次要連結 */}
                   {activeBooklet.embedUrl && (
-                    <button
-                      onClick={() => setEmbedOpen(true)}
-                      className="inline-flex items-center gap-2 text-xs tracking-widest text-muted-foreground hover:text-foreground border border-border px-5 py-2.5 hover:border-foreground/40 transition-colors mb-8"
-                    >
-                      <Eye size={13} />
-                      開啟互動式旅遊指南
-                    </button>
+                    <div className="flex flex-wrap items-center gap-4 mb-8">
+                      <button
+                        onClick={() => setEmbedOpen(true)}
+                        className="inline-flex items-center gap-2 bg-foreground text-background text-xs tracking-widest px-5 py-3 hover:bg-foreground/80 transition-colors"
+                      >
+                        <Eye size={13} />
+                        開啟互動式旅遊指南
+                      </button>
+                      <a
+                        href={activeBooklet.embedUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+                      >
+                        <ExternalLink size={12} />
+                        在新分頁開啟
+                      </a>
+                    </div>
                   )}
 
                   <div className="bg-secondary/30 border border-border p-6">
