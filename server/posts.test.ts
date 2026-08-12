@@ -80,3 +80,19 @@ describe("auth router", () => {
     expect(result).toBeNull();
   });
 });
+
+
+describe("post media upload", () => {
+  it("validates image and video media types", async () => {
+    const caller = appRouter.createCaller(createAdminContext());
+    await expect(
+      caller.posts.uploadMedia({
+        postId: 1,
+        filename: "clip.mp4",
+        contentType: "video/mp4",
+        dataBase64: "AA==",
+        mediaType: "audio" as never,
+      })
+    ).rejects.toThrow();
+  });
+});

@@ -84,7 +84,7 @@
 - [x] 更新資料庫 schema，支援新的內容分類（culture/travel/snow）
 - [x] 實作「雪季映像」頁面的影片/文章分類篩選功能
 - [x] 支援 YouTube 嵌入
-- [ ] 支援自主上傳影片（后端上傳路由、前端上傳組件）
+- [x] 支援自主上傳影片（後端 mediaType 上傳路由、前端影片選取/拖放/播放器管理）
 
 ## 雪季映像頁面重新設計
 - [x] 改為左圖右文排版（影片/圖片在左，文字說明在右）
@@ -3583,7 +3583,13 @@
 - [x] 驗證至少 1 篇一般文章詳細頁與 1 篇含影片文章詳細頁，確認修復 post_media.mediaType 後皆可正常載入
 - [x] 套用 post_media.mediaType migration，修復 posts.bySlug 的媒體查詢錯誤
 - [x] 儲存新的 Checkpoint（含雪季攻略詳細頁調整與 schema 修復）
-- [ ] 清理 todo.md 中重複的 embedded_article_detail_flow 區塊（保留歷史紀錄，不刪除既有項目）
+- [x] 檢視 todo.md 中重複的 embedded_article_detail_flow 區塊並保留為歷史紀錄；正式技能已另存於 /home/ubuntu/skills/embedded-article-detail-flow/
 
 ## Skill delivery
 - [x] 建立並驗證 embedded-article-detail-flow 技能
+
+
+## 熊野古道小冊子嵌入更新
+- [x] 將熊野古道小冊子的 embedUrl 更新為 https://kumano-guide-jkdkp37c.manus.space
+- [x] 驗證旅遊小冊子熊野古道分頁的互動指南可正常嵌入
+- [x] 執行測試並保存新的 Checkpoint

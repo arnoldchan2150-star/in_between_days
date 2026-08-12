@@ -11,6 +11,7 @@ type MediaItem = {
   url: string;
   caption?: string | null;
   sortOrder: number;
+  mediaType?: "image" | "video";
 };
 
 function isVideoEmbedUrl(url?: string | null) {
@@ -254,6 +255,8 @@ export default function PostDetail() {
   // ── 一般文章模式 ─────────────────────────────────────────────────────────
   const mediaItems: MediaItem[] = (post.media ?? []) as MediaItem[];
   const sortedMedia = [...mediaItems].sort((a, b) => a.sortOrder - b.sortOrder);
+  const imageMedia = sortedMedia.filter((item) => item.mediaType !== "video");
+  const videoMedia = sortedMedia.filter((item) => item.mediaType === "video");
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -340,8 +343,34 @@ export default function PostDetail() {
             </div>
           )}
 
+          {/* ── Self-hosted Video Gallery ── */}
+          {videoMedia.length > 0 && (
+            <div className="mt-14">
+              <div className="flex items-center gap-3 mb-6">
+                <hr className="flex-1 border-border" />
+                <span className="font-serif text-sm text-muted-foreground tracking-widest">上傳影片</span>
+                <hr className="flex-1 border-border" />
+              </div>
+              <div className="space-y-6">
+                {videoMedia.map((video) => (
+                  <div key={video.id} className="space-y-2">
+                    <video
+                      src={video.url}
+                      controls
+                      preload="metadata"
+                      className="w-full aspect-video bg-muted rounded-sm"
+                    />
+                    {video.caption && (
+                      <p className="text-sm text-muted-foreground leading-relaxed">{video.caption}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* ── Photo Gallery ── */}
-          {sortedMedia.length > 0 && (
+          {imageMedia.length > 0 && (
             <div className="mt-14">
               <div className="flex items-center gap-3 mb-6">
                 <hr className="flex-1 border-border" />
@@ -353,12 +382,12 @@ export default function PostDetail() {
 
               {/* Masonry-style grid */}
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {sortedMedia.map((m, idx) => (
+                {imageMedia.map((m, idx) => (
                   <div
                     key={m.id}
                     className={`overflow-hidden cursor-zoom-in group relative ${
                       // Make first photo span 2 columns if there are 3+ photos
-                      idx === 0 && sortedMedia.length >= 3 ? "col-span-2 md:col-span-1" : ""
+                      idx === 0 && imageMedia.length >= 3 ? "col-span-2 md:col-span-1" : ""
                     }`}
                     onClick={() => setLightboxIndex(idx)}
                   >
@@ -383,7 +412,7 @@ export default function PostDetail() {
               </div>
 
               <p className="text-xs text-muted-foreground mt-3 text-center">
-                點擊照片放大 · 共 {sortedMedia.length} 張
+                點擊照片放大 · 共 {imageMedia.length} 張
               </p>
             </div>
           )}
@@ -403,7 +432,7 @@ export default function PostDetail() {
       {/* Lightbox */}
       {lightboxIndex !== null && (
         <Lightbox
-          items={sortedMedia}
+          items={imageMedia}
           initialIndex={lightboxIndex}
           onClose={() => setLightboxIndex(null)}
         />

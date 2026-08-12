@@ -205,6 +205,7 @@ export const appRouter = router({
           dataBase64: z.string(),
           caption: z.string().optional(),
           sortOrder: z.number().optional(),
+          mediaType: z.enum(["image", "video"]).default("image"),
         })
       )
       .mutation(async ({ input }) => {
@@ -217,6 +218,7 @@ export const appRouter = router({
           storageKey: key,
           caption: input.caption,
           sortOrder: input.sortOrder ?? 0,
+          mediaType: input.mediaType,
         });
         return { url, key };
       }),
