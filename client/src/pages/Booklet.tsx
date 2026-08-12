@@ -10,12 +10,12 @@ const BOOKLET_META: Record<string, { destination: string; journey: string; forma
   "mt-kinabalu-guide": {
     destination: "沙巴・馬來西亞",
     journey: "登山指南",
-    format: "PDF 指南",
+    format: "網頁",
   },
   "kumano-kodo-nakahechi": {
     destination: "和歌山・日本",
     journey: "6 日 7 夜",
-    format: "互動網頁",
+    format: "網頁",
   },
 };
 
@@ -23,7 +23,7 @@ function getBookletMeta(slug: string, hasEmbed: boolean) {
   return BOOKLET_META[slug] ?? {
     destination: "旅行目的地",
     journey: "實用指南",
-    format: hasEmbed ? "互動網頁" : "PDF 指南",
+    format: hasEmbed ? "網頁" : "PDF 指南",
   };
 }
 

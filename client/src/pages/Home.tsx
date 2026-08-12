@@ -11,32 +11,32 @@ const DESTINATIONS = [
   {
     cat: "南美",
     en: "South America",
-    img: "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=600&q=70&auto=format&fit=crop",
+    img: "/manus-storage/south-america_436af8fa.webp",
   },
   {
     cat: "中東",
     en: "Middle East",
-    img: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?w=600&q=70&auto=format&fit=crop",
+    img: "/manus-storage/middle-east_de228c97.webp",
   },
   {
     cat: "亞洲",
     en: "Asia",
-    img: "https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=70&auto=format&fit=crop",
+    img: "/manus-storage/asia_be513127.JPG",
   },
   {
     cat: "歐洲",
     en: "Europe",
-    img: "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=600&q=70&auto=format&fit=crop",
+    img: "/manus-storage/europe_71e79f54.webp",
   },
   {
     cat: "中亞",
     en: "Central Asia",
-    img: "https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=70&auto=format&fit=crop",
+    img: "/manus-storage/central-asia_2bdf1fff.webp",
   },
   {
     cat: "東南亞",
     en: "Southeast Asia",
-    img: "https://images.unsplash.com/photo-1552465011-b4e21bf6e79a?w=600&q=70&auto=format&fit=crop",
+    img: "/manus-storage/southeast-asia_bd5ed0d5.jpg",
   },
 ];
 
