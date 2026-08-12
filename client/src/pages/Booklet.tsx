@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useSearch } from "wouter";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -27,6 +28,8 @@ function getBookletMeta(slug: string, hasEmbed: boolean) {
 }
 
 export default function Booklet() {
+  const [, setLocation] = useLocation();
+  const search = useSearch();
   const { data: booklets, isLoading } = trpc.booklets.publicList.useQuery();
   const [activeFilter, setActiveFilter] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -49,6 +52,19 @@ export default function Booklet() {
   const selectedBooklet = booklets?.find((booklet) => booklet.id === selectedBookletId);
 
   useEffect(() => {
+    const guideSlug = new URLSearchParams(search).get("guide");
+    if (!guideSlug) {
+      setEmbedOpen(false);
+      return;
+    }
+    const guide = booklets?.find((booklet) => booklet.slug === guideSlug);
+    if (guide?.embedUrl) {
+      setSelectedBookletId(guide.id);
+      setEmbedOpen(true);
+    }
+  }, [booklets, search]);
+
+  useEffect(() => {
     if (!embedOpen) return;
     const updateHeight = () => {
       if (headerRef.current) {
@@ -62,8 +78,11 @@ export default function Booklet() {
   }, [embedOpen]);
 
   const openInteractiveGuide = (id: number) => {
+    const booklet = booklets?.find((item) => item.id === id);
+    if (!booklet?.embedUrl) return;
     setSelectedBookletId(id);
     setEmbedOpen(true);
+    setLocation(`/booklet?guide=${encodeURIComponent(booklet.slug)}`);
   };
 
   if (embedOpen && selectedBooklet?.embedUrl) {
@@ -74,12 +93,12 @@ export default function Booklet() {
           <div className="border-b border-border bg-background">
             <div className="container py-3 flex items-center justify-between flex-wrap gap-2">
               <div className="flex items-center gap-4 min-w-0">
-                <button
-                  onClick={() => setEmbedOpen(false)}
+                <a
+                  href="/booklet"
                   className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
                 >
                   <ArrowLeft size={12} /> 返回行旅資料庫
-                </button>
+                </a>
                 <span className="text-muted-foreground/30 text-xs">|</span>
                 <span className="font-serif text-sm font-light text-foreground truncate max-w-xs">
                   {selectedBooklet.title}
