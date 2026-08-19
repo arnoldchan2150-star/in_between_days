@@ -3683,3 +3683,9 @@
 - [x] 將 embedUrl 更新為 https://kumano-guide-jkdkp37c.manus.space
 - [x] 驗證前台行旅資料庫與指南詳細頁可正確載入新網址
 - [x] 執行測試與視覺驗證
+
+## 確保熊野古道行旅資料庫正確導向新網址
+- [x] 檢查 booklet 路由與資料庫中 kumano-kodo-nakahechi 的 embedUrl
+- [x] 修正 Booklet.tsx 與 server 端查詢，確保卡片點擊與直接訪問均正確帶入 https://kumano-guide-jkdkp37c.manus.space
+- [x] 視覺驗證點擊後 iframe src 與網頁內容
+- [x] 執行測試與 Checkpoint
