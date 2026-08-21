@@ -156,12 +156,23 @@ export default function Snow() {
 
                       {/* Right: Text */}
                       <div className="flex flex-col gap-3">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className="text-xs text-muted-foreground flex items-center gap-1 bg-foreground/10 px-2 py-1 rounded-sm">
                             {isVideo ? <Play size={12} /> : <FileText size={12} />} {kindLabel}
                           </span>
                           {post.category && (
                             <span className="text-xs text-muted-foreground">{post.category}</span>
+                          )}
+                          {post.publishedAt && (
+                            <>
+                              <span className="text-xs text-muted-foreground">·</span>
+                              <span className="text-xs text-muted-foreground font-mono">
+                                {new Date(post.publishedAt).toLocaleDateString("zh-TW", {
+                                  year: "numeric",
+                                  month: "long",
+                                })}
+                              </span>
+                            </>
                           )}
                         </div>
 

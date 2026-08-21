@@ -3718,3 +3718,9 @@
 - [x] 在 AdminPosts.tsx 中加入發佈日期（publishedAt）欄位顯示
 - [x] 實作依發佈日期進行升冪（Ascending）與降冪（Descending）排序切換按鈕／邏輯
 - [x] 執行 Vitest 測試與後台管理清單視覺驗證
+
+## 前台文章列表與內頁自訂發佈日期與排序功能
+- [x] 檢查 server/db.ts 中 getPublishedPosts 是否依 publishedAt 降冪排序
+- [x] 檢查 Journal.tsx 與 PostDetail.tsx 中文章日期的顯示方式與格式
+- [x] 確保列表與內頁皆優先顯示並正確格式化 publishedAt 欄位
+- [x] 執行 Vitest 測試與桌機手機版前台日期顯示驗證

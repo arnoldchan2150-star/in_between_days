@@ -118,13 +118,25 @@ export default function Destinations() {
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     </div>
-                    <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-2 mb-2 flex-wrap">
                       <p className="text-xs text-muted-foreground tracking-widest">
                         {post.category}
                       </p>
+                      <span className="text-xs text-muted-foreground">·</span>
                       <span className="text-xs text-muted-foreground">
                         {post.type === "travel" ? "🗺️ 遊記" : "📚 靈感"}
                       </span>
+                      {post.publishedAt && (
+                        <>
+                          <span className="text-xs text-muted-foreground">·</span>
+                          <span className="text-xs text-muted-foreground font-mono">
+                            {new Date(post.publishedAt).toLocaleDateString("zh-TW", {
+                              year: "numeric",
+                              month: "long",
+                            })}
+                          </span>
+                        </>
+                      )}
                     </div>
                     <h2 className="font-serif text-lg font-light group-hover:text-muted-foreground transition-colors">
                       {post.title}
