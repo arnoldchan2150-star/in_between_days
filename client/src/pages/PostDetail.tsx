@@ -255,10 +255,10 @@ export default function PostDetail() {
 
       {/* Content */}
       <article className={`flex-1 bg-background ${post.coverImageUrl ? "" : "pt-24"}`}>
-        <div className="container max-w-3xl mx-auto py-12">
+        <div className="container max-w-[740px] mx-auto py-12 px-5 md:px-8">
           <Link href="/journal">
-            <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-8">
-              <ArrowLeft size={12} /> 返回遊記
+            <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-8">
+              <ArrowLeft size={13} /> 返回遊記
             </span>
           </Link>
 
@@ -322,8 +322,10 @@ export default function PostDetail() {
 
                 if (block.blockType === "image") {
                   return (
-                    <figure key={block.id} className="my-12 md:-mx-8 lg:-mx-16">
-                      <img src={content} alt={block.caption || post.title} className="block w-full max-h-[760px] object-cover bg-muted" loading="lazy" />
+                    <figure key={block.id} className="my-10 md:-mx-6 lg:-mx-12">
+                      <div className="overflow-hidden bg-muted rounded-sm">
+                        <img src={content} alt={block.caption || post.title} className="block w-full max-h-[70vh] md:max-h-[760px] object-cover bg-muted w-full" loading="lazy" />
+                      </div>
                       {block.caption && <figcaption className="mt-3 px-2 text-center text-xs leading-relaxed text-muted-foreground">{block.caption}</figcaption>}
                     </figure>
                   );
