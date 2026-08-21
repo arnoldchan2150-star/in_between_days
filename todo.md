@@ -3689,3 +3689,13 @@
 - [x] 修正 Booklet.tsx 與 server 端查詢，確保卡片點擊與直接訪問均正確帶入 https://kumano-guide-jkdkp37c.manus.space
 - [x] 視覺驗證點擊後 iframe src 與網頁內容
 - [x] 執行測試與 Checkpoint
+
+## 查明與修正熊野古道網址版本問題
+- [x] 透過瀏覽器與網頁提取工具檢查 https://kumano-guide-jkdkp37c.manus.space 的實際標題與內容版本
+- [x] 確認該網址是否為舊版部署或有其他正確的最新網址
+- [x] 依實際情況更新資料庫中的 embedUrl 並驗證前台嵌入
+
+## 強制 iframe 刷新熊野古道外部網址快取
+- [x] 修改 Booklet.tsx 中嵌入 iframe 的 src，為 kumano-guide 網址自動加上時間戳或版本參數（如 ?v=timestamp），強制瀏覽器與 iframe 重新載入最新部署
+- [x] 測試行旅資料庫嵌入與新分頁開啟功能
+- [x] 執行 Vitest 測試與 Checkpoint

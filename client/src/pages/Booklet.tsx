@@ -115,13 +115,20 @@ export default function Booklet() {
             </div>
           </div>
         </div>
-        <iframe
-          src={selectedBooklet.embedUrl}
-          title={selectedBooklet.title}
-          style={{ width: "100%", height: iframeHeight, border: "none", display: "block", flexShrink: 0 }}
-          allow="fullscreen"
-          loading="lazy"
-        />
+        {(() => {
+          const rawUrl = selectedBooklet.embedUrl ?? "";
+          const separator = rawUrl.includes("?") ? "&" : "?";
+          const cacheBustedUrl = `${rawUrl}${separator}_cb=${Date.now()}`;
+          return (
+            <iframe
+              src={cacheBustedUrl}
+              title={selectedBooklet.title}
+              style={{ width: "100%", height: iframeHeight, border: "none", display: "block", flexShrink: 0 }}
+              allow="fullscreen"
+              loading="eager"
+            />
+          );
+        })()}
       </div>
     );
   }
