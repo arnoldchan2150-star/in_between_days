@@ -3706,3 +3706,9 @@
 - [x] 優化影片區塊顯示：以 16:9 響應式容器嵌入，防止變形
 - [x] 優化頂部與底部返回操作，確保手機端能順暢回到對應分類
 - [x] 執行 Vitest 測試與桌機、手機尺寸視覺驗證
+
+## 文章自訂發佈日期（Dateback）功能
+- [x] 檢查 server/routers.ts 中 posts.create 與 posts.update 是否接受並正確處理 publishedAt 欄位
+- [x] 在 AdminPostEditor.tsx 中加入發佈日期選擇器（<input type="date"> 或 datetime-local），讓新增與編輯文章時可自行指定過去日期
+- [x] 測試新增帶有自訂日期的文章，並驗證其在列表排序與前台詳細頁的顯示正確性
+- [x] 執行 Vitest 測試與視覺回歸驗證

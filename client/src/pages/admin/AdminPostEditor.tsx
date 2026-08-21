@@ -38,6 +38,7 @@ export default function AdminPostEditor() {
     category: "亞洲" as Category,
     type: "travel" as "travel" | "culture" | "snow",
     published: false,
+    publishedAt: new Date().toISOString().slice(0, 10),
     coverImageUrl: "",
     coverImageKey: "",
     embedUrl: "",
@@ -51,6 +52,13 @@ export default function AdminPostEditor() {
 
   useEffect(() => {
     if (existingPost) {
+      let dateStr = new Date().toISOString().slice(0, 10);
+      if (existingPost.publishedAt) {
+        const d = new Date(existingPost.publishedAt);
+        if (!isNaN(d.getTime())) {
+          dateStr = d.toISOString().slice(0, 10);
+        }
+      }
       setForm({
         title: existingPost.title,
         slug: existingPost.slug,
@@ -59,6 +67,7 @@ export default function AdminPostEditor() {
         category: existingPost.category as Category,
         type: existingPost.type,
         published: existingPost.published,
+        publishedAt: dateStr,
         coverImageUrl: existingPost.coverImageUrl ?? "",
         coverImageKey: existingPost.coverImageKey ?? "",
         embedUrl: existingPost.embedUrl ?? "",
@@ -362,18 +371,34 @@ export default function AdminPostEditor() {
             </p>
           </div>
 
-          {/* Published */}
-          <div className="flex items-center gap-3">
-            <input
-              type="checkbox"
-              id="published"
-              checked={form.published}
-              onChange={(e) => setForm((f) => ({ ...f, published: e.target.checked }))}
-              className="w-4 h-4 border border-border"
-            />
-            <label htmlFor="published" className="text-sm text-muted-foreground cursor-pointer">
-              立即發布
-            </label>
+          {/* Publish Options */}
+          <div className="space-y-4 border border-border p-4 bg-muted/20">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="published"
+                checked={form.published}
+                onChange={(e) => setForm((f) => ({ ...f, published: e.target.checked }))}
+                className="w-4 h-4 border border-border"
+              />
+              <label htmlFor="published" className="text-sm font-medium text-foreground cursor-pointer">
+                發布文章（勾選後才會公開顯示）
+              </label>
+            </div>
+            <div>
+              <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">
+                發佈日期（支援 Dateback 回溯至過去日期）
+              </label>
+              <input
+                type="date"
+                value={form.publishedAt}
+                onChange={(e) => setForm((f) => ({ ...f, publishedAt: e.target.value }))}
+                className="w-full sm:w-64 border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground transition-colors font-mono"
+              />
+              <p className="text-xs text-muted-foreground mt-1">
+                您可以自由選擇過去的日期（例如 2021-05-28），文章將會以該歷史日期排序與顯示。
+              </p>
+            </div>
           </div>
 
           {/* Submit */}

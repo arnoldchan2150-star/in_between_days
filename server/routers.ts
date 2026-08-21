@@ -196,13 +196,19 @@ export const appRouter = router({
           category: z.enum(["南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"]),
           type: z.enum(["travel", "culture", "snow"]).default("travel"),
           published: z.boolean().default(false),
+          publishedAt: z.string().optional().nullable(),
           embedUrl: z.string().optional().nullable(),
         })
       )
       .mutation(async ({ input }) => {
+        const { publishedAt, ...rest } = input;
+        let finalPublishedAt: Date | null = null;
+        if (rest.published) {
+          finalPublishedAt = publishedAt ? new Date(publishedAt) : new Date();
+        }
         return createPost({
-          ...input,
-          publishedAt: input.published ? new Date() : null,
+          ...rest,
+          publishedAt: finalPublishedAt,
         });
       }),
     update: adminProcedure
@@ -218,14 +224,26 @@ export const appRouter = router({
           category: z.enum(["南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"]).optional(),
           type: z.enum(["travel", "culture", "snow"]).optional(),
           published: z.boolean().optional(),
+          publishedAt: z.string().optional().nullable(),
           embedUrl: z.string().optional().nullable(),
         })
       )
       .mutation(async ({ input }) => {
-        const { id, ...data } = input;
+        const { id, publishedAt, ...data } = input;
         const updates: Record<string, unknown> = { ...data };
         if (data.published !== undefined) {
-          updates.publishedAt = data.published ? new Date() : null;
+          if (data.published) {
+            if (publishedAt !== undefined) {
+              updates.publishedAt = publishedAt ? new Date(publishedAt) : new Date();
+            } else {
+              // keep existing or default to now if not set
+              updates.publishedAt = new Date();
+            }
+          } else {
+            updates.publishedAt = null;
+          }
+        } else if (publishedAt !== undefined) {
+          updates.publishedAt = publishedAt ? new Date(publishedAt) : null;
         }
         await updatePost(id, updates as any);
         return { success: true };
