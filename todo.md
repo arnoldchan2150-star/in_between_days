@@ -3712,3 +3712,9 @@
 - [x] 在 AdminPostEditor.tsx 中加入發佈日期選擇器（<input type="date"> 或 datetime-local），讓新增與編輯文章時可自行指定過去日期
 - [x] 測試新增帶有自訂日期的文章，並驗證其在列表排序與前台詳細頁的顯示正確性
 - [x] 執行 Vitest 測試與視覺回歸驗證
+
+## 後台文章管理清單發佈日期與排序功能
+- [x] 檢查 AdminPosts.tsx 現有文章清單表格與欄位結構
+- [x] 在 AdminPosts.tsx 中加入發佈日期（publishedAt）欄位顯示
+- [x] 實作依發佈日期進行升冪（Ascending）與降冪（Descending）排序切換按鈕／邏輯
+- [x] 執行 Vitest 測試與後台管理清單視覺驗證

@@ -1,12 +1,23 @@
-import { Link } from "wouter";
+import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
 import AdminLayout from "./AdminLayout";
 import { toast } from "sonner";
 import { Plus, Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import { Link } from "wouter";
 
 export default function AdminPosts() {
   const { data: posts, isLoading, refetch } = trpc.posts.adminList.useQuery();
   const utils = trpc.useUtils();
+  const [sortOrder, setSortOrder] = useState<"desc" | "asc">("desc");
+
+  const sortedPosts = useMemo(() => {
+    if (!posts) return [];
+    return [...posts].sort((a, b) => {
+      const timeA = a.publishedAt ? new Date(a.publishedAt).getTime() : new Date(a.createdAt).getTime();
+      const timeB = b.publishedAt ? new Date(b.publishedAt).getTime() : new Date(b.createdAt).getTime();
+      return sortOrder === "desc" ? timeB - timeA : timeA - timeB;
+    });
+  }, [posts, sortOrder]);
 
   const deleteMutation = trpc.posts.delete.useMutation({
     onSuccess: () => {
@@ -36,15 +47,23 @@ export default function AdminPosts() {
   return (
     <AdminLayout title="文章管理">
       <div className="max-w-5xl">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
           <p className="text-sm text-muted-foreground">
             共 {posts?.length ?? 0} 篇文章
           </p>
-          <Link href="/admin/posts/new">
-            <span className="inline-flex items-center gap-2 bg-foreground text-background px-4 py-2 text-xs tracking-wider hover:bg-foreground/80 transition-colors cursor-pointer">
-              <Plus size={12} /> 新增文章
-            </span>
-          </Link>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSortOrder((o) => (o === "desc" ? "asc" : "desc"))}
+              className="inline-flex items-center gap-1.5 border border-border px-3 py-1.5 text-xs text-foreground bg-secondary/10 hover:border-foreground transition-colors"
+            >
+              發佈日期排序：{sortOrder === "desc" ? "新 → 舊 (降冪)" : "舊 → 新 (升冪)"}
+            </button>
+            <Link href="/admin/posts/new">
+              <span className="inline-flex items-center gap-2 bg-foreground text-background px-4 py-2 text-xs tracking-wider hover:bg-foreground/80 transition-colors cursor-pointer">
+                <Plus size={12} /> 新增文章
+              </span>
+            </Link>
+          </div>
         </div>
 
         {isLoading ? (
@@ -53,7 +72,7 @@ export default function AdminPosts() {
               <div key={i} className="h-14 bg-secondary/30 animate-pulse" />
             ))}
           </div>
-        ) : posts && posts.length > 0 ? (
+        ) : sortedPosts && sortedPosts.length > 0 ? (
           <div className="border border-border">
             <table className="w-full">
               <thead>
@@ -68,6 +87,9 @@ export default function AdminPosts() {
                     類型
                   </th>
                   <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal">
+                    發佈日期
+                  </th>
+                  <th className="text-left px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal">
                     狀態
                   </th>
                   <th className="text-right px-4 py-3 text-xs text-muted-foreground tracking-wider font-normal">
@@ -76,7 +98,7 @@ export default function AdminPosts() {
                 </tr>
               </thead>
               <tbody>
-                {posts.map((post) => (
+                {sortedPosts.map((post: any) => (
                   <tr key={post.id} className="border-b border-border last:border-0 hover:bg-secondary/10">
                     <td className="px-4 py-3">
                       <p className="text-sm font-serif line-clamp-1">{post.title}</p>
@@ -89,6 +111,15 @@ export default function AdminPosts() {
                     </td>
                     <td className="px-4 py-3 text-xs text-muted-foreground hidden md:table-cell">
                       {post.type === "travel" ? "遊記" : post.type === "culture" ? "靈感" : "雪季"}
+                    </td>
+                    <td className="px-4 py-3 text-xs text-muted-foreground font-mono whitespace-nowrap">
+                      {post.publishedAt
+                        ? new Date(post.publishedAt).toLocaleDateString("zh-TW", {
+                            year: "numeric",
+                            month: "2-digit",
+                            day: "2-digit",
+                          })
+                        : "未設定"}
                     </td>
                     <td className="px-4 py-3">
                       <button
