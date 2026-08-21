@@ -3724,3 +3724,9 @@
 - [x] 檢查 Journal.tsx 與 PostDetail.tsx 中文章日期的顯示方式與格式
 - [x] 確保列表與內頁皆優先顯示並正確格式化 publishedAt 欄位
 - [x] 執行 Vitest 測試與桌機手機版前台日期顯示驗證
+
+## 網站 SEO 基礎設定
+- [x] 在 client/index.html 中補齊通用 SEO meta 標籤與預設 Open Graph 標籤
+- [x] 在 PostDetail.tsx 中動態更新 document.title、description、Open Graph 標籤與 Article 結構化資料 (JSON-LD)
+- [x] 在後端 routers.ts 或專案中提供 /sitemap.xml 與 /robots.txt 端點或靜態產出
+- [x] 執行 Vitest 測試與 SEO 標籤驗證

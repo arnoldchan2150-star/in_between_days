@@ -152,6 +152,54 @@ export default function PostDetail() {
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  useEffect(() => {
+    if (!post) return;
+    const prevTitle = document.title;
+    const siteTitle = `${post.title} ｜ In-Between Days`;
+    document.title = siteTitle;
+
+    const descMeta = document.querySelector('meta[name="description"]');
+    const prevDesc = descMeta?.getAttribute("content") ?? "";
+    const description = post.excerpt || `${post.title} - In-Between Days 旅遊部落格`;
+    if (descMeta) descMeta.setAttribute("content", description);
+
+    // Open Graph
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    const ogImage = document.querySelector('meta[property="og:image"]');
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+
+    if (ogTitle) ogTitle.setAttribute("content", siteTitle);
+    if (ogDesc) ogDesc.setAttribute("content", description);
+    if (ogImage && post.coverImageUrl) ogImage.setAttribute("content", post.coverImageUrl);
+    if (ogUrl) ogUrl.setAttribute("content", window.location.href);
+
+    // Article JSON-LD
+    const jsonLdScript = document.createElement("script");
+    jsonLdScript.type = "application/ld+json";
+    jsonLdScript.id = "article-json-ld";
+    jsonLdScript.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": post.title,
+      "description": description,
+      "image": post.coverImageUrl || "",
+      "datePublished": post.publishedAt ? new Date(post.publishedAt).toISOString() : new Date(post.createdAt).toISOString(),
+      "author": {
+        "@type": "Person",
+        "name": "In-Between Days"
+      }
+    });
+    document.head.appendChild(jsonLdScript);
+
+    return () => {
+      document.title = prevTitle;
+      if (descMeta) descMeta.setAttribute("content", prevDesc);
+      const script = document.getElementById("article-json-ld");
+      if (script) script.remove();
+    };
+  }, [post]);
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col">

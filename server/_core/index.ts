@@ -37,6 +37,52 @@ async function startServer() {
   registerStorageProxy(app);
   registerOAuthRoutes(app);
 
+  // Sitemap and robots.txt
+  app.get("/sitemap.xml", async (req, res) => {
+    try {
+      const { getPublishedPosts, getPublicBooklets } = await import("../db");
+      const posts = await getPublishedPosts();
+      const booklets = await getPublicBooklets();
+      const host = req.get("host") || "inbetweenbd-ni9eppcf.manus.space";
+      const protocol = req.protocol || "https";
+      const baseUrl = `${protocol}://${host}`;
+
+      let xml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
+      xml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
+      
+      // Static pages
+      const staticPaths = ["", "/journal", "/destinations", "/culture", "/snow", "/booklet", "/about"];
+      for (const p of staticPaths) {
+        xml += `  <url>\n    <loc>${baseUrl}${p}</loc>\n    <changefreq>daily</changefreq>\n    <priority>${p === "" ? "1.0" : "0.8"}</priority>\n  </url>\n`;
+      }
+
+      // Posts
+      for (const post of posts) {
+        const detailPath = post.type === "snow" ? `/snow/${post.slug}` : post.type === "culture" ? `/culture/${post.slug}` : `/journal/${post.slug}`;
+        const lastMod = post.publishedAt ? new Date(post.publishedAt).toISOString().split("T")[0] : new Date(post.createdAt).toISOString().split("T")[0];
+        xml += `  <url>\n    <loc>${baseUrl}${detailPath}</loc>\n    <lastmod>${lastMod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
+      }
+
+      // Booklets
+      for (const b of booklets) {
+        xml += `  <url>\n    <loc>${baseUrl}/booklet?guide=${b.slug}</loc>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>\n`;
+      }
+
+      xml += `</urlset>`;
+      res.header("Content-Type", "application/xml");
+      res.send(xml);
+    } catch (err) {
+      res.status(500).send("Error generating sitemap");
+    }
+  });
+
+  app.get("/robots.txt", (req, res) => {
+    const host = req.get("host") || "inbetweenbd-ni9eppcf.manus.space";
+    const protocol = req.protocol || "https";
+    res.type("text/plain");
+    res.send(`User-agent: *\nAllow: /\nSitemap: ${protocol}://${host}/sitemap.xml\n`);
+  });
+
   // Newsletter confirmation and unsubscription endpoints
   app.get("/api/newsletter/confirm", async (req, res) => {
     const token = typeof req.query.token === "string" ? req.query.token : "";
