@@ -3736,3 +3736,8 @@
 - [x] 在 server/routers.ts 的 posts 路由中加入 related 查詢端點
 - [x] 在 PostDetail.tsx 底部加入「延伸閱讀」區塊，呈現 3 篇推薦卡片（含封面、分類、日期與標題）
 - [x] 執行 Vitest 測試與前端視覺回歸驗證
+
+## 查明自訂網域無法找到網站原因
+- [x] 測試輸入網域 http://www.inbetweenday.com，發現發生 net::ERR_NAME_NOT_RESOLVED 錯誤
+- [x] 確認正確網域拼寫（應為 inbetweendays.com 或在管理介面綁定自訂網域）
+- [x] 提供正確的平台預設網址與自訂網域 DNS 設定步驟
