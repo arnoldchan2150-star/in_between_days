@@ -33,6 +33,16 @@ function isVideoEmbedUrl(url?: string | null) {
   );
 }
 
+function getPostDetailHref(type?: string | null, slug?: string | null) {
+  if (!slug) return null;
+  const section = type === "snow" ? "snow" : type === "culture" ? "culture" : "destinations";
+  return `/${section}/${encodeURIComponent(slug)}`;
+}
+
+function getPostListingHref(type?: string | null) {
+  return type === "snow" ? "/snow" : type === "culture" ? "/culture" : "/destinations";
+}
+
 // ── Lightbox Component ────────────────────────────────────────────────────────
 function Lightbox({
   items,
@@ -236,9 +246,9 @@ export default function PostDetail() {
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <p className="font-serif text-xl text-muted-foreground mb-4">找不到這篇文章</p>
-            <Link href="/journal">
+            <Link href="/destinations">
               <span className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer flex items-center gap-1 justify-center">
-                <ArrowLeft size={14} /> 返回遊記列表
+                <ArrowLeft size={14} /> 返回目的地遊記
               </span>
             </Link>
           </div>
@@ -289,6 +299,8 @@ export default function PostDetail() {
 
   // ── 一般文章模式 ─────────────────────────────────────────────────────────
   const mediaItems: MediaItem[] = (post.media ?? []) as MediaItem[];
+  const sectionHref = getPostListingHref(post.type);
+  const sectionLabel = post.type === "snow" ? "雪季映像" : post.type === "culture" ? "靈感拾光" : "目的地遊記";
   const sortedMedia = [...mediaItems].sort((a, b) => a.sortOrder - b.sortOrder);
   const imageMedia = sortedMedia.filter((item) => item.mediaType !== "video");
   const videoMedia = sortedMedia.filter((item) => item.mediaType === "video");
@@ -313,9 +325,9 @@ export default function PostDetail() {
       {/* Content */}
       <article className={`flex-1 bg-background ${post.coverImageUrl ? "" : "pt-24"}`}>
         <div className="container max-w-[740px] mx-auto py-12 px-5 md:px-8">
-          <Link href="/journal">
+          <Link href={sectionHref}>
             <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer mb-8">
-              <ArrowLeft size={13} /> 返回遊記
+              <ArrowLeft size={13} /> 返回{sectionLabel}
             </span>
           </Link>
 
@@ -535,7 +547,8 @@ export default function PostDetail() {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {relatedPosts.map((rel: any) => {
-                  const relHref = rel.type === "snow" ? `/snow/${rel.slug}` : rel.type === "culture" ? `/culture/${rel.slug}` : `/journal/${rel.slug}`;
+                  const relHref = getPostDetailHref(rel.type, rel.slug);
+                  if (!relHref) return null;
                   return (
                     <Link key={rel.id} href={relHref}>
                       <article className="group cursor-pointer flex flex-col h-full bg-secondary/10 border border-border/60 p-3 hover:border-foreground/30 transition-colors">
@@ -573,9 +586,9 @@ export default function PostDetail() {
           )}
 
           <div className="mt-16 pt-8 border-t border-border">
-            <Link href="/journal">
+            <Link href={sectionHref}>
               <span className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                <ArrowLeft size={14} /> 更多旅行故事
+                <ArrowLeft size={14} /> 更多{sectionLabel}
               </span>
             </Link>
           </div>

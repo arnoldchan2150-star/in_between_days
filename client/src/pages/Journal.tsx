@@ -72,7 +72,7 @@ export default function Journal() {
           ) : posts && posts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {posts.map((post, i) => (
-                <Link key={post.id} href={`/journal/${post.slug}`}>
+                <Link key={post.id} href={`/destinations/${encodeURIComponent(post.slug)}`}>
                   <article className="group cursor-pointer">
                     <div className="aspect-[4/3] overflow-hidden mb-4 bg-muted">
                       <img
