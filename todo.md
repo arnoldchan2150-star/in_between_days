@@ -3756,3 +3756,9 @@
 - [x] 執行 shell 指令檢查 `inbetweenday.com` 與 `www.inbetweenday.com` 的外部 DNS 解析與 HTTP 狀態碼
 - [x] 檢查 Cloudflare Proxy（橙色雲朵 vs 灰色雲朵）與 SSL/TLS 設定對不同網絡環境的影響
 - [x] 提供最穩定的 Cloudflare 建議設定與清除本機 DNS 快取的方法
+
+## 連接 Resend 服務至後台電子報系統
+- [x] 檢查 server/email.ts 現有 Nodemailer / Forge 寄信實作與設定
+- [x] 擴充 server/email.ts 支援 Resend API（使用正式 RESEND_API_KEY 與已驗證寄件者信箱）
+- [x] 使用 webdev_request_secrets 要求使用者提供 RESEND_API_KEY 與寄件者地址
+- [x] 驗證訂閱確認信、取消訂閱信與後台電子報手動寄送功能

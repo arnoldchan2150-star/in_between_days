@@ -7,8 +7,40 @@ interface SendEmailOptions {
 }
 
 async function sendEmail(opts: SendEmailOptions): Promise<boolean> {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const senderEmail = process.env.SENDER_EMAIL || "In-Between Days <newsletter@inbetweenday.com>";
+
+  // 如果有設定 Resend API Key，直接透過 Resend 官方 API 發送
+  if (resendApiKey) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${resendApiKey}`,
+        },
+        body: JSON.stringify({
+          from: senderEmail,
+          to: [opts.to],
+          subject: opts.subject,
+          html: opts.html,
+        }),
+      });
+      if (!res.ok) {
+        const text = await res.text();
+        console.error("[Email] Resend API send failed:", res.status, text);
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error("[Email] Resend API send error:", err);
+      return false;
+    }
+  }
+
+  // 備援：使用內建 Forge API
   if (!ENV.forgeApiUrl || !ENV.forgeApiKey) {
-    console.warn("[Email] Forge API not configured, skipping email send");
+    console.warn("[Email] Neither Resend API Key nor Forge API configured, skipping email send");
     return false;
   }
   try {
@@ -22,12 +54,12 @@ async function sendEmail(opts: SendEmailOptions): Promise<boolean> {
     });
     if (!res.ok) {
       const text = await res.text();
-      console.error("[Email] Send failed:", res.status, text);
+      console.error("[Email] Forge send failed:", res.status, text);
       return false;
     }
     return true;
   } catch (err) {
-    console.error("[Email] Send error:", err);
+    console.error("[Email] Forge send error:", err);
     return false;
   }
 }
