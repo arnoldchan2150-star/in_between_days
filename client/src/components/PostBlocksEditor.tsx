@@ -2,6 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { ArrowDown, ArrowUp, Image as ImageIcon, MessageSquareQuote, Plus, Save, Trash2, Type, Video, Upload, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { normalizePostBlocks, serializePostBlocks } from "@shared/postBlocks";
 
 type BlockType = "paragraph" | "image" | "heading" | "quote" | "video";
 
@@ -48,13 +49,10 @@ export default function PostBlocksEditor({ postId, initialBlocks = [], mediaItem
 
   const saveBlocksMutation = trpc.posts.saveBlocks.useMutation();
   const uploadMediaMutation = trpc.posts.uploadMedia.useMutation();
+  const utils = trpc.useUtils();
 
   useEffect(() => {
-    setBlocks(
-      [...initialBlocks]
-        .sort((a, b) => a.sortOrder - b.sortOrder)
-        .map((block, index) => ({ ...block, sortOrder: index }))
-    );
+    setBlocks(normalizePostBlocks(initialBlocks));
   }, [initialBlocks]);
 
   const addBlock = (blockType: BlockType) => {
@@ -121,16 +119,13 @@ export default function PostBlocksEditor({ postId, initialBlocks = [], mediaItem
   };
 
   const handleSave = async () => {
+    if (saveBlocksMutation.isPending) return;
     try {
       await saveBlocksMutation.mutateAsync({
         postId,
-        blocks: blocks.map(({ blockType, content, caption, sortOrder }) => ({
-          blockType,
-          content: content.trim() || null,
-          caption: caption.trim() || null,
-          sortOrder,
-        })),
+        blocks: serializePostBlocks(blocks),
       });
+      await utils.posts.byId.invalidate({ id: postId });
       toast.success("文章版面區塊已儲存");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "區塊儲存失敗");

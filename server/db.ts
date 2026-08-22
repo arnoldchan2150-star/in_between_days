@@ -454,15 +454,19 @@ export async function getPostBlocks(postId: number): Promise<PostBlock[]> {
 export async function savePostBlocks(postId: number, blocks: Array<{ blockType: string; content?: string | null; caption?: string | null; sortOrder: number }>): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("DB unavailable");
-  await db.delete(postBlocks).where(eq(postBlocks.postId, postId));
-  if (!blocks || blocks.length === 0) return;
-  for (const block of blocks) {
-    await db.insert(postBlocks).values({
-      postId,
-      blockType: block.blockType,
-      content: block.content || null,
-      caption: block.caption || null,
-      sortOrder: block.sortOrder,
-    });
-  }
+
+  await db.transaction(async (tx) => {
+    await tx.delete(postBlocks).where(eq(postBlocks.postId, postId));
+    if (!blocks || blocks.length === 0) return;
+
+    for (const block of blocks) {
+      await tx.insert(postBlocks).values({
+        postId,
+        blockType: block.blockType,
+        content: block.content || null,
+        caption: block.caption || null,
+        sortOrder: block.sortOrder,
+      });
+    }
+  });
 }

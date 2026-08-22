@@ -346,12 +346,17 @@ export default function AdminPostEditor() {
             />
           </div>
 
-          {isEdit && postId && (
+          {isEdit && postId && existingPost && (
             <PostBlocksEditor
               postId={postId}
-              initialBlocks={(existingPost?.blocks ?? []) as EditablePostBlock[]}
+              initialBlocks={(existingPost.blocks ?? []) as EditablePostBlock[]}
               mediaItems={mediaItems}
             />
+          )}
+          {isEdit && postId && !existingPost && (
+            <div className="mt-10 border-t border-border pt-8 text-xs text-muted-foreground">
+              正在載入文章版面，請稍候再儲存。
+            </div>
           )}
 
           {/* Embed URL */}
