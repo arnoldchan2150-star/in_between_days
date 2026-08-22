@@ -300,13 +300,13 @@ export default function PostDetail() {
 
       {/* Hero Image */}
       {post.coverImageUrl && (
-        <div className="relative h-[60vh] min-h-[400px]">
+        <div className="relative mx-auto mt-6 h-[38vh] min-h-[240px] max-h-[460px] w-[calc(100%-2rem)] max-w-[1120px] overflow-hidden rounded-sm md:mt-8 md:w-[calc(100%-4rem)]">
           <img
             src={post.coverImageUrl}
             alt={post.title}
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/35 to-transparent" />
         </div>
       )}
 
@@ -379,11 +379,16 @@ export default function PostDetail() {
 
                 if (block.blockType === "image") {
                   return (
-                    <figure key={block.id} className="my-10 md:-mx-6 lg:-mx-12">
-                      <div className="overflow-hidden bg-muted rounded-sm">
-                        <img src={content} alt={block.caption || post.title} className="block w-full max-h-[70vh] md:max-h-[760px] object-cover bg-muted w-full" loading="lazy" />
+                    <figure key={block.id} className="my-10 md:my-12">
+                      <div className="mx-auto flex max-w-[640px] items-center justify-center overflow-hidden rounded-sm bg-muted">
+                        <img
+                          src={content}
+                          alt={block.caption || post.title}
+                          className="block max-h-[360px] max-w-full object-contain md:max-h-[520px]"
+                          loading="lazy"
+                        />
                       </div>
-                      {block.caption && <figcaption className="mt-3 px-2 text-center text-xs leading-relaxed text-muted-foreground">{block.caption}</figcaption>}
+                      {block.caption && <figcaption className="mx-auto mt-3 max-w-[640px] px-2 text-center text-xs leading-relaxed text-muted-foreground">{block.caption}</figcaption>}
                     </figure>
                   );
                 }
