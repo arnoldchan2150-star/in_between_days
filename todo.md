@@ -3741,3 +3741,8 @@
 - [x] 測試輸入網域 http://www.inbetweenday.com，發現發生 net::ERR_NAME_NOT_RESOLVED 錯誤
 - [x] 確認正確網域拼寫（應為 inbetweendays.com 或在管理介面綁定自訂網域）
 - [x] 提供正確的平台預設網址與自訂網域 DNS 設定步驟
+
+## 修復 www.inbetweenday.com 無法使用問題
+- [x] 測試 `https://www.inbetweenday.com` 的目前錯誤（如 Error 1014 或 DNS 解析狀況）
+- [x] 確認 Cloudflare 中 `www` 記錄與根網域的配合方式
+- [x] 提供的 Cloudflare 記錄調整或轉址設定，確保 `www` 與根網域皆能順暢開啟
