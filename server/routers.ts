@@ -166,6 +166,19 @@ export const appRouter = router({
       .query(async ({ input }) => {
         return getPostBlocks(input.postId);
       }),
+    related: publicProcedure
+      .input(
+        z.object({
+          postId: z.number(),
+          category: z.string().optional(),
+          type: z.string().optional(),
+          limit: z.number().optional().default(3),
+        })
+      )
+      .query(async ({ input }) => {
+        const { getRelatedPosts } = await import("./db");
+        return getRelatedPosts(input.postId, input.category, input.type, input.limit);
+      }),
     saveBlocks: adminProcedure
       .input(
         z.object({

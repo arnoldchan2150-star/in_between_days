@@ -3730,3 +3730,9 @@
 - [x] 在 PostDetail.tsx 中動態更新 document.title、description、Open Graph 標籤與 Article 結構化資料 (JSON-LD)
 - [x] 在後端 routers.ts 或專案中提供 /sitemap.xml 與 /robots.txt 端點或靜態產出
 - [x] 執行 Vitest 測試與 SEO 標籤驗證
+
+## 文章詳細頁延伸閱讀推薦區塊
+- [x] 在 server/db.ts 中加入 getRelatedPosts 查詢，依相同分類或類型優先匹配，排除目前文章並限制 3 篇
+- [x] 在 server/routers.ts 的 posts 路由中加入 related 查詢端點
+- [x] 在 PostDetail.tsx 底部加入「延伸閱讀」區塊，呈現 3 篇推薦卡片（含封面、分類、日期與標題）
+- [x] 執行 Vitest 測試與前端視覺回歸驗證

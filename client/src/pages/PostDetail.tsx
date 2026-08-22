@@ -150,6 +150,11 @@ export default function PostDetail() {
 
   const { data: post, isLoading, error } = trpc.posts.bySlug.useQuery({ slug }, { enabled: !!slug });
 
+  const { data: relatedPosts } = trpc.posts.related.useQuery(
+    { postId: post!.id, category: post!.category, type: post!.type, limit: 3 },
+    { enabled: !!post?.id }
+  );
+
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
@@ -505,6 +510,56 @@ export default function PostDetail() {
               <p className="text-xs text-muted-foreground mt-3 text-center">
                 點擊照片放大 · 共 {imageMedia.length} 張
               </p>
+            </div>
+          )}
+
+          {/* ── Related Posts Section ── */}
+          {relatedPosts && relatedPosts.length > 0 && (
+            <div className="mt-20 pt-12 border-t border-border">
+              <div className="mb-8">
+                <span className="font-serif text-sm tracking-widest text-muted-foreground uppercase">
+                  Related Stories
+                </span>
+                <h3 className="font-serif text-2xl font-light mt-1 text-foreground">
+                  延伸閱讀
+                </h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedPosts.map((rel: any) => {
+                  const relHref = rel.type === "snow" ? `/snow/${rel.slug}` : rel.type === "culture" ? `/culture/${rel.slug}` : `/journal/${rel.slug}`;
+                  return (
+                    <Link key={rel.id} href={relHref}>
+                      <article className="group cursor-pointer flex flex-col h-full bg-secondary/10 border border-border/60 p-3 hover:border-foreground/30 transition-colors">
+                        <div className="aspect-[4/3] overflow-hidden mb-3 bg-muted">
+                          <img
+                            src={rel.coverImageUrl || "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=800&q=80"}
+                            alt={rel.title}
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            loading="lazy"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2 mb-1.5 text-xs text-muted-foreground">
+                          <span>{rel.category}</span>
+                          {rel.publishedAt && (
+                            <>
+                              <span>·</span>
+                              <span className="font-mono">
+                                {new Date(rel.publishedAt).toLocaleDateString("zh-TW", {
+                                  year: "numeric",
+                                  month: "2-digit",
+                                })}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <h4 className="font-serif text-base font-light group-hover:text-muted-foreground transition-colors line-clamp-2 leading-snug">
+                          {rel.title}
+                        </h4>
+                      </article>
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
           )}
 

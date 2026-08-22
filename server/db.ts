@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import { and, asc, desc, eq, isNull } from "drizzle-orm";
+import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
 import {
   AboutPage,
   Booklet,
@@ -104,6 +104,25 @@ export async function getPublishedPosts(category?: string, type?: string): Promi
     .from(posts)
     .where(and(...conditions))
     .orderBy(desc(posts.publishedAt));
+}
+
+export async function getRelatedPosts(postId: number, category?: string, type?: string, limit: number = 3): Promise<Post[]> {
+  const db = await getDb();
+  if (!db) return [];
+  
+  // 取得所有已發布但非當前文章
+  const allPublished = await db
+    .select()
+    .from(posts)
+    .where(and(eq(posts.published, true), sql`${posts.id} <> ${postId}`))
+    .orderBy(desc(posts.publishedAt));
+
+  // 優先挑選同分類或同類型的文章
+  const sameCategory = allPublished.filter(p => p.category === category || p.type === type);
+  const others = allPublished.filter(p => p.category !== category && p.type !== type);
+  
+  const combined = [...sameCategory, ...others];
+  return combined.slice(0, limit);
 }
 
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
