@@ -3767,3 +3767,8 @@
 - [x] 檢查 server/routers.ts 中的 siteSubscribe、siteList 與 newsletter 相關路由
 - [x] 檢查 server/db.ts 中 site_subscribers 與 site_newsletters 的資料庫操作
 - [x] 執行 Vitest 測試驗證訂閱及寄送 API 邏輯
+
+## 修正里斯本目的地文章無法顯示
+- [x] 修正 PostDetail 在文章資料尚未載入時讀取 post.id 導致頁面崩潰
+- [x] 驗證里斯本文章路由、文章內容與相關文章查詢
+- [x] 執行型別檢查、Vitest 與頁面視覺驗證

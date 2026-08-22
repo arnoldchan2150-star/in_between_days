@@ -150,10 +150,14 @@ export default function PostDetail() {
 
   const { data: post, isLoading, error } = trpc.posts.bySlug.useQuery({ slug }, { enabled: !!slug });
 
-  const { data: relatedPosts } = trpc.posts.related.useQuery(
-    { postId: post!.id, category: post!.category, type: post!.type, limit: 3 },
-    { enabled: !!post?.id }
-  );
+  // 文章資料尚未載入時不能直接讀取 post.id；先使用停用查詢所需的安全輸入，
+  // 避免目的地文章頁在 React render 階段因 undefined 而整頁崩潰。
+  const relatedInput = post
+    ? { postId: post.id, category: post.category, type: post.type, limit: 3 }
+    : { postId: 0, limit: 3 };
+  const { data: relatedPosts } = trpc.posts.related.useQuery(relatedInput, {
+    enabled: Boolean(post?.id),
+  });
 
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
