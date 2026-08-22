@@ -3814,3 +3814,10 @@
 - [x] 建立分類為 culture（靈感拾光）的文章，設定發布日期為 2020 年 8 月 13 日
 - [x] 建立文章內容區塊並加入 PDF 提取的封面圖片
 - [x] 執行 TypeScript、Vitest 與前台文章頁驗證
+
+## 建立 Dalí Theatre-Museum 靈感拾光文章
+- [x] 檢查 Dalí Theatre-Museum 檔案夾與圖片素材，確認沒有 AGENTS.md 額外規範
+- [x] 參考既有觀展文章語氣，撰寫第一人稱美術館文章
+- [x] 最佳化並上傳 15 張館舍及展品相片
+- [x] 建立分類為 culture（靈感拾光）的文章與文字／圖片交錯區塊
+- [x] 執行桌面、手機、TypeScript 與 17 項 Vitest 驗證
