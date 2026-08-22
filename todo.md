@@ -3751,3 +3751,8 @@
 - [x] 檢查 `inbetweenday.com` 目前是否因 Cloudflare Proxy 狀態變更、DNS 記錄刪除或 Manus 綁定重置而失效
 - [x] 確認 Cloudflare 中根網域與 www 的正確 CNAME 與 Proxy 狀態
 - [x] 協助使用者一鍵恢復根網域與 www 穩定連線
+
+## 重新排查使用者端自訂網域無法連線問題
+- [x] 執行 shell 指令檢查 `inbetweenday.com` 與 `www.inbetweenday.com` 的外部 DNS 解析與 HTTP 狀態碼
+- [x] 檢查 Cloudflare Proxy（橙色雲朵 vs 灰色雲朵）與 SSL/TLS 設定對不同網絡環境的影響
+- [x] 提供最穩定的 Cloudflare 建議設定與清除本機 DNS 快取的方法
