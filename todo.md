@@ -3762,3 +3762,8 @@
 - [x] 擴充 server/email.ts 支援 Resend API（使用正式 RESEND_API_KEY 與已驗證寄件者信箱）
 - [x] 使用 webdev_request_secrets 要求使用者提供 RESEND_API_KEY 與寄件者地址
 - [x] 驗證訂閱確認信、取消訂閱信與後台電子報手動寄送功能
+
+## 檢查後台電子報訂閱與寄送流程
+- [x] 檢查 server/routers.ts 中的 siteSubscribe、siteList 與 newsletter 相關路由
+- [x] 檢查 server/db.ts 中 site_subscribers 與 site_newsletters 的資料庫操作
+- [x] 執行 Vitest 測試驗證訂閱及寄送 API 邏輯
