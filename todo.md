@@ -3746,3 +3746,8 @@
 - [x] 測試 `https://www.inbetweenday.com` 的目前錯誤（如 Error 1014 或 DNS 解析狀況）
 - [x] 確認 Cloudflare 中 `www` 記錄與根網域的配合方式
 - [x] 提供的 Cloudflare 記錄調整或轉址設定，確保 `www` 與根網域皆能順暢開啟
+
+## 排查自訂網域再次無法開啟原因
+- [x] 檢查 `inbetweenday.com` 目前是否因 Cloudflare Proxy 狀態變更、DNS 記錄刪除或 Manus 綁定重置而失效
+- [x] 確認 Cloudflare 中根網域與 www 的正確 CNAME 與 Proxy 狀態
+- [x] 協助使用者一鍵恢復根網域與 www 穩定連線
