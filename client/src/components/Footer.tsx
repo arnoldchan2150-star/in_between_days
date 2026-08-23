@@ -54,6 +54,18 @@ export default function Footer() {
                   瀏覽行旅資料庫
                 </span>
               </Link>
+              <div className="flex flex-wrap gap-x-4 gap-y-2 pt-2">
+                <Link href="/privacy-policy">
+                  <span className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                    隱私權政策
+                  </span>
+                </Link>
+                <Link href="/terms">
+                  <span className="text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                    服務條款
+                  </span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

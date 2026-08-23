@@ -51,11 +51,13 @@ export default function Home() {
   const [showSubscribeForm, setShowSubscribeForm] = useState(false);
   const [subscriberName, setSubscriberName] = useState("");
   const [subscriberEmail, setSubscriberEmail] = useState("");
+  const [privacyConsent, setPrivacyConsent] = useState(false);
   const subscribeMutation = trpc.subscribers.siteSubscribe.useMutation({
     onSuccess: () => {
       toast.success("訂閱成功，日後有新的旅程會透過 Email 與你分享。");
       setSubscriberName("");
       setSubscriberEmail("");
+      setPrivacyConsent(false);
       setShowSubscribeForm(false);
     },
     onError: (error) => toast.error(error.message || "訂閱失敗，請稍後再試。"),
@@ -277,7 +279,19 @@ export default function Home() {
                     className="w-full border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-foreground"
                   />
                 </label>
-                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                  <label className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
+                    <input
+                      type="checkbox"
+                      checked={privacyConsent}
+                      onChange={(event) => setPrivacyConsent(event.target.checked)}
+                      required
+                      className="mt-0.5 h-3.5 w-3.5 accent-foreground"
+                    />
+                    <span>
+                      我同意按照 <Link href="/privacy-policy"><span className="underline underline-offset-2 hover:text-foreground">隱私權政策</span></Link> 處理資料，並接收網站更新；我可以隨時取消訂閱。
+                    </span>
+                  </label>
+                  <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                   <button
                     type="submit"
                     disabled={subscribeMutation.isPending}
@@ -288,7 +302,10 @@ export default function Home() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => setShowSubscribeForm(false)}
+                    onClick={() => {
+                      setPrivacyConsent(false);
+                      setShowSubscribeForm(false);
+                    }}
                     className="px-4 py-3 text-xs tracking-widest text-muted-foreground hover:text-foreground transition-colors"
                   >
                     取消

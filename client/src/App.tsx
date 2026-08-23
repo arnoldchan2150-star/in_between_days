@@ -13,6 +13,8 @@ import Culture from "./pages/Culture";
 import Snow from "./pages/Snow";
 import Booklet from "./pages/Booklet";
 import About from "./pages/About";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
 
 // Admin pages
 import AdminLogin from "./pages/AdminLogin";
@@ -36,6 +38,8 @@ function Router() {
       <Route path="/snow/:slug" component={PostDetail} />
       <Route path="/booklet" component={Booklet} />
       <Route path="/about" component={About} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms" component={Terms} />
 
       {/* Admin routes */}
       <Route path="/admin/login" component={AdminLogin} />
