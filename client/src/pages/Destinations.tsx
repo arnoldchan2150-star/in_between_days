@@ -27,10 +27,11 @@ export default function Destinations() {
     setActiveCategory(cat);
   }, [search]);
 
-  // 混合展示 travel 和 culture 類型的文章
+  // 目的地遊記只展示 travel 類型，靈感文章由「靈感拾光」專頁負責
   const [searchQuery, setSearchQuery] = useState("");
   const { data: posts, isLoading } = trpc.posts.list.useQuery({
     category: activeCategory === "全部" ? undefined : activeCategory,
+    type: "travel",
   });
 
   const filteredPosts = useMemo(() => {
