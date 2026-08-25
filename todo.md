@@ -3883,3 +3883,8 @@
 - [x] 把圖片平均分配至各自的文字區塊之間
 - [x] 驗證兩篇文章的前台頁面、圖片載入與手機版排版
 - [x] 執行 TypeScript、Vitest 並保存檢查點
+
+## 修正兩篇新文章的分類要求
+- [x] 將〈墨西哥奇談 Mexico City, Alcohol and Police〉建立／更新至 destinations（目的地遊記）
+- [x] 將〈Circumstance〉建立／更新至 culture（靈感拾光）
+- [x] 兩篇文章日期分別設定為 2021 年 6 月 6 日及 2021 年 12 月 15 日，並保留圖片交錯排版
