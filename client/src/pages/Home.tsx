@@ -52,13 +52,14 @@ export default function Home() {
   const [subscriberName, setSubscriberName] = useState("");
   const [subscriberEmail, setSubscriberEmail] = useState("");
   const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [subscriptionComplete, setSubscriptionComplete] = useState(false);
   const subscribeMutation = trpc.subscribers.siteSubscribe.useMutation({
     onSuccess: () => {
-      toast.success("訂閱成功，日後有新的旅程會透過 Email 與你分享。");
+      toast.success("確認信已寄出，請到信箱完成訂閱。");
       setSubscriberName("");
       setSubscriberEmail("");
       setPrivacyConsent(false);
-      setShowSubscribeForm(false);
+      setSubscriptionComplete(true);
     },
     onError: (error) => toast.error(error.message || "訂閱失敗，請稍後再試。"),
   });
@@ -234,46 +235,70 @@ export default function Home() {
         <div className="container">
           <div className="max-w-2xl mx-auto text-center">
             <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-3">
-              立即訂閱
+              訂閱旅程
             </p>
             <h2 className="font-serif text-2xl font-light mb-4">
-              把新的旅程寄到你的信箱
+              把下一段旅程寄到你的信箱
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed mb-8">
-              訂閱 In-Between Days，日後有新的遊記、滑雪攻略與旅遊靈感，
+              訂閱 In-Between Days，偶爾收到新的遊記、滑雪攻略與旅遊靈感。
               <br />
-              我會透過 Email 與你分享。
+              不追趕行程，只把值得分享的故事寄給你。
             </p>
 
             {!showSubscribeForm ? (
               <button
                 type="button"
-                onClick={() => setShowSubscribeForm(true)}
+                onClick={() => {
+                  setShowSubscribeForm(true);
+                  setSubscriptionComplete(false);
+                }}
                 className="inline-flex items-center gap-2 bg-foreground text-background px-8 py-3 text-xs tracking-widest hover:bg-foreground/80 transition-colors"
               >
                 立即訂閱 <ArrowRight size={14} />
               </button>
+            ) : subscriptionComplete ? (
+              <div className="max-w-md mx-auto border border-border bg-background/70 p-6 text-left" role="status" aria-live="polite">
+                <p className="font-serif text-lg font-light mb-2">確認信已寄出</p>
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  請查看你的 Email，點擊確認連結完成訂閱。如果沒有看到信件，也可以先檢查垃圾郵件匣。
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setShowSubscribeForm(false)}
+                  className="mt-5 border border-border px-5 py-2.5 text-xs tracking-widest text-foreground hover:border-foreground transition-colors"
+                >
+                  返回
+                </button>
+              </div>
             ) : (
-              <form onSubmit={handleSubscribe} className="max-w-md mx-auto text-left space-y-3">
+              <form onSubmit={handleSubscribe} className="max-w-md mx-auto text-left space-y-4" aria-busy={subscribeMutation.isPending}>
                 <label className="block">
-                  <span className="sr-only">姓名</span>
+                  <span className="mb-1.5 block text-xs tracking-wider text-foreground">姓名</span>
                   <input
+                    id="subscriber-name"
+                    name="name"
                     type="text"
                     value={subscriberName}
                     onChange={(event) => setSubscriberName(event.target.value)}
                     placeholder="你的姓名"
+                    autoComplete="name"
                     required
                     maxLength={128}
                     className="w-full border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-foreground"
                   />
                 </label>
                 <label className="block">
-                  <span className="sr-only">Email</span>
+                  <span className="mb-1.5 block text-xs tracking-wider text-foreground">Email</span>
                   <input
+                    id="subscriber-email"
+                    name="email"
                     type="email"
                     value={subscriberEmail}
                     onChange={(event) => setSubscriberEmail(event.target.value)}
                     placeholder="你的 Email"
+                    autoComplete="email"
+                    inputMode="email"
                     required
                     maxLength={320}
                     className="w-full border border-border bg-background px-4 py-3 text-sm outline-none transition-colors focus:border-foreground"
@@ -281,11 +306,13 @@ export default function Home() {
                 </label>
                   <label className="flex items-start gap-2 text-xs leading-relaxed text-muted-foreground">
                     <input
+                      id="privacy-consent"
+                      name="privacy-consent"
                       type="checkbox"
                       checked={privacyConsent}
                       onChange={(event) => setPrivacyConsent(event.target.checked)}
                       required
-                      className="mt-0.5 h-3.5 w-3.5 accent-foreground"
+                      className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-foreground"
                     />
                     <span>
                       我同意按照 <Link href="/privacy-policy"><span className="underline underline-offset-2 hover:text-foreground">隱私權政策</span></Link> 處理資料，並接收網站更新；我可以隨時取消訂閱。
@@ -303,7 +330,10 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => {
+                      setSubscriberName("");
+                      setSubscriberEmail("");
                       setPrivacyConsent(false);
+                      setSubscriptionComplete(false);
                       setShowSubscribeForm(false);
                     }}
                     className="px-4 py-3 text-xs tracking-widest text-muted-foreground hover:text-foreground transition-colors"
