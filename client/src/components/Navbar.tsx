@@ -7,6 +7,7 @@ const NAV_LINKS = [
   { href: "/culture", label: "靈感拾光" },
   { href: "/snow", label: "雪季映像" },
   { href: "/booklet", label: "行旅資料庫" },
+  { href: "/selection", label: "行旅選物" },
   { href: "/about", label: "關於我" },
 ];
 

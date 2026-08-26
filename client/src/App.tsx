@@ -14,6 +14,7 @@ import Culture from "./pages/Culture";
 import Snow from "./pages/Snow";
 import Booklet from "./pages/Booklet";
 import About from "./pages/About";
+import Selection from "./pages/Selection";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Terms from "./pages/Terms";
 
@@ -55,6 +56,7 @@ function Router() {
       <Route path="/snow" component={Snow} />
       <Route path="/snow/:slug" component={PostDetail} />
       <Route path="/booklet" component={Booklet} />
+      <Route path="/selection" component={Selection} />
       <Route path="/about" component={About} />
       <Route path="/privacy-policy" component={PrivacyPolicy} />
       <Route path="/terms" component={Terms} />

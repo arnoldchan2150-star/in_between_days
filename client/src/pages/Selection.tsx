@@ -1,0 +1,190 @@
+import { useMemo, useState } from "react";
+import { Link } from "wouter";
+import { ArrowRight, Compass, PackageOpen, Search, Sparkles } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import {
+  SELECTION_CATEGORIES,
+  SELECTION_ITEMS,
+  SelectionCategory,
+  filterSelectionItems,
+} from "@shared/selectionCatalog";
+
+const SELECTION_NOTES = [
+  {
+    eyebrow: "Made slowly",
+    title: "自己做的物件",
+    description: "從構思、製作到寄出，讓一件小小的物件保留手作的溫度。",
+    icon: Sparkles,
+  },
+  {
+    eyebrow: "Found along the way",
+    title: "旅行途中遇見",
+    description: "把旅途中偶然遇見、值得帶回日常的特色小物，整理成一份小小選集。",
+    icon: Compass,
+  },
+  {
+    eyebrow: "For everyday life",
+    title: "帶回生活裡",
+    description: "不只收藏一段旅程，也讓遠方的質感在平日裡慢慢延續。",
+    icon: PackageOpen,
+  },
+];
+
+export default function Selection() {
+  const [activeCategory, setActiveCategory] = useState<SelectionCategory>("全部");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredItems = useMemo(
+    () => filterSelectionItems(SELECTION_ITEMS, activeCategory, searchQuery),
+    [activeCategory, searchQuery],
+  );
+  const hasActiveFilters = Boolean(searchQuery.trim()) || activeCategory !== "全部";
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Navbar />
+
+      <main className="flex-1">
+        <section className="pt-32 pb-14 border-b border-border">
+          <div className="container">
+            <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-3">Travel Selection</p>
+            <div className="max-w-2xl">
+              <h1 className="font-serif text-4xl md:text-5xl font-light tracking-tight">行旅選物</h1>
+              <p className="text-base text-muted-foreground mt-5 leading-relaxed max-w-xl">
+                把旅途中遇見的事物，帶回日常生活。這裡會收錄親自製作的物件，與那些在遠方偶然遇見、值得分享的特色小物。
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="border-b border-border bg-background/95 backdrop-blur-sm sticky top-16 z-40">
+          <div className="container py-4 space-y-4">
+            <label className="relative block max-w-xl">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="搜尋選物、旅程或關鍵字..."
+                aria-label="搜尋行旅選物"
+                className="w-full border border-border bg-background pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors"
+              />
+            </label>
+            <div className="flex gap-6 overflow-x-auto" role="tablist" aria-label="行旅選物分類">
+              {SELECTION_CATEGORIES.map((category) => (
+                <button
+                  key={category}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeCategory === category}
+                  onClick={() => setActiveCategory(category)}
+                  className={`whitespace-nowrap pb-1 border-b text-xs tracking-[0.12em] transition-colors ${
+                    activeCategory === category
+                      ? "border-foreground text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="py-16 md:py-20">
+          <div className="container">
+            {filteredItems.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
+                {filteredItems.map((item) => (
+                  <article key={item.id} className="group">
+                    <div className="aspect-[4/5] overflow-hidden bg-secondary mb-5">
+                      {item.imageUrl ? (
+                        <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                          <PackageOpen size={38} strokeWidth={1} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex items-center justify-between gap-4 mb-2">
+                      <span className="text-[11px] text-muted-foreground tracking-[0.12em]">{item.category}</span>
+                      {item.priceLabel && <span className="text-xs text-foreground">{item.priceLabel}</span>}
+                    </div>
+                    <h2 className="font-serif text-xl font-light leading-snug">{item.title}</h2>
+                    <p className="text-sm text-muted-foreground leading-relaxed mt-3">{item.description}</p>
+                    <p className="text-xs text-muted-foreground mt-4">
+                      {item.status === "available" ? "可供訂購" : item.status === "sold_out" ? "暫時售罄" : "即將上架"}
+                    </p>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="max-w-3xl mx-auto py-8 md:py-14 text-center">
+                <PackageOpen size={42} strokeWidth={1} className="mx-auto text-muted-foreground mb-6" />
+                <p className="font-serif text-2xl font-light mb-3">
+                  {hasActiveFilters ? "未找到相符的選物" : "選物正在慢慢準備中"}
+                </p>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-md mx-auto">
+                  {hasActiveFilters
+                    ? "請嘗試其他關鍵字，或切換至其他分類。"
+                    : "第一批商品仍在整理與準備之中。當物件、故事與寄送安排都準備好後，會在這裡與你見面。"}
+                </p>
+                {hasActiveFilters && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setActiveCategory("全部");
+                      setSearchQuery("");
+                    }}
+                    className="mt-6 border border-border px-4 py-2.5 text-xs tracking-[0.12em] text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
+                  >
+                    清除篩選
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+
+        <section className="border-t border-border py-16 md:py-20">
+          <div className="container">
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-10">
+              <div>
+                <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-3">A small collection</p>
+                <h2 className="font-serif text-3xl font-light">為什麼是行旅選物？</h2>
+              </div>
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
+                每一件物件都希望不只是紀念品，而是一個可以在生活裡繼續發生的故事。
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 border-t border-border">
+              {SELECTION_NOTES.map(({ eyebrow, title, description, icon: Icon }) => (
+                <div key={title} className="border-b md:border-b-0 md:border-r last:border-r-0 border-border py-7 md:pr-8 md:mr-8 last:mr-0 last:pr-0">
+                  <Icon size={20} strokeWidth={1} className="text-muted-foreground mb-8" />
+                  <p className="text-[10px] text-muted-foreground tracking-[0.16em] uppercase mb-2">{eyebrow}</p>
+                  <h3 className="font-serif text-xl font-light mb-3">{title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="border-t border-border bg-secondary/40 py-12">
+          <div className="container flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
+            <div>
+              <p className="font-serif text-xl font-light">先回到旅途裡</p>
+              <p className="text-sm text-muted-foreground mt-2">在選物上線以前，也可以先閱讀那些故事。</p>
+            </div>
+            <Link href="/destinations" className="inline-flex items-center gap-2 text-xs tracking-[0.12em] text-foreground hover:text-muted-foreground transition-colors">
+              閱讀目的地遊記 <ArrowRight size={14} />
+            </Link>
+          </div>
+        </section>
+      </main>
+
+      <Footer />
+    </div>
+  );
+}
