@@ -3931,11 +3931,11 @@
 - [x] 執行 TypeScript 與 19 項 Vitest 測試
 
 ## 2026-08-26 Resend DKIM TXT 公開查詢診斷
-- [ ] 確認 Google Admin Toolbox 使用 TXT 而非 ANY 查詢
+- [x] 確認 Google Admin Toolbox 使用 TXT 而非 ANY 查詢
 - [ ] 核對 Cloudflare DKIM Name 是否為 resend._domainkey 且沒有重複網域
 - [ ] 核對 DKIM TXT Value 與 Resend 提供值完全一致
-- [ ] 確認實際公開 Nameservers 與 Cloudflare 設定一致
-- [ ] 提供公開 DNS 驗證、DNSSEC 及 Resend 重新 Verify 的處理方式
+- [x] 確認實際公開 Nameservers 與 Cloudflare 設定一致
+- [x] 提供公開 DNS 驗證、DNSSEC 及 Resend 重新 Verify 的處理方式
 
 ## 2026-08-26 里斯本遊記 Instagram Carousel 轉換
 - [x] 核對〈里斯本的一切 About Lisbon〉網站全文與現有圖片
@@ -3961,3 +3961,10 @@
 - [x] 為每張圖撰寫適合直接放在 IG 圖片上的短文案
 - [x] 撰寫對應 Caption、Hashtags 及網站導流句
 - [x] 加入費用、季節、入境及健康資訊的發布前核對提醒
+
+## 2026-08-26 熊野古道插畫封面替換
+- [x] 上傳使用者提供的 `kumano_thumbnail_direction.jpg` 至持久化儲存
+- [x] 將文章封面更新為新的熊野古道插畫
+- [x] 將行旅資料庫熊野古道卡片封面同步更新
+- [x] 驗證文章及卡片封面載入、比例與前台顯示
+- [x] 執行 TypeScript 與 Vitest 回歸測試並保存檢查點
