@@ -58,7 +58,7 @@ async function startServer() {
 
       // Posts
       for (const post of posts) {
-        const detailPath = post.type === "snow" ? `/snow/${post.slug}` : post.type === "culture" ? `/culture/${post.slug}` : `/journal/${post.slug}`;
+        const detailPath = post.type === "snow" ? `/snow/${post.slug}` : post.type === "culture" ? `/culture/${post.slug}` : `/destinations/${post.slug}`;
         const lastMod = post.publishedAt ? new Date(post.publishedAt).toISOString().split("T")[0] : new Date(post.createdAt).toISOString().split("T")[0];
         xml += `  <url>\n    <loc>${baseUrl}${detailPath}</loc>\n    <lastmod>${lastMod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>\n`;
       }

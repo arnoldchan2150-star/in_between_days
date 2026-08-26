@@ -115,6 +115,20 @@ describe("site subscribers router", () => {
 });
 
 
+describe("post workflow router", () => {
+  it("does not allow unauthenticated users to create preview tokens", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    await expect(caller.posts.createPreviewToken({ id: 1 })).rejects.toThrow();
+  });
+
+  it("does not allow unauthenticated users to batch update tags", async () => {
+    const caller = appRouter.createCaller(createPublicContext());
+    await expect(
+      caller.posts.batchUpdateTags({ postIds: [1], addTags: ["旅遊"], removeTags: [] })
+    ).rejects.toThrow();
+  });
+});
+
 describe("post blocks router", () => {
   it("rejects unsupported block types before touching the database", async () => {
     const caller = appRouter.createCaller(createAdminContext());

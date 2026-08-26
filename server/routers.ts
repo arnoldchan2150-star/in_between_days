@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server";
+import { randomBytes } from "node:crypto";
 import { SignJWT } from "jose";
 import { z } from "zod";
 import { COOKIE_NAME } from "@shared/const";
@@ -23,10 +24,14 @@ import {
   getBookletById,
   getBookletBySlug,
   getPostById,
+  getPostByPreviewToken,
   getPostBySlug,
   getPostMedia,
+  getPostTags,
   getPostBlocks,
   savePostBlocks,
+  replacePostTags,
+  batchUpdatePostTags,
   getPublicBooklets,
   getPublishedPosts,
   markSubscriberSent,
@@ -148,18 +153,37 @@ export const appRouter = router({
       .query(async ({ input }) => {
         const post = await getPostBySlug(input.slug);
         if (!post) throw new TRPCError({ code: "NOT_FOUND" });
-        const media = await getPostMedia(post.id);
-        const blocks = await getPostBlocks(post.id);
-        return { ...post, media, blocks };
+        const [media, blocks, tags] = await Promise.all([
+          getPostMedia(post.id),
+          getPostBlocks(post.id),
+          getPostTags(post.id),
+        ]);
+        return { ...post, media, blocks, tags: tags.map((tag) => tag.tag) };
+      }),
+    byPreview: publicProcedure
+      .input(z.object({ token: z.string().min(32).max(128) }))
+      .query(async ({ input }) => {
+        const post = await getPostByPreviewToken(input.token);
+        if (!post) throw new TRPCError({ code: "NOT_FOUND", message: "預覽連結無效或已失效" });
+        const [media, blocks, tags] = await Promise.all([
+          getPostMedia(post.id),
+          getPostBlocks(post.id),
+          getPostTags(post.id),
+        ]);
+        const { previewToken: _previewToken, ...safePost } = post;
+        return { ...safePost, media, blocks, tags: tags.map((tag) => tag.tag), isPreview: true as const };
       }),
     byId: adminProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ input }) => {
         const post = await getPostById(input.id);
         if (!post) throw new TRPCError({ code: "NOT_FOUND" });
-        const media = await getPostMedia(post.id);
-        const blocks = await getPostBlocks(post.id);
-        return { ...post, media, blocks };
+        const [media, blocks, tags] = await Promise.all([
+          getPostMedia(post.id),
+          getPostBlocks(post.id),
+          getPostTags(post.id),
+        ]);
+        return { ...post, media, blocks, tags: tags.map((tag) => tag.tag) };
       }),
     blocks: publicProcedure
       .input(z.object({ postId: z.number() }))
@@ -211,18 +235,24 @@ export const appRouter = router({
           published: z.boolean().default(false),
           publishedAt: z.string().optional().nullable(),
           embedUrl: z.string().optional().nullable(),
+          tags: z.array(z.string().trim().min(1).max(64)).max(20).optional(),
         })
       )
       .mutation(async ({ input }) => {
-        const { publishedAt, ...rest } = input;
+        const { publishedAt, tags, ...rest } = input;
         let finalPublishedAt: Date | null = null;
         if (rest.published) {
           finalPublishedAt = publishedAt ? new Date(publishedAt) : new Date();
+          if (Number.isNaN(finalPublishedAt.getTime())) {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "發布日期格式無效" });
+          }
         }
-        return createPost({
+        const post = await createPost({
           ...rest,
           publishedAt: finalPublishedAt,
         });
+        if (tags) await replacePostTags(post.id, tags);
+        return { ...post, tags: tags ?? [] };
       }),
     update: adminProcedure
       .input(
@@ -239,10 +269,11 @@ export const appRouter = router({
           published: z.boolean().optional(),
           publishedAt: z.string().optional().nullable(),
           embedUrl: z.string().optional().nullable(),
+          tags: z.array(z.string().trim().min(1).max(64)).max(20).optional(),
         })
       )
       .mutation(async ({ input }) => {
-        const { id, publishedAt, ...data } = input;
+        const { id, publishedAt, tags, ...data } = input;
         const updates: Record<string, unknown> = { ...data };
         if (data.published !== undefined) {
           if (data.published) {
@@ -259,7 +290,27 @@ export const appRouter = router({
           updates.publishedAt = publishedAt ? new Date(publishedAt) : null;
         }
         await updatePost(id, updates as any);
+        if (tags !== undefined) await replacePostTags(id, tags);
         return { success: true };
+      }),
+    createPreviewToken: adminProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input }) => {
+        const post = await getPostById(input.id);
+        if (!post) throw new TRPCError({ code: "NOT_FOUND" });
+        const token = randomBytes(32).toString("hex");
+        await updatePost(input.id, { previewToken: token });
+        return { token, slug: post.slug };
+      }),
+    batchUpdateTags: adminProcedure
+      .input(z.object({
+        postIds: z.array(z.number()).min(1).max(200),
+        addTags: z.array(z.string().trim().min(1).max(64)).max(20).default([]),
+        removeTags: z.array(z.string().trim().min(1).max(64)).max(20).default([]),
+      }))
+      .mutation(async ({ input }) => {
+        await batchUpdatePostTags(input.postIds, input.addTags, input.removeTags);
+        return { success: true, updatedCount: input.postIds.length };
       }),
     delete: adminProcedure
       .input(z.object({ id: z.number() }))
