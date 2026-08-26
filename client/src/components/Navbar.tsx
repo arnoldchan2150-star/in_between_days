@@ -40,7 +40,10 @@ export default function Navbar() {
         <div className="container flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/">
-            <span className={`font-serif text-sm tracking-[0.2em] uppercase cursor-pointer transition-colors ${logoColor}`}>
+            <span
+              onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "auto" })}
+              className={`font-serif text-sm tracking-[0.2em] uppercase cursor-pointer transition-colors ${logoColor}`}
+            >
               In-Between Days
             </span>
           </Link>

@@ -4,6 +4,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type MediaItem = {
@@ -584,6 +585,8 @@ export default function PostDetail() {
               </div>
             </div>
           )}
+
+          <ShareButtons title={post.title} />
 
           <div className="mt-16 pt-8 border-t border-border">
             <Link href={sectionHref}>
