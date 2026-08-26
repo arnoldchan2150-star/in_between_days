@@ -90,7 +90,7 @@ export async function getUserByOpenId(openId: string) {
 export async function getAllPosts(): Promise<Post[]> {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(posts).orderBy(desc(posts.createdAt));
+  return db.select().from(posts).orderBy(desc(posts.publishedAt), desc(posts.createdAt));
 }
 
 export async function getPublishedPosts(category?: string, type?: string): Promise<Post[]> {
