@@ -4,6 +4,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ShareButtons from "@/components/ShareButtons";
 import { Skeleton } from "@/components/ui/skeleton";
 
 type MediaItem = {
@@ -158,7 +159,20 @@ export default function PostDetail() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug ?? "";
 
-  const { data: post, isLoading, error } = trpc.posts.bySlug.useQuery({ slug }, { enabled: !!slug });
+  const previewToken = new URLSearchParams(window.location.search).get("preview") ?? "";
+  const hasPreviewToken = previewToken.length >= 32;
+  const publicPostQuery = trpc.posts.bySlug.useQuery(
+    { slug },
+    { enabled: !!slug && !hasPreviewToken }
+  );
+  const previewPostQuery = trpc.posts.byPreview.useQuery(
+    { token: previewToken },
+    { enabled: hasPreviewToken }
+  );
+  const post = hasPreviewToken ? previewPostQuery.data : publicPostQuery.data;
+  const isLoading = hasPreviewToken ? previewPostQuery.isLoading : publicPostQuery.isLoading;
+  const error = hasPreviewToken ? previewPostQuery.error : publicPostQuery.error;
+  const isPreview = hasPreviewToken && Boolean(post);
 
   // 文章資料尚未載入時不能直接讀取 post.id；先使用停用查詢所需的安全輸入，
   // 避免目的地文章頁在 React render 階段因 undefined 而整頁崩潰。
@@ -271,6 +285,7 @@ export default function PostDetail() {
       <div className="fixed inset-0 z-40 bg-background">
         <div className="absolute inset-x-0 top-0 z-10 pointer-events-none">
           <div className="pointer-events-auto flex items-center justify-between gap-4 border-b border-border/60 bg-background/90 px-4 py-3 backdrop-blur-md md:px-8">
+            {isPreview && <span className="text-[10px] tracking-widest text-amber-700">預覽模式</span>}
             <Link href={backHref}>
               <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
                 <ArrowLeft size={13} /> 返回{backLabel}
@@ -309,6 +324,12 @@ export default function PostDetail() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
+
+      {isPreview && (
+        <div className="border-b border-amber-200 bg-amber-50 px-5 py-3 text-center text-xs text-amber-900 md:px-8">
+          這是未公開預覽，只有持有此預覽連結的人可以查看。
+        </div>
+      )}
 
       {/* Hero Image */}
       {post.coverImageUrl && (
@@ -584,6 +605,8 @@ export default function PostDetail() {
               </div>
             </div>
           )}
+
+          <ShareButtons title={post.title} />
 
           <div className="mt-16 pt-8 border-t border-border">
             <Link href={sectionHref}>

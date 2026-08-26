@@ -1,5 +1,5 @@
 import { drizzle } from "drizzle-orm/mysql2";
-import { and, asc, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNull, lte, or, sql } from "drizzle-orm";
 import {
   AboutPage,
   Booklet,
@@ -11,6 +11,7 @@ import {
   InsertPostMedia,
   InsertPostBlock,
   PostBlock,
+  PostTag,
   InsertSiteSubscriber,
   InsertUser,
   Post,
@@ -21,6 +22,7 @@ import {
   booklets,
   postMedia,
   postBlocks,
+  postTags,
   posts,
   siteSubscribers,
   siteNewsletters,
@@ -87,23 +89,38 @@ export async function getUserByOpenId(openId: string) {
 }
 
 // ── Posts ──────────────────────────────────────────────────────────────────
-export async function getAllPosts(): Promise<Post[]> {
+export async function getAllPosts() {
   const db = await getDb();
   if (!db) return [];
-  return db.select().from(posts).orderBy(desc(posts.createdAt));
+  const rows = await db.select().from(posts).orderBy(desc(posts.publishedAt), desc(posts.createdAt));
+  if (rows.length === 0) return rows.map((post) => ({ ...post, tags: [] as string[] }));
+  const tagRows = await db
+    .select({ postId: postTags.postId, tag: postTags.tag })
+    .from(postTags)
+    .where(inArray(postTags.postId, rows.map((post) => post.id)));
+  const tagsByPost = new Map<number, string[]>();
+  for (const row of tagRows) {
+    const tags = tagsByPost.get(row.postId) ?? [];
+    tags.push(row.tag);
+    tagsByPost.set(row.postId, tags);
+  }
+  return rows.map((post) => ({ ...post, tags: tagsByPost.get(post.id) ?? [] }));
 }
 
 export async function getPublishedPosts(category?: string, type?: string): Promise<Post[]> {
   const db = await getDb();
   if (!db) return [];
-  const conditions = [eq(posts.published, true)];
+  const conditions = [
+    eq(posts.published, true),
+    or(isNull(posts.publishedAt), lte(posts.publishedAt, new Date())),
+  ];
   if (category) conditions.push(eq(posts.category, category as Post["category"]));
   if (type) conditions.push(eq(posts.type, type as Post["type"]));
   return db
     .select()
     .from(posts)
     .where(and(...conditions))
-    .orderBy(desc(posts.publishedAt));
+    .orderBy(desc(posts.publishedAt), desc(posts.createdAt));
 }
 
 export async function getRelatedPosts(postId: number, category?: string, type?: string, limit: number = 3): Promise<Post[]> {
@@ -114,7 +131,11 @@ export async function getRelatedPosts(postId: number, category?: string, type?: 
   const allPublished = await db
     .select()
     .from(posts)
-    .where(and(eq(posts.published, true), sql`${posts.id} <> ${postId}`))
+    .where(and(
+      eq(posts.published, true),
+      or(isNull(posts.publishedAt), lte(posts.publishedAt, new Date())),
+      sql`${posts.id} <> ${postId}`
+    ))
     .orderBy(desc(posts.publishedAt));
 
   // 優先挑選同分類或同類型的文章
@@ -128,8 +149,72 @@ export async function getRelatedPosts(postId: number, category?: string, type?: 
 export async function getPostBySlug(slug: string): Promise<Post | undefined> {
   const db = await getDb();
   if (!db) return undefined;
-  const result = await db.select().from(posts).where(eq(posts.slug, slug)).limit(1);
+  const result = await db
+    .select()
+    .from(posts)
+    .where(and(
+      eq(posts.slug, slug),
+      eq(posts.published, true),
+      or(isNull(posts.publishedAt), lte(posts.publishedAt, new Date()))
+    ))
+    .limit(1);
   return result[0];
+}
+
+export async function getPostByPreviewToken(token: string): Promise<Post | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(posts).where(eq(posts.previewToken, token)).limit(1);
+  return result[0];
+}
+
+export async function getPostTags(postId: number): Promise<PostTag[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(postTags).where(eq(postTags.postId, postId)).orderBy(asc(postTags.tag));
+}
+
+function normalizeTags(tags: string[]) {
+  return Array.from(new Set(tags.map((tag) => tag.trim()).filter(Boolean))).slice(0, 20);
+}
+
+export async function replacePostTags(postId: number, tags: string[]): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const normalized = normalizeTags(tags);
+  await db.transaction(async (tx) => {
+    await tx.delete(postTags).where(eq(postTags.postId, postId));
+    if (normalized.length > 0) {
+      await tx.insert(postTags).values(normalized.map((tag) => ({ postId, tag })));
+    }
+  });
+}
+
+export async function batchUpdatePostTags(postIds: number[], addTags: string[], removeTags: string[]): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  const ids = Array.from(new Set(postIds));
+  const adds = normalizeTags(addTags);
+  const removes = normalizeTags(removeTags);
+  if (ids.length === 0) return;
+  await db.transaction(async (tx) => {
+    if (removes.length > 0) {
+      await tx.delete(postTags).where(and(inArray(postTags.postId, ids), inArray(postTags.tag, removes)));
+    }
+    if (adds.length > 0) {
+      const existing = await tx
+        .select({ postId: postTags.postId, tag: postTags.tag })
+        .from(postTags)
+        .where(inArray(postTags.postId, ids));
+      const existingKeys = new Set(existing.map((row) => `${row.postId}:${row.tag}`));
+      const values = ids.flatMap((postId) =>
+        adds
+          .filter((tag) => !existingKeys.has(`${postId}:${tag}`))
+          .map((tag) => ({ postId, tag }))
+      );
+      if (values.length > 0) await tx.insert(postTags).values(values);
+    }
+  });
 }
 
 export async function getPostById(id: number): Promise<Post | undefined> {

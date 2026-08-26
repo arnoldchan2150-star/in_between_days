@@ -55,7 +55,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   return (
     <div className="min-h-screen flex bg-background">
       {/* Sidebar */}
-      <aside className="w-56 border-r border-border flex flex-col bg-background">
+      <aside className="hidden md:flex w-56 border-r border-border flex-col bg-background shrink-0">
         <div className="p-6 border-b border-border">
           <p className="font-serif text-xs tracking-[0.2em] uppercase text-foreground">
             In-Between Days
@@ -106,12 +106,34 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
 
       {/* Main */}
       <main className="flex-1 flex flex-col min-w-0">
+        <nav className="md:hidden border-b border-border px-4 py-3 overflow-x-auto">
+          <div className="flex items-center gap-2 min-w-max">
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.href, item.exact);
+              return (
+                <Link key={item.href} href={item.href}>
+                  <span
+                    className={`inline-flex items-center gap-1.5 border px-3 py-1.5 text-xs whitespace-nowrap cursor-pointer transition-colors ${
+                      active
+                        ? "border-foreground bg-foreground text-background"
+                        : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <Icon size={12} />
+                    {item.label}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </nav>
         {title && (
           <header className="border-b border-border px-8 py-5">
             <h1 className="font-serif text-lg font-light">{title}</h1>
           </header>
         )}
-        <div className="flex-1 p-8">{children}</div>
+        <div className="flex-1 p-4 sm:p-8">{children}</div>
       </main>
     </div>
   );

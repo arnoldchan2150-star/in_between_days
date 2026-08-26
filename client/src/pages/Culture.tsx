@@ -5,6 +5,7 @@ import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
+import { CULTURE_TOPICS, CultureTopic, getCultureTopic, matchesPostSearch } from "@shared/postFilters";
 
 const FALLBACK_IMGS = [
   "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&q=70&auto=format&fit=crop",
@@ -14,14 +15,15 @@ const FALLBACK_IMGS = [
 
 export default function Culture() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTopic, setActiveTopic] = useState<CultureTopic>("全部");
   const { data: posts, isLoading } = trpc.posts.list.useQuery({ type: "culture" });
   const filteredPosts = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return posts ?? [];
-    return (posts ?? []).filter((post) =>
-      [post.title, post.excerpt, post.category].some((value) => value?.toLowerCase().includes(query))
-    );
-  }, [posts, searchQuery]);
+    return (posts ?? []).filter((post) => {
+      const matchesTopic = activeTopic === "全部" || getCultureTopic(post.title) === activeTopic;
+      return matchesTopic && matchesPostSearch(post, searchQuery);
+    });
+  }, [activeTopic, posts, searchQuery]);
+  const hasActiveFilters = Boolean(searchQuery.trim()) || activeTopic !== "全部";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -50,11 +52,29 @@ export default function Culture() {
               type="search"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="搜尋電影、書籍或靈感文章..."
-              aria-label="搜尋靈感拾光"
+              placeholder="搜尋標題、摘要、內文、地點或分類..."
+              aria-label="搜尋靈感拾光的標題、摘要、內文、地點或分類"
               className="w-full border border-border bg-background pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors"
             />
           </label>
+          <div className="flex gap-2 overflow-x-auto pt-4" role="tablist" aria-label="靈感文章主題">
+            {CULTURE_TOPICS.map((topic) => (
+              <button
+                key={topic}
+                type="button"
+                role="tab"
+                aria-selected={activeTopic === topic}
+                onClick={() => setActiveTopic(topic)}
+                className={`whitespace-nowrap border px-3 py-1.5 text-xs tracking-[0.12em] transition-colors ${
+                  activeTopic === topic
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border text-muted-foreground hover:border-foreground/50 hover:text-foreground"
+                }`}
+              >
+                {topic}
+              </button>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -88,9 +108,14 @@ export default function Culture() {
                       />
                     </div>
                     <div className="flex-1 pt-1">
-                      <p className="text-xs text-muted-foreground tracking-widest mb-2">
-                        {post.category}
-                      </p>
+                      <div className="flex flex-wrap items-center gap-2 mb-2">
+                        <span className="border border-foreground/30 px-2 py-0.5 text-[10px] tracking-wider text-foreground">
+                          {getCultureTopic(post.title)}
+                        </span>
+                        <span className="text-xs text-muted-foreground tracking-widest">
+                          {post.category}
+                        </span>
+                      </div>
                       <h2 className="font-serif text-lg font-light mb-2 group-hover:text-muted-foreground transition-colors leading-snug">
                         {post.title}
                       </h2>
@@ -115,10 +140,10 @@ export default function Culture() {
           ) : (
             <div className="text-center py-24">
               <p className="font-serif text-xl text-muted-foreground font-light mb-2">
-                {searchQuery.trim() ? "未找到相符的靈感文章" : "靈感拾光即將上線"}
+                {hasActiveFilters ? "未找到相符的靈感文章" : "靈感拾光即將上線"}
               </p>
                 <p className="text-sm text-muted-foreground">
-                {searchQuery.trim() ? "請嘗試其他搜尋詞" : "電影與書籍的旅行筆記正在整理中，敬請期待"}
+                {hasActiveFilters ? "請嘗試其他搜尋詞或切換主題" : "電影與書籍的旅行筆記正在整理中，敬請期待"}
               </p>
             </div>
           )}

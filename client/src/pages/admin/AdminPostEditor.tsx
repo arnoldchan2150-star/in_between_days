@@ -3,10 +3,11 @@ import { useParams, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import AdminLayout from "./AdminLayout";
 import { toast } from "sonner";
-import { ArrowLeft, Upload, X, ImagePlus, Film } from "lucide-react";
+import { ArrowLeft, Eye, Upload, X, ImagePlus, Film } from "lucide-react";
 import ImageUploader from "@/components/ImageUploader";
 import MediaUploader from "@/components/MediaUploader";
 import PostBlocksEditor, { type EditablePostBlock } from "@/components/PostBlocksEditor";
+import { getPostPublishMode, parseTagInput } from "@shared/postWorkflow";
 
 const CATEGORIES = ["南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"] as const;
 type Category = (typeof CATEGORIES)[number];
@@ -42,6 +43,7 @@ export default function AdminPostEditor() {
     coverImageUrl: "",
     coverImageKey: "",
     embedUrl: "",
+    tags: "",
   });
   const [uploadingCover, setUploadingCover] = useState(false);
 
@@ -71,6 +73,7 @@ export default function AdminPostEditor() {
         coverImageUrl: existingPost.coverImageUrl ?? "",
         coverImageKey: existingPost.coverImageKey ?? "",
         embedUrl: existingPost.embedUrl ?? "",
+        tags: Array.isArray(existingPost.tags) ? existingPost.tags.join(", ") : "",
       });
       // Load existing media
       if (existingPost.media && Array.isArray(existingPost.media)) {
@@ -101,18 +104,53 @@ export default function AdminPostEditor() {
   const uploadMediaMutation = trpc.posts.uploadMedia.useMutation();
   const deleteMediaMutation = trpc.posts.deleteMedia.useMutation();
   const updateMediaMutation = trpc.posts.updateMedia.useMutation();
+  const previewMutation = trpc.posts.createPreviewToken.useMutation({
+    onError: (err) => toast.error(err.message),
+  });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.title || !form.slug || !form.category) return;
+  const persistPost = (publishedOverride?: boolean) => {
+    if (!form.title.trim() || !form.slug.trim() || !form.category) {
+      toast.error("請先填寫標題、Slug 及地區分類");
+      return;
+    }
     const payload = {
-      ...form,
+      title: form.title.trim(),
+      slug: form.slug.trim(),
+      excerpt: form.excerpt,
+      content: form.content,
+      category: form.category,
+      type: form.type,
+      published: publishedOverride ?? form.published,
+      publishedAt: form.publishedAt || null,
+      coverImageUrl: form.coverImageUrl || undefined,
+      coverImageKey: form.coverImageKey || undefined,
       embedUrl: form.embedUrl.trim() || null,
+      tags: parseTagInput(form.tags),
     };
     if (isEdit && postId) {
       updateMutation.mutate({ id: postId, ...payload });
     } else {
       createMutation.mutate(payload);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    persistPost();
+  };
+
+  const handlePreview = async () => {
+    if (!postId) {
+      toast.info("請先儲存文章，再開啟預覽");
+      return;
+    }
+    try {
+      const result = await previewMutation.mutateAsync({ id: postId });
+      const section = form.type === "snow" ? "snow" : form.type === "culture" ? "culture" : "destinations";
+      const previewUrl = `${window.location.origin}/${section}/${encodeURIComponent(result.slug)}?preview=${result.token}`;
+      window.open(previewUrl, "_blank", "noopener,noreferrer");
+    } catch {
+      // The mutation displays the server error via its onError handler.
     }
   };
 
@@ -297,6 +335,21 @@ export default function AdminPostEditor() {
             </div>
           </div>
 
+          {/* Tags */}
+          <div>
+            <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">
+              文章標籤
+            </label>
+            <input
+              type="text"
+              value={form.tags}
+              onChange={(e) => setForm((f) => ({ ...f, tags: e.target.value }))}
+              className="w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors"
+              placeholder="以逗號分隔，例如：旅遊、隨筆、電影"
+            />
+            <p className="text-xs text-muted-foreground mt-1">最多 20 個標籤；儲存時會自動移除重複項目。</p>
+          </div>
+
           {/* Excerpt */}
           <div>
             <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">
@@ -378,21 +431,30 @@ export default function AdminPostEditor() {
 
           {/* Publish Options */}
           <div className="space-y-4 border border-border p-4 bg-muted/20">
-            <div className="flex items-center gap-3">
-              <input
-                type="checkbox"
-                id="published"
-                checked={form.published}
-                onChange={(e) => setForm((f) => ({ ...f, published: e.target.checked }))}
-                className="w-4 h-4 border border-border"
-              />
-              <label htmlFor="published" className="text-sm font-medium text-foreground cursor-pointer">
-                發布文章（勾選後才會公開顯示）
-              </label>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <input
+                  type="checkbox"
+                  id="published"
+                  checked={form.published}
+                  onChange={(e) => setForm((f) => ({ ...f, published: e.target.checked }))}
+                  className="h-4 w-4 border border-border"
+                />
+                <label htmlFor="published" className="text-sm font-medium text-foreground cursor-pointer">
+                  啟用公開發布
+                </label>
+              </div>
+              <span className="border border-border px-2 py-1 text-[11px] tracking-wider text-muted-foreground">
+                {getPostPublishMode(form.published, form.publishedAt) === "scheduled"
+                  ? "已排程"
+                  : form.published
+                    ? "已發布"
+                    : "草稿"}
+              </span>
             </div>
             <div>
               <label className="text-xs text-muted-foreground tracking-wider block mb-1.5">
-                發佈日期（支援 Dateback 回溯至過去日期）
+                發布日期與排程日期
               </label>
               <input
                 type="date"
@@ -401,24 +463,48 @@ export default function AdminPostEditor() {
                 className="w-full sm:w-64 border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:border-foreground transition-colors font-mono"
               />
               <p className="text-xs text-muted-foreground mt-1">
-                您可以自由選擇過去的日期（例如 2021-05-28），文章將會以該歷史日期排序與顯示。
+                勾選公開後，過去或今天的日期會立即發布；未來日期會先顯示為「已排程」，日期到達後才會出現在網站。
               </p>
             </div>
           </div>
 
           {/* Submit */}
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-wrap gap-3 pt-2">
+            <button
+              type="button"
+              onClick={() => persistPost(false)}
+              disabled={loading}
+              className="border border-border px-5 py-2.5 text-xs tracking-widest hover:border-foreground transition-colors disabled:opacity-50"
+            >
+              {loading ? "儲存中..." : "儲存草稿"}
+            </button>
             <button
               type="submit"
               disabled={loading}
               className="bg-foreground text-background px-6 py-2.5 text-xs tracking-widest hover:bg-foreground/80 transition-colors disabled:opacity-50"
             >
-              {loading ? "儲存中..." : isEdit ? "更新文章" : "建立文章"}
+              {loading
+                ? "儲存中..."
+                : getPostPublishMode(form.published, form.publishedAt) === "scheduled"
+                  ? "儲存並排程發布"
+                  : form.published
+                    ? isEdit ? "更新並發布" : "建立並發布"
+                    : isEdit ? "更新草稿" : "建立草稿"}
             </button>
+            {isEdit && (
+              <button
+                type="button"
+                onClick={handlePreview}
+                disabled={previewMutation.isPending}
+                className="inline-flex items-center gap-2 border border-border px-5 py-2.5 text-xs tracking-widest hover:border-foreground transition-colors disabled:opacity-50"
+              >
+                <Eye size={13} /> {previewMutation.isPending ? "準備預覽…" : "開啟預覽"}
+              </button>
+            )}
             <button
               type="button"
               onClick={() => navigate("/admin/posts")}
-              className="border border-border px-6 py-2.5 text-xs tracking-widest hover:border-foreground transition-colors"
+              className="border border-border px-5 py-2.5 text-xs tracking-widest hover:border-foreground transition-colors"
             >
               取消
             </button>

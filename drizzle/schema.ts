@@ -4,6 +4,7 @@ import {
   mysqlEnum,
   mysqlTable,
   text,
+  uniqueIndex,
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
@@ -44,6 +45,7 @@ export const posts = mysqlTable("posts", {
   type: mysqlEnum("type", ["travel", "culture", "snow"]).default("travel").notNull(),
   published: boolean("published").default(false).notNull(),
   publishedAt: timestamp("publishedAt"),
+  previewToken: varchar("previewToken", { length: 128 }),
   embedUrl: text("embedUrl"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
@@ -66,6 +68,23 @@ export const postMedia = mysqlTable("post_media", {
 
 export type PostMedia = typeof postMedia.$inferSelect;
 export type InsertPostMedia = typeof postMedia.$inferInsert;
+
+// ── Post Tags ───────────────────────────────────────────────────────────────
+export const postTags = mysqlTable(
+  "post_tags",
+  {
+    id: int("id").autoincrement().primaryKey(),
+    postId: int("postId").notNull(),
+    tag: varchar("tag", { length: 64 }).notNull(),
+    createdAt: timestamp("createdAt").defaultNow().notNull(),
+  },
+  (table) => ({
+    postTagUnique: uniqueIndex("post_tags_post_id_tag_unique").on(table.postId, table.tag),
+  })
+);
+
+export type PostTag = typeof postTags.$inferSelect;
+export type InsertPostTag = typeof postTags.$inferInsert;
 
 export const postBlocks = mysqlTable('post_blocks', {
   id: int('id').autoincrement().primaryKey(),
