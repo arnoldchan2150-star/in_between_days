@@ -3929,3 +3929,35 @@
 - [x] 修正圖片持久化 URL，確保封面與內文圖片正常載入
 - [x] 驗證四篇文章內容完整、圖片載入及手機版排版
 - [x] 執行 TypeScript 與 19 項 Vitest 測試
+
+## 2026-08-26 Resend DKIM TXT 公開查詢診斷
+- [ ] 確認 Google Admin Toolbox 使用 TXT 而非 ANY 查詢
+- [ ] 核對 Cloudflare DKIM Name 是否為 resend._domainkey 且沒有重複網域
+- [ ] 核對 DKIM TXT Value 與 Resend 提供值完全一致
+- [ ] 確認實際公開 Nameservers 與 Cloudflare 設定一致
+- [ ] 提供公開 DNS 驗證、DNSSEC 及 Resend 重新 Verify 的處理方式
+
+## 2026-08-26 里斯本遊記 Instagram Carousel 轉換
+- [x] 核對〈里斯本的一切 About Lisbon〉網站全文與現有圖片
+- [x] 按 In-Between Days 風格規劃 Carousel 頁數、圖片比例與敘事順序
+- [x] 撰寫每頁 Carousel 文案、封面標題、Caption、Hashtags 及網站導流句
+- [x] 整理可直接交給設計／製作的圖片裁切與文字排版建議
+
+## 2026-08-26 里斯本葡撻 Instagram Carousel 轉換
+- [x] 核對〈關於里斯本的一切〉中的葡撻段落與 Pastel de Nata 圖片
+- [x] 規劃以貝倫、葡撻口感與旅途現場為主題的 Carousel 結構
+- [x] 撰寫每頁 Carousel 文案、封面標題、Caption、Hashtags 及網站導流句
+- [x] 整理圖片比例、裁切及文字排版建議
+
+## 2026-08-26 神山 Instagram Carousel 轉換
+- [x] 核對網站中的神山文章／行旅資料庫內容與現有圖片
+- [x] 規劃神山旅程的 Carousel 敘事、頁數及視覺比例
+- [x] 撰寫每頁 Carousel 文案、封面標題、Caption、Hashtags 及網站導流句
+- [x] 整理圖片排序、裁切及文字排版建議
+
+## 2026-08-26 神山指南圖片 Instagram Carousel 重整
+- [x] 以使用者提供的 8 張神山指南頁面圖作為 Carousel 素材
+- [x] 按認識神山、行前準備、交通住宿、心得及照片安排圖片順序
+- [x] 為每張圖撰寫適合直接放在 IG 圖片上的短文案
+- [x] 撰寫對應 Caption、Hashtags 及網站導流句
+- [x] 加入費用、季節、入境及健康資訊的發布前核對提醒
