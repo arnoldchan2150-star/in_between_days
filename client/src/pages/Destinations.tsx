@@ -5,6 +5,7 @@ import { trpc } from "@/lib/trpc";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Skeleton } from "@/components/ui/skeleton";
+import { matchesPostSearch } from "@shared/postFilters";
 
 const CATEGORIES = ["全部", "南美", "中東", "亞洲", "歐洲", "中亞", "東南亞"];
 
@@ -37,9 +38,7 @@ export default function Destinations() {
   const filteredPosts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return posts ?? [];
-    return (posts ?? []).filter((post) =>
-      [post.title, post.excerpt, post.category].some((value) => value?.toLowerCase().includes(query))
-    );
+    return (posts ?? []).filter((post) => matchesPostSearch(post, query));
   }, [posts, searchQuery]);
 
   return (
@@ -68,8 +67,8 @@ export default function Destinations() {
               type="search"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="搜尋目的地、標題或旅行故事..."
-              aria-label="搜尋目的地遊記"
+              placeholder="搜尋標題、摘要、內文、地點或分類..."
+              aria-label="搜尋目的地遊記的標題、摘要、內文、地點或分類"
               className="w-full border border-border bg-background pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-foreground transition-colors"
             />
           </label>
