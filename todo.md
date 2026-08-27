@@ -3932,8 +3932,8 @@
 
 ## 2026-08-26 Resend DKIM TXT 公開查詢診斷
 - [x] 確認 Google Admin Toolbox 使用 TXT 而非 ANY 查詢
-- [ ] 核對 Cloudflare DKIM Name 是否為 resend._domainkey 且沒有重複網域
-- [ ] 核對 DKIM TXT Value 與 Resend 提供值完全一致
+- [x] 核對 Cloudflare DKIM Name 是否為 resend._domainkey 且沒有重複網域
+- [x] 核對 DKIM TXT Value 與 Resend 提供值完全一致
 - [x] 確認實際公開 Nameservers 與 Cloudflare 設定一致
 - [x] 提供公開 DNS 驗證、DNSSEC 及 Resend 重新 Verify 的處理方式
 
