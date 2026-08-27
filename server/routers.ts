@@ -728,15 +728,20 @@ export const appRouter = router({
         const origin = ctx.req.headers.origin || "https://" + ctx.req.headers.host;
         try {
           const res = await insertSiteSubscriber({ name: input.name.trim(), email });
+          let confirmationEmailSent = false;
           if (res.confirmationToken) {
             const confirmUrl = `${origin}/api/newsletter/confirm?token=${res.confirmationToken}`;
-            await sendSiteSubscriptionConfirmation({
+            confirmationEmailSent = await sendSiteSubscriptionConfirmation({
               subscriberName: input.name.trim(),
               subscriberEmail: email,
               confirmUrl,
             });
           }
-          return { success: true, reactivated: res.reactivated };
+          return {
+            success: true,
+            confirmationEmailSent,
+            reactivated: res.reactivated,
+          };
         } catch (error) {
           const message = error instanceof Error ? error.message : String(error);
           throw new TRPCError({ code: "BAD_REQUEST", message });

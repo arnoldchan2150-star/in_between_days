@@ -54,7 +54,11 @@ export default function Home() {
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [subscriptionComplete, setSubscriptionComplete] = useState(false);
   const subscribeMutation = trpc.subscribers.siteSubscribe.useMutation({
-    onSuccess: () => {
+    onSuccess: (result) => {
+      if (!result.confirmationEmailSent) {
+        toast.error("訂閱資料已記錄，但確認信未能送出，請稍後再試或聯絡我們。");
+        return;
+      }
       toast.success("確認信已寄出，請到信箱完成訂閱。");
       setSubscriberName("");
       setSubscriberEmail("");
