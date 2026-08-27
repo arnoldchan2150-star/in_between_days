@@ -2,7 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { randomBytes } from "node:crypto";
 import { SignJWT } from "jose";
 import { z } from "zod";
-import { COOKIE_NAME } from "@shared/const";
+import { ADMIN_COOKIE_NAME, COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
@@ -81,7 +81,7 @@ import {
 
 // ── Admin guard ────────────────────────────────────────────────────────────
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
-  if (ctx.user.role !== "admin") {
+  if (ctx.user.role !== "admin" && ctx.user.openId !== ENV.ownerOpenId) {
     throw new TRPCError({ code: "FORBIDDEN", message: "需要管理員權限" });
   }
   return next({ ctx });
@@ -95,7 +95,7 @@ async function setAdminSessionCookie(ctx: { req: any; res: any }, email: string)
     .setExpirationTime("7d")
     .sign(secret);
   const opts = getSessionCookieOptions(ctx.req);
-  ctx.res.cookie(COOKIE_NAME, token, { ...opts, maxAge: 7 * 24 * 60 * 60 * 1000 });
+  ctx.res.cookie(ADMIN_COOKIE_NAME, token, { ...opts, maxAge: 7 * 24 * 60 * 60 * 1000 });
 }
 
 // ── Categories ─────────────────────────────────────────────────────────────
@@ -105,10 +105,17 @@ export const appRouter = router({
   system: systemRouter,
 
   auth: router({
-    me: publicProcedure.query((opts) => opts.ctx.user),
+    me: publicProcedure.query((opts) => {
+      const user = opts.ctx.user;
+      if (user && user.openId === ENV.ownerOpenId && user.role !== "admin") {
+        return { ...user, role: "admin" as const };
+      }
+      return user;
+    }),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
+      ctx.res.clearCookie(ADMIN_COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
     // Email/password admin login

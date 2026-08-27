@@ -34,7 +34,7 @@ export default function AdminLayout({ children, title }: AdminLayoutProps) {
   });
 
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!isLoading && (!user || user.role !== "admin")) {
       navigate("/admin/login");
     }
   }, [user, isLoading, navigate]);
