@@ -4033,3 +4033,9 @@
 - [x] 定位 Checkout URL 建立及瀏覽器視窗被阻擋的原因
 - [x] 修正付款按鈕跳轉、錯誤處理及同頁 fallback
 - [x] 完成桌面／手機版及 TypeScript／Vitest 回歸驗證
+
+## 2026-08-27 Resend 網域驗證排查
+- [x] 查看使用者提供的 Resend 網域頁面目前狀態及缺失記錄
+- [x] 核對 inbetweenday.com 的 Cloudflare 權威 DKIM、SPF、MX 與 DMARC 記錄
+- [x] 修正缺失／重複／錯誤的 DNS 記錄，或確認仍在傳播
+- [x] 回到 Resend 重新 Verify，並確認網域可以用於發送確認信
