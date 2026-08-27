@@ -36,9 +36,10 @@ const SELECTION_NOTES = [
 export default function Selection() {
   const [activeCategory, setActiveCategory] = useState<SelectionCategory>("全部");
   const [searchQuery, setSearchQuery] = useState("");
-  const [checkoutItem, setCheckoutItem] = useState<{ id: number; title: string; priceMinor: number } | null>(null);
+  const [checkoutItem, setCheckoutItem] = useState<{ id: number; title: string; priceMinor: number; weightGrams: number; shippingClass: "P" | "G" | "E" } | null>(null);
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+  const [deliveryRegion, setDeliveryRegion] = useState<"HK" | "overseas">("HK");
   const { data: products, isLoading } = trpc.shop.publicList.useQuery();
   const checkout = trpc.shop.createCheckout.useMutation({
     onSuccess: (result) => {
@@ -152,7 +153,7 @@ export default function Selection() {
                         type="button"
                         onClick={() => {
                           const product = products?.find((candidate) => String(candidate.id) === item.id);
-                          if (product) setCheckoutItem({ id: product.id, title: product.title, priceMinor: product.priceMinor });
+                          if (product) setCheckoutItem({ id: product.id, title: product.title, priceMinor: product.priceMinor, weightGrams: product.weightGrams, shippingClass: product.shippingClass });
                         }}
                         className="mt-4 inline-flex items-center gap-2 text-xs text-foreground border-b border-foreground/40 pb-1 hover:border-foreground transition-colors"
                       >
@@ -240,7 +241,22 @@ export default function Selection() {
               </div>
               <button type="button" onClick={() => setCheckoutItem(null)} className="text-muted-foreground hover:text-foreground" aria-label="關閉結帳視窗"><X size={17} /></button>
             </div>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-6">請先留下聯絡資料，之後會前往 Stripe 安全付款頁完成交易。</p>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-5">請先留下聯絡資料，之後會前往 Stripe 安全付款頁完成交易。</p>
+            <div className="border-y border-border py-4 mb-6 space-y-2 text-xs text-muted-foreground leading-relaxed">
+              <p>香港配送：G 大型信件／包裹按重量計算；訂單滿 HK$300 免運。</p>
+              <p>海外配送：跨境運費另計，付款前需要人工確認。</p>
+            </div>
+            <fieldset className="space-y-2 mb-6">
+              <legend className="text-xs text-muted-foreground tracking-wider">配送地區</legend>
+              <label className="flex items-start gap-2 text-sm text-foreground/80">
+                <input type="radio" name="delivery-region" value="HK" checked={deliveryRegion === "HK"} onChange={() => setDeliveryRegion("HK")} className="mt-1 accent-foreground" />
+                <span>香港（{checkoutItem.shippingClass} 類，{checkoutItem.weightGrams > 0 ? `${checkoutItem.weightGrams}g` : "重量待補"}）</span>
+              </label>
+              <label className="flex items-start gap-2 text-sm text-foreground/80">
+                <input type="radio" name="delivery-region" value="overseas" checked={deliveryRegion === "overseas"} onChange={() => setDeliveryRegion("overseas")} className="mt-1 accent-foreground" />
+                <span>海外（跨境運費另行確認）</span>
+              </label>
+            </fieldset>
             <div className="space-y-4">
               <label className="block text-xs text-muted-foreground tracking-wider">姓名
                 <input value={customerName} onChange={(event) => setCustomerName(event.target.value)} autoComplete="name" className="mt-1.5 w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground" placeholder="你的姓名" />
@@ -254,15 +270,23 @@ export default function Selection() {
                 type="button"
                 disabled={checkout.isPending}
                 onClick={() => {
+                  if (deliveryRegion === "overseas") {
+                    window.location.href = `mailto:365inwien@gmail.com?subject=${encodeURIComponent(`海外配送詢問：${checkoutItem.title}`)}&body=${encodeURIComponent(`你好，我想購買「${checkoutItem.title}」，請告知海外跨境運費。\n\n姓名：${customerName}\nEmail：${customerEmail}`)}`;
+                    return;
+                  }
                   if (!customerName.trim() || !customerEmail.trim()) {
                     toast.error("請填寫姓名及 Email");
+                    return;
+                  }
+                  if (checkoutItem.weightGrams <= 0) {
+                    toast.error("此商品尚未設定包裝重量，請稍後再試");
                     return;
                   }
                   checkout.mutate({ customerName, customerEmail, items: [{ productId: checkoutItem.id, quantity: 1 }] });
                 }}
                 className="bg-foreground text-background px-5 py-2.5 text-xs tracking-wider hover:bg-foreground/80 disabled:opacity-50 transition-colors"
               >
-                {checkout.isPending ? "準備付款頁..." : "前往安全付款"}
+                {deliveryRegion === "overseas" ? "詢問海外運費" : checkout.isPending ? "準備付款頁..." : "前往安全付款"}
               </button>
               <button type="button" onClick={() => setCheckoutItem(null)} className="border border-border px-5 py-2.5 text-xs tracking-wider hover:border-foreground transition-colors">取消</button>
             </div>

@@ -31,21 +31,29 @@ const sections = [
     ],
   },
   {
-    title: "五、網站使用",
+    title: "五、行旅選物、付款與配送",
+    body: [
+      "行旅選物商品的價格以港幣（HKD）標示，付款會透過 Stripe 安全付款頁處理。訂單是否成立，以付款服務及本網站發出的確認狀態為準；商品庫存有限，付款前的庫存狀態可能變更。",
+      "香港訂單滿 HK$300 免運；未滿 HK$300 的訂單，香港運費按包裹重量及適用的 G 大型信件／包裹費率計算。海外訂單的跨境運費另行確認，可能因目的地、包裹重量、尺寸及物流服務而有所不同；在確認海外運費前，不會把海外運費視為已包含於商品價格內。",
+      "商品收到後 7 日內，如商品保持未使用狀態，可以透過 365inwien@gmail.com 申請退換貨。申請時請提供訂單資料及商品狀況；實際退換安排、退回方式及相關費用會按個案及商品性質確認。已使用、損壞、缺少配件或不符合原有狀態的商品，可能不符合退換條件。",
+    ],
+  },
+  {
+    title: "六、網站使用",
     body: [
       "你不得以任何方式干擾網站運作、嘗試未經授權存取系統或資料、傳送惡意程式，或利用本網站從事違法、侵權、欺詐或損害他人權益的活動。",
       "本網站的旅行資訊、觀點及個人經驗只供一般參考，不構成醫療、法律、財務、移民或其他專業建議。出發前請自行向官方或合資格專業人士確認最新資訊。",
     ],
   },
   {
-    title: "六、內容準確性與網站可用性",
+    title: "七、內容準確性與網站可用性",
     body: [
       "我們會努力維持文章內容的準確性及網站的正常運作，但旅行安排、開放時間、價格、交通、政策及外部網站內容可能隨時變更。對於因依賴本網站內容或外部連結而產生的損失，應由使用者自行判斷及承擔。",
       "我們保留隨時修改、暫停或終止網站任何部分的權利，恕不一定事先通知。",
     ],
   },
   {
-    title: "七、條款更新與聯絡方式",
+    title: "八、條款更新與聯絡方式",
     body: [
       "我們可能因應網站功能或營運方式變更而更新本條款。更新版本會在本頁公布，並以最新更新日期標示。",
       "如你對本服務條款或網站內容有任何疑問，請聯絡 365inwien@gmail.com。",
@@ -67,7 +75,7 @@ export default function Terms() {
           <header className="border-b border-border pb-10 mb-10">
             <p className="text-xs text-muted-foreground tracking-[0.2em] uppercase mb-3">Legal</p>
             <h1 className="font-serif text-3xl md:text-4xl font-light leading-tight mb-4">服務條款</h1>
-            <p className="text-sm text-muted-foreground">最後更新日期：2026 年 8 月 23 日</p>
+            <p className="text-sm text-muted-foreground">最後更新日期：2026 年 8 月 27 日</p>
           </header>
           <div className="space-y-10">
             <p className="font-serif text-lg leading-[2] text-foreground/90">

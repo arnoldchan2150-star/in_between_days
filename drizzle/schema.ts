@@ -125,6 +125,8 @@ export const shopProducts = mysqlTable("shop_products", {
   slug: varchar("slug", { length: 160 }).notNull().unique(),
   description: text("description").notNull(),
   category: mysqlEnum("category", ["自製物件", "旅途小物"]).notNull(),
+  shippingClass: mysqlEnum("shippingClass", ["P", "G", "E"]).notNull().default("G"),
+  weightGrams: int("weightGrams").notNull().default(0),
   priceMinor: int("priceMinor").notNull(),
   currency: varchar("currency", { length: 3 }).notNull().default("HKD"),
   inventoryQuantity: int("inventoryQuantity").notNull().default(0),

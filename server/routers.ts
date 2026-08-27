@@ -9,6 +9,7 @@ import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { ENV } from "./_core/env";
 import { storagePut } from "./storage";
 import { getStripeClient } from "./stripeShop";
+import { quoteHongKongShipping } from "../shared/shipping";
 import {
   addPostMedia,
   addSubscriber,
@@ -550,10 +551,19 @@ export const appRouter = router({
           const products = await Promise.all(input.items.map((item) => getShopProductById(item.productId)));
           if (products.some((product) => !product || !product.active)) throw new Error("商品資料已更新，請重新整理後再試");
           const origin = ctx.req.headers.origin || `${ctx.req.protocol}://${ctx.req.get("host")}`;
+          const subtotalMinor = input.items.reduce((sum, item, index) => sum + (products[index]?.priceMinor ?? 0) * item.quantity, 0);
+          const shippingWeightGrams = input.items.reduce((sum, item, index) => sum + (products[index]?.weightGrams ?? 0) * item.quantity, 0);
+          const shippingClass = products[0]?.shippingClass ?? "G";
+          if (products.some((product) => product && product.shippingClass !== shippingClass)) {
+            throw new Error("目前同一張訂單需要使用相同的香港寄件類別");
+          }
+          const shippingQuote = quoteHongKongShipping({ subtotalMinor, weightGrams: shippingWeightGrams, shippingClass });
+          if (shippingQuote.status === "unavailable") throw new Error(shippingQuote.label);
           const stripe = getStripeClient();
           const session = await stripe.checkout.sessions.create({
             mode: "payment",
-            line_items: input.items.map((item, index) => {
+            line_items: [
+              ...input.items.map((item, index) => {
               const product = products[index]!;
               return {
                 quantity: item.quantity,
@@ -567,12 +577,28 @@ export const appRouter = router({
                 },
               };
             }),
+              ...(shippingQuote.feeMinor > 0 ? [{
+                quantity: 1,
+                price_data: {
+                  currency: "hkd" as const,
+                  unit_amount: shippingQuote.feeMinor,
+                  product_data: {
+                    name: "香港配送費（G 大型信件／包裹）",
+                    description: `按包裹總重量 ${shippingWeightGrams}g 計算`,
+                  },
+                },
+              }] : []),
+            ],
+            shipping_address_collection: { allowed_countries: ["HK"] },
             customer_email: normalizedEmail,
             client_reference_id: `order-${order.id}`,
             metadata: {
               order_id: String(order.id),
               customer_email: normalizedEmail,
               customer_name: input.customerName.trim(),
+              shipping_region: "HK",
+              shipping_fee_minor: String(shippingQuote.feeMinor),
+              shipping_weight_grams: String(shippingWeightGrams),
             },
             allow_promotion_codes: true,
             success_url: `${origin}/selection?payment=success&session_id={CHECKOUT_SESSION_ID}`,
@@ -625,6 +651,8 @@ export const appRouter = router({
         slug: z.string().trim().min(1).max(160),
         description: z.string().trim().min(1),
         category: z.enum(["自製物件", "旅途小物"]),
+        shippingClass: z.enum(["P", "G", "E"]).default("G"),
+        weightGrams: z.number().int().nonnegative().default(0),
         priceMinor: z.number().int().nonnegative(),
         currency: z.literal("HKD").default("HKD"),
         inventoryQuantity: z.number().int().nonnegative().default(0),
@@ -641,6 +669,8 @@ export const appRouter = router({
         slug: z.string().trim().min(1).max(160).optional(),
         description: z.string().trim().min(1).optional(),
         category: z.enum(["自製物件", "旅途小物"]).optional(),
+        shippingClass: z.enum(["P", "G", "E"]).optional(),
+        weightGrams: z.number().int().nonnegative().optional(),
         priceMinor: z.number().int().nonnegative().optional(),
         currency: z.literal("HKD").optional(),
         inventoryQuantity: z.number().int().nonnegative().optional(),

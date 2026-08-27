@@ -11,6 +11,8 @@ type ProductForm = {
   slug: string;
   description: string;
   category: "自製物件" | "旅途小物";
+  shippingClass: "P" | "G" | "E";
+  weightGrams: string;
   priceHkd: string;
   inventoryQuantity: string;
   coverUrl: string;
@@ -24,6 +26,8 @@ const emptyForm: ProductForm = {
   slug: "",
   description: "",
   category: "自製物件",
+  shippingClass: "G",
+  weightGrams: "0",
   priceHkd: "",
   inventoryQuantity: "0",
   coverUrl: "",
@@ -81,16 +85,17 @@ export default function AdminSelection() {
   const validateForm = () => {
     const priceMinor = parseHkdToMinorUnits(form.priceHkd);
     const inventoryQuantity = Number(form.inventoryQuantity);
+    const weightGrams = Number(form.weightGrams);
     const sortOrder = Number(form.sortOrder);
     if (!form.title.trim() || !form.slug.trim() || !form.description.trim()) {
       toast.error("請填寫商品名稱、Slug 及商品介紹");
       return null;
     }
-    if (priceMinor === null || !isValidInventoryQuantity(form.inventoryQuantity) || !Number.isInteger(sortOrder)) {
-      toast.error("請輸入有效的 HKD 售價、庫存數量及排序值");
+    if (priceMinor === null || !isValidInventoryQuantity(form.inventoryQuantity) || !Number.isInteger(weightGrams) || weightGrams < 0 || !Number.isInteger(sortOrder)) {
+      toast.error("請輸入有效的 HKD 售價、庫存數量、包裝重量及排序值");
       return null;
     }
-    return { priceMinor, inventoryQuantity, sortOrder };
+    return { priceMinor, inventoryQuantity, weightGrams, sortOrder };
   };
 
   const handleCreate = () => {
@@ -101,6 +106,7 @@ export default function AdminSelection() {
       slug: form.slug.trim(),
       description: form.description.trim(),
       category: form.category,
+      shippingClass: form.shippingClass,
       currency: "HKD",
       coverUrl: form.coverUrl || null,
       coverKey: form.coverKey || null,
@@ -119,6 +125,7 @@ export default function AdminSelection() {
       slug: form.slug.trim(),
       description: form.description.trim(),
       category: form.category,
+      shippingClass: form.shippingClass,
       currency: "HKD",
       coverUrl: form.coverUrl || null,
       coverKey: form.coverKey || null,
@@ -143,6 +150,8 @@ export default function AdminSelection() {
       category: product.category,
       priceHkd: formatHkdFromMinorUnits(product.priceMinor),
       inventoryQuantity: String(product.inventoryQuantity),
+      shippingClass: product.shippingClass,
+      weightGrams: String(product.weightGrams),
       coverUrl: product.coverUrl ?? "",
       coverKey: product.coverKey ?? "",
       active: product.active,
@@ -193,7 +202,7 @@ export default function AdminSelection() {
                   商品介紹 *
                   <textarea value={form.description} onChange={(event) => updateForm({ description: event.target.value })} rows={4} className="mt-1.5 w-full border border-border bg-background px-3 py-2.5 text-sm leading-relaxed focus:outline-none focus:border-foreground resize-y" placeholder="介紹物件的來源、材質、尺寸或背後故事。" />
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                   <label className="text-xs text-muted-foreground tracking-wider">
                     分類
                     <select value={form.category} onChange={(event) => updateForm({ category: event.target.value as ProductForm["category"] })} className="mt-1.5 w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground">
@@ -208,6 +217,18 @@ export default function AdminSelection() {
                   <label className="text-xs text-muted-foreground tracking-wider">
                     庫存數量 *
                     <input type="number" min="0" step="1" value={form.inventoryQuantity} onChange={(event) => updateForm({ inventoryQuantity: event.target.value })} className="mt-1.5 w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground" />
+                  </label>
+                  <label className="text-xs text-muted-foreground tracking-wider">
+                    寄件類別
+                    <select value={form.shippingClass} onChange={(event) => updateForm({ shippingClass: event.target.value as ProductForm["shippingClass"] })} className="mt-1.5 w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground">
+                      <option value="G">G 大型信件／包裹</option>
+                      <option value="P">P 小型信件／包裹</option>
+                      <option value="E">E 郵包</option>
+                    </select>
+                  </label>
+                  <label className="text-xs text-muted-foreground tracking-wider">
+                    包裝重量（克） *
+                    <input type="number" min="0" step="1" value={form.weightGrams} onChange={(event) => updateForm({ weightGrams: event.target.value })} className="mt-1.5 w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground" placeholder="例如：100" />
                   </label>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -256,7 +277,7 @@ export default function AdminSelection() {
                     <span className="border border-border px-2 py-0.5 text-[10px] text-muted-foreground">{product.category}</span>
                   </div>
                   <p className="text-xs text-muted-foreground font-mono mt-1 truncate">{product.slug}</p>
-                  <p className="text-xs text-muted-foreground mt-2">HK$ {(product.priceMinor / 100).toFixed(2)} ・ 庫存 {product.inventoryQuantity} ・ 可售 {Math.max(product.inventoryQuantity - product.reservedQuantity, 0)} ・ {product.active ? "已上架" : "草稿／下架"}</p>
+                  <p className="text-xs text-muted-foreground mt-2">HK$ {(product.priceMinor / 100).toFixed(2)} ・ 庫存 {product.inventoryQuantity} ・ 可售 {Math.max(product.inventoryQuantity - product.reservedQuantity, 0)} ・ {product.shippingClass}／{product.weightGrams}g ・ {product.active ? "已上架" : "草稿／下架"}</p>
                 </div>
                 <div className="flex items-center gap-3 sm:flex-shrink-0">
                   <button type="button" onClick={() => startEdit(product)} className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"><Pencil size={13} /> 編輯</button>
