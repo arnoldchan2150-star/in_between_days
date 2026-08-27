@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link } from "wouter";
 import { ArrowRight, Compass, PackageOpen, Search, Sparkles, X } from "lucide-react";
 import { toast } from "sonner";
@@ -41,17 +41,30 @@ export default function Selection() {
   const [customerEmail, setCustomerEmail] = useState("");
   const [deliveryRegion, setDeliveryRegion] = useState<"HK" | "overseas">("HK");
   const { data: products, isLoading } = trpc.shop.publicList.useQuery();
+  const checkoutWindowRef = useRef<Window | null>(null);
   const checkout = trpc.shop.createCheckout.useMutation({
     onSuccess: (result) => {
       if (!result.url) {
+        checkoutWindowRef.current?.close();
+        checkoutWindowRef.current = null;
         toast.error("付款頁暫時無法建立，請稍後再試");
         return;
       }
+      const checkoutWindow = checkoutWindowRef.current;
+      checkoutWindowRef.current = null;
       toast.success("正在前往安全付款頁");
-      window.open(result.url, "_blank", "noopener,noreferrer");
+      if (checkoutWindow && !checkoutWindow.closed) {
+        checkoutWindow.location.href = result.url;
+      } else {
+        window.location.assign(result.url);
+      }
       setCheckoutItem(null);
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      checkoutWindowRef.current?.close();
+      checkoutWindowRef.current = null;
+      toast.error(error.message);
+    },
   });
 
   const selectionItems = useMemo<SelectionItem[]>(
@@ -282,7 +295,13 @@ export default function Selection() {
                     toast.error("此商品尚未設定包裝重量，請稍後再試");
                     return;
                   }
-                  checkout.mutate({ customerName, customerEmail, items: [{ productId: checkoutItem.id, quantity: 1 }] });
+                  const checkoutWindow = window.open("about:blank", "_blank");
+                  if (checkoutWindow) {
+                    checkoutWindow.opener = null;
+                    checkoutWindow.document.title = "Stripe 安全付款";
+                  }
+                  checkoutWindowRef.current = checkoutWindow;
+                  checkout.mutate({ customerName: customerName.trim(), customerEmail: customerEmail.trim(), items: [{ productId: checkoutItem.id, quantity: 1 }] });
                 }}
                 className="bg-foreground text-background px-5 py-2.5 text-xs tracking-wider hover:bg-foreground/80 disabled:opacity-50 transition-colors"
               >
