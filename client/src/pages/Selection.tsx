@@ -1,14 +1,16 @@
 import { useMemo, useState } from "react";
 import { Link } from "wouter";
-import { ArrowRight, Compass, PackageOpen, Search, Sparkles } from "lucide-react";
+import { ArrowRight, Compass, PackageOpen, Search, Sparkles, X } from "lucide-react";
+import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import {
   SELECTION_CATEGORIES,
-  SELECTION_ITEMS,
   SelectionCategory,
+  SelectionItem,
   filterSelectionItems,
 } from "@shared/selectionCatalog";
+import { trpc } from "@/lib/trpc";
 
 const SELECTION_NOTES = [
   {
@@ -34,10 +36,38 @@ const SELECTION_NOTES = [
 export default function Selection() {
   const [activeCategory, setActiveCategory] = useState<SelectionCategory>("全部");
   const [searchQuery, setSearchQuery] = useState("");
+  const [checkoutItem, setCheckoutItem] = useState<{ id: number; title: string; priceMinor: number } | null>(null);
+  const [customerName, setCustomerName] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const { data: products, isLoading } = trpc.shop.publicList.useQuery();
+  const checkout = trpc.shop.createCheckout.useMutation({
+    onSuccess: (result) => {
+      if (!result.url) {
+        toast.error("付款頁暫時無法建立，請稍後再試");
+        return;
+      }
+      toast.success("正在前往安全付款頁");
+      window.open(result.url, "_blank", "noopener,noreferrer");
+      setCheckoutItem(null);
+    },
+    onError: (error) => toast.error(error.message),
+  });
 
+  const selectionItems = useMemo<SelectionItem[]>(
+    () => (products ?? []).map((product) => ({
+      id: String(product.id),
+      title: product.title,
+      category: product.category,
+      description: product.description,
+      status: product.inventoryQuantity > 0 ? "available" : "sold_out",
+      imageUrl: product.coverUrl ?? undefined,
+      priceLabel: `HK$ ${(product.priceMinor / 100).toFixed(2)}`,
+    })),
+    [products],
+  );
   const filteredItems = useMemo(
-    () => filterSelectionItems(SELECTION_ITEMS, activeCategory, searchQuery),
-    [activeCategory, searchQuery],
+    () => filterSelectionItems(selectionItems, activeCategory, searchQuery),
+    [activeCategory, searchQuery, selectionItems],
   );
   const hasActiveFilters = Boolean(searchQuery.trim()) || activeCategory !== "全部";
 
@@ -94,7 +124,11 @@ export default function Selection() {
 
         <section className="py-16 md:py-20">
           <div className="container">
-            {filteredItems.length > 0 ? (
+            {isLoading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {[1, 2, 3].map((item) => <div key={item} className="space-y-5"><div className="aspect-[4/5] bg-secondary/50 animate-pulse" /><div className="h-5 w-2/3 bg-secondary/50 animate-pulse" /><div className="h-4 w-full bg-secondary/50 animate-pulse" /></div>)}
+              </div>
+            ) : filteredItems.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-14">
                 {filteredItems.map((item) => (
                   <article key={item.id} className="group">
@@ -113,9 +147,20 @@ export default function Selection() {
                     </div>
                     <h2 className="font-serif text-xl font-light leading-snug">{item.title}</h2>
                     <p className="text-sm text-muted-foreground leading-relaxed mt-3">{item.description}</p>
-                    <p className="text-xs text-muted-foreground mt-4">
-                      {item.status === "available" ? "可供訂購" : item.status === "sold_out" ? "暫時售罄" : "即將上架"}
-                    </p>
+                    {item.status === "available" ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const product = products?.find((candidate) => String(candidate.id) === item.id);
+                          if (product) setCheckoutItem({ id: product.id, title: product.title, priceMinor: product.priceMinor });
+                        }}
+                        className="mt-4 inline-flex items-center gap-2 text-xs text-foreground border-b border-foreground/40 pb-1 hover:border-foreground transition-colors"
+                      >
+                        前往結帳 <ArrowRight size={13} />
+                      </button>
+                    ) : (
+                      <p className="text-xs text-muted-foreground mt-4">{item.status === "sold_out" ? "暫時售罄" : "即將上架"}</p>
+                    )}
                   </article>
                 ))}
               </div>
@@ -183,6 +228,47 @@ export default function Selection() {
           </div>
         </section>
       </main>
+
+      {checkoutItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/30 px-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setCheckoutItem(null); }}>
+          <div role="dialog" aria-modal="true" aria-labelledby="checkout-title" className="w-full max-w-md bg-background border border-border p-6 sm:p-8 shadow-xl">
+            <div className="flex items-start justify-between gap-4 mb-6">
+              <div>
+                <p className="text-[10px] text-muted-foreground tracking-[0.16em] uppercase mb-2">Secure checkout</p>
+                <h2 id="checkout-title" className="font-serif text-2xl font-light">{checkoutItem.title}</h2>
+                <p className="text-sm text-muted-foreground mt-2">HK$ {(checkoutItem.priceMinor / 100).toFixed(2)} ・ 1 件</p>
+              </div>
+              <button type="button" onClick={() => setCheckoutItem(null)} className="text-muted-foreground hover:text-foreground" aria-label="關閉結帳視窗"><X size={17} /></button>
+            </div>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-6">請先留下聯絡資料，之後會前往 Stripe 安全付款頁完成交易。</p>
+            <div className="space-y-4">
+              <label className="block text-xs text-muted-foreground tracking-wider">姓名
+                <input value={customerName} onChange={(event) => setCustomerName(event.target.value)} autoComplete="name" className="mt-1.5 w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground" placeholder="你的姓名" />
+              </label>
+              <label className="block text-xs text-muted-foreground tracking-wider">Email
+                <input type="email" value={customerEmail} onChange={(event) => setCustomerEmail(event.target.value)} autoComplete="email" className="mt-1.5 w-full border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:border-foreground" placeholder="你的 Email" />
+              </label>
+            </div>
+            <div className="flex flex-wrap gap-3 mt-7">
+              <button
+                type="button"
+                disabled={checkout.isPending}
+                onClick={() => {
+                  if (!customerName.trim() || !customerEmail.trim()) {
+                    toast.error("請填寫姓名及 Email");
+                    return;
+                  }
+                  checkout.mutate({ customerName, customerEmail, items: [{ productId: checkoutItem.id, quantity: 1 }] });
+                }}
+                className="bg-foreground text-background px-5 py-2.5 text-xs tracking-wider hover:bg-foreground/80 disabled:opacity-50 transition-colors"
+              >
+                {checkout.isPending ? "準備付款頁..." : "前往安全付款"}
+              </button>
+              <button type="button" onClick={() => setCheckoutItem(null)} className="border border-border px-5 py-2.5 text-xs tracking-wider hover:border-foreground transition-colors">取消</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

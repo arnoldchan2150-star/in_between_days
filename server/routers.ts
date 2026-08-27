@@ -8,6 +8,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { ENV } from "./_core/env";
 import { storagePut } from "./storage";
+import { getStripeClient } from "./stripeShop";
 import {
   addPostMedia,
   addSubscriber,
@@ -48,6 +49,22 @@ import {
   createNewsletter,
   getNewsletters,
   updateNewsletterSent,
+  getAllShopProducts,
+  getPublicShopProducts,
+  getShopProductById,
+  getShopProductBySlug,
+  createShopProduct,
+  updateShopProduct,
+  deleteShopProduct,
+  listShopProductMedia,
+  addShopProductMedia,
+  deleteShopProductMedia,
+  reserveShopOrder,
+  completeShopOrder,
+  cancelShopOrder,
+  updateShopOrderByCheckoutSession,
+  getAllShopOrders,
+  updateShopOrderStatus,
 } from "./db";
 import {
   adminLogin,
@@ -489,6 +506,171 @@ export const appRouter = router({
             ownerEmail: "hello@inbetweendays.com",
           });
         }
+        return { success: true };
+      }),
+  }),
+
+  // ── Shop Products ─────────────────────────────────────────────────────────
+  shop: router({
+    publicList: publicProcedure.query(async () => {
+      const products = await getPublicShopProducts();
+      return Promise.all(products.map(async (product) => ({
+        ...product,
+        media: await listShopProductMedia(product.id),
+      })));
+    }),
+    createCheckout: publicProcedure
+      .input(z.object({
+        customerName: z.string().trim().min(1).max(128),
+        customerEmail: z.string().trim().email().max(320),
+        items: z.array(z.object({
+          productId: z.number().int().positive(),
+          quantity: z.number().int().positive().max(10),
+        })).min(1).max(20),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const normalizedEmail = input.customerEmail.trim().toLowerCase();
+        const pendingSessionId = `pending_${randomBytes(24).toString("hex")}`;
+        let reserved = false;
+        try {
+          const order = await reserveShopOrder({
+            customerName: input.customerName.trim(),
+            customerEmail: normalizedEmail,
+            stripeCheckoutSessionId: pendingSessionId,
+            items: input.items,
+          });
+          reserved = true;
+          const products = await Promise.all(input.items.map((item) => getShopProductById(item.productId)));
+          if (products.some((product) => !product || !product.active)) throw new Error("商品資料已更新，請重新整理後再試");
+          const origin = ctx.req.headers.origin || `${ctx.req.protocol}://${ctx.req.get("host")}`;
+          const stripe = getStripeClient();
+          const session = await stripe.checkout.sessions.create({
+            mode: "payment",
+            line_items: input.items.map((item, index) => {
+              const product = products[index]!;
+              return {
+                quantity: item.quantity,
+                price_data: {
+                  currency: "hkd",
+                  unit_amount: product.priceMinor,
+                  product_data: {
+                    name: product.title,
+                    description: product.description.slice(0, 500),
+                  },
+                },
+              };
+            }),
+            customer_email: normalizedEmail,
+            client_reference_id: `order-${order.id}`,
+            metadata: {
+              order_id: String(order.id),
+              customer_email: normalizedEmail,
+              customer_name: input.customerName.trim(),
+            },
+            allow_promotion_codes: true,
+            success_url: `${origin}/selection?payment=success&session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${origin}/selection?payment=cancelled`,
+          });
+          await updateShopOrderByCheckoutSession(pendingSessionId, { stripeCheckoutSessionId: session.id });
+          return { url: session.url };
+        } catch (error) {
+          if (reserved) {
+            await cancelShopOrder(pendingSessionId).catch(() => undefined);
+          }
+          const message = error instanceof Error ? error.message : "付款頁暫時無法建立，請稍後再試";
+          throw new TRPCError({ code: "BAD_REQUEST", message });
+        }
+      }),
+    bySlug: publicProcedure
+      .input(z.object({ slug: z.string().min(1) }))
+      .query(async ({ input }) => {
+        const product = await getShopProductBySlug(input.slug);
+        if (!product || !product.active) throw new TRPCError({ code: "NOT_FOUND" });
+        return { ...product, media: await listShopProductMedia(product.id) };
+      }),
+    adminOrders: adminProcedure.query(() => getAllShopOrders()),
+    updateOrderStatus: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        fulfillmentStatus: z.enum(["pending", "processing", "shipped", "fulfilled", "cancelled"]),
+      }))
+      .mutation(async ({ input }) => {
+        await updateShopOrderStatus(input.id, input.fulfillmentStatus);
+        return { success: true };
+      }),
+    adminList: adminProcedure.query(async () => {
+      const products = await getAllShopProducts();
+      return Promise.all(products.map(async (product) => ({
+        ...product,
+        media: await listShopProductMedia(product.id),
+      })));
+    }),
+    byId: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        const product = await getShopProductById(input.id);
+        if (!product) throw new TRPCError({ code: "NOT_FOUND" });
+        return { ...product, media: await listShopProductMedia(product.id) };
+      }),
+    create: adminProcedure
+      .input(z.object({
+        title: z.string().trim().min(1).max(255),
+        slug: z.string().trim().min(1).max(160),
+        description: z.string().trim().min(1),
+        category: z.enum(["自製物件", "旅途小物"]),
+        priceMinor: z.number().int().nonnegative(),
+        currency: z.literal("HKD").default("HKD"),
+        inventoryQuantity: z.number().int().nonnegative().default(0),
+        coverUrl: z.string().url().optional().nullable(),
+        coverKey: z.string().optional().nullable(),
+        active: z.boolean().default(false),
+        sortOrder: z.number().int().default(0),
+      }))
+      .mutation(async ({ input }) => createShopProduct(input)),
+    update: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        title: z.string().trim().min(1).max(255).optional(),
+        slug: z.string().trim().min(1).max(160).optional(),
+        description: z.string().trim().min(1).optional(),
+        category: z.enum(["自製物件", "旅途小物"]).optional(),
+        priceMinor: z.number().int().nonnegative().optional(),
+        currency: z.literal("HKD").optional(),
+        inventoryQuantity: z.number().int().nonnegative().optional(),
+        coverUrl: z.string().url().optional().nullable(),
+        coverKey: z.string().optional().nullable(),
+        active: z.boolean().optional(),
+        sortOrder: z.number().int().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const { id, ...data } = input;
+        await updateShopProduct(id, data);
+        return { success: true };
+      }),
+    delete: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ input }) => {
+        await deleteShopProduct(input.id);
+        return { success: true };
+      }),
+    uploadCover: adminProcedure
+      .input(z.object({ filename: z.string(), contentType: z.string(), dataBase64: z.string() }))
+      .mutation(async ({ input }) => {
+        const buffer = Buffer.from(input.dataBase64, "base64");
+        const key = `shop/products/${Date.now()}-${input.filename}`;
+        const { url } = await storagePut(key, buffer, input.contentType);
+        return { url, key };
+      }),
+    addMedia: adminProcedure
+      .input(z.object({ productId: z.number().int().positive(), url: z.string().url(), storageKey: z.string(), caption: z.string().optional().nullable(), sortOrder: z.number().int().default(0) }))
+      .mutation(async ({ input }) => {
+        await addShopProductMedia(input);
+        return { success: true };
+      }),
+    deleteMedia: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ input }) => {
+        await deleteShopProductMedia(input.id);
         return { success: true };
       }),
   }),

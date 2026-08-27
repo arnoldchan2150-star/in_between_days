@@ -8,6 +8,8 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { getStripeClient, getStripeWebhookSecret } from "../stripeShop";
+import { cancelShopOrder, completeShopOrder } from "../db";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -31,6 +33,31 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  // Stripe requires the unmodified raw body for signature verification.
+  app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), async (req, res) => {
+    const signature = req.get("stripe-signature");
+    if (!signature) return res.status(400).json({ error: "Missing Stripe-Signature" });
+    try {
+      const stripe = getStripeClient();
+      const event = stripe.webhooks.constructEvent(req.body, signature, getStripeWebhookSecret());
+      if (event.id.startsWith("evt_test_")) {
+        console.log("[Stripe Webhook] Test event detected, returning verification response");
+        return res.json({ verified: true });
+      }
+      if (event.type === "checkout.session.completed") {
+        const session = event.data.object as { id: string; payment_intent?: string | null };
+        await completeShopOrder(session.id, session.payment_intent ?? null);
+      } else if (event.type === "checkout.session.expired") {
+        const session = event.data.object as { id: string };
+        await cancelShopOrder(session.id);
+      }
+      return res.json({ received: true });
+    } catch (error) {
+      console.error("[Stripe Webhook] Verification or handling failed:", error);
+      return res.status(400).json({ error: "Webhook verification failed" });
+    }
+  });
+
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));

@@ -118,6 +118,70 @@ export const booklets = mysqlTable("booklets", {
 export type Booklet = typeof booklets.$inferSelect;
 export type InsertBooklet = typeof booklets.$inferInsert;
 
+// ── Shop Products ───────────────────────────────────────────────────────────
+export const shopProducts = mysqlTable("shop_products", {
+  id: int("id").autoincrement().primaryKey(),
+  title: varchar("title", { length: 255 }).notNull(),
+  slug: varchar("slug", { length: 160 }).notNull().unique(),
+  description: text("description").notNull(),
+  category: mysqlEnum("category", ["自製物件", "旅途小物"]).notNull(),
+  priceMinor: int("priceMinor").notNull(),
+  currency: varchar("currency", { length: 3 }).notNull().default("HKD"),
+  inventoryQuantity: int("inventoryQuantity").notNull().default(0),
+  reservedQuantity: int("reservedQuantity").notNull().default(0),
+  coverUrl: text("coverUrl"),
+  coverKey: text("coverKey"),
+  stripeProductId: varchar("stripeProductId", { length: 128 }),
+  stripePriceId: varchar("stripePriceId", { length: 128 }),
+  active: boolean("active").notNull().default(false),
+  sortOrder: int("sortOrder").notNull().default(0),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ShopProduct = typeof shopProducts.$inferSelect;
+export type InsertShopProduct = typeof shopProducts.$inferInsert;
+
+export const shopProductMedia = mysqlTable("shop_product_media", {
+  id: int("id").autoincrement().primaryKey(),
+  productId: int("productId").notNull(),
+  url: text("url").notNull(),
+  storageKey: text("storageKey").notNull(),
+  caption: text("caption"),
+  sortOrder: int("sortOrder").notNull().default(0),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ShopProductMedia = typeof shopProductMedia.$inferSelect;
+export type InsertShopProductMedia = typeof shopProductMedia.$inferInsert;
+
+export const shopOrders = mysqlTable("shop_orders", {
+  id: int("id").autoincrement().primaryKey(),
+  customerName: varchar("customerName", { length: 128 }),
+  customerEmail: varchar("customerEmail", { length: 320 }).notNull(),
+  stripeCheckoutSessionId: varchar("stripeCheckoutSessionId", { length: 128 }).notNull().unique(),
+  stripePaymentIntentId: varchar("stripePaymentIntentId", { length: 128 }),
+  fulfillmentStatus: mysqlEnum("fulfillmentStatus", ["pending", "processing", "shipped", "fulfilled", "cancelled"]).notNull().default("pending"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ShopOrder = typeof shopOrders.$inferSelect;
+export type InsertShopOrder = typeof shopOrders.$inferInsert;
+
+export const shopOrderItems = mysqlTable("shop_order_items", {
+  id: int("id").autoincrement().primaryKey(),
+  orderId: int("orderId").notNull(),
+  productId: int("productId").notNull(),
+  productTitle: varchar("productTitle", { length: 255 }).notNull(),
+  stripePriceId: varchar("stripePriceId", { length: 128 }),
+  quantity: int("quantity").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ShopOrderItem = typeof shopOrderItems.$inferSelect;
+export type InsertShopOrderItem = typeof shopOrderItems.$inferInsert;
+
 // ── Booklet Subscribers ────────────────────────────────────────────────────
 export const bookletSubscribers = mysqlTable("booklet_subscribers", {
   id: int("id").autoincrement().primaryKey(),

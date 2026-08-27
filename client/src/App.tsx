@@ -24,6 +24,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminPosts from "./pages/admin/AdminPosts";
 import AdminPostEditor from "./pages/admin/AdminPostEditor";
 import AdminBooklets from "./pages/admin/AdminBooklets";
+import AdminSelection from "./pages/admin/AdminSelection";
 import AdminSubscribers from "./pages/admin/AdminSubscribers";
 import AdminAbout from "./pages/admin/AdminAbout";
 
@@ -68,6 +69,7 @@ function Router() {
       <Route path="/admin/posts/new" component={AdminPostEditor} />
       <Route path="/admin/posts/:id/edit" component={AdminPostEditor} />
       <Route path="/admin/booklets" component={AdminBooklets} />
+      <Route path="/admin/selection" component={AdminSelection} />
       <Route path="/admin/subscribers" component={AdminSubscribers} />
       <Route path="/admin/about" component={AdminAbout} />
 

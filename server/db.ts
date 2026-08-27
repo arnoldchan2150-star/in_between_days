@@ -16,6 +16,14 @@ import {
   InsertUser,
   Post,
   PostMedia,
+  ShopProduct,
+  InsertShopProduct,
+  ShopProductMedia,
+  InsertShopProductMedia,
+  ShopOrder,
+  InsertShopOrder,
+  ShopOrderItem,
+  InsertShopOrderItem,
   aboutPage,
   adminCredentials,
   bookletSubscribers,
@@ -28,6 +36,10 @@ import {
   siteNewsletters,
   siteSettings,
   users,
+  shopProducts,
+  shopProductMedia,
+  shopOrders,
+  shopOrderItems,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
@@ -553,5 +565,233 @@ export async function savePostBlocks(postId: number, blocks: Array<{ blockType: 
         sortOrder: block.sortOrder,
       });
     }
+  });
+}
+
+// ── Shop Products ───────────────────────────────────────────────────────────
+export async function getAllShopProducts(): Promise<ShopProduct[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(shopProducts).orderBy(asc(shopProducts.sortOrder), desc(shopProducts.createdAt));
+}
+
+export async function getPublicShopProducts(): Promise<ShopProduct[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(shopProducts)
+    .where(and(eq(shopProducts.active, true), sql`${shopProducts.inventoryQuantity} - ${shopProducts.reservedQuantity} > 0`))
+    .orderBy(asc(shopProducts.sortOrder), desc(shopProducts.createdAt));
+}
+
+export async function getShopProductById(id: number): Promise<ShopProduct | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(shopProducts).where(eq(shopProducts.id, id)).limit(1);
+  return result[0];
+}
+
+export async function getShopProductBySlug(slug: string): Promise<ShopProduct | undefined> {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(shopProducts).where(eq(shopProducts.slug, slug)).limit(1);
+  return result[0];
+}
+
+export async function createShopProduct(data: InsertShopProduct): Promise<ShopProduct> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.insert(shopProducts).values(data);
+  const result = await db.select().from(shopProducts).where(eq(shopProducts.slug, data.slug)).limit(1);
+  return result[0]!;
+}
+
+export async function updateShopProduct(id: number, data: Partial<InsertShopProduct>): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(shopProducts).set(data).where(eq(shopProducts.id, id));
+}
+
+export async function deleteShopProduct(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.delete(shopProductMedia).where(eq(shopProductMedia.productId, id));
+  await db.delete(shopProducts).where(eq(shopProducts.id, id));
+}
+
+export async function listShopProductMedia(productId: number): Promise<ShopProductMedia[]> {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(shopProductMedia).where(eq(shopProductMedia.productId, productId)).orderBy(asc(shopProductMedia.sortOrder));
+}
+
+export async function addShopProductMedia(data: InsertShopProductMedia): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.insert(shopProductMedia).values(data);
+}
+
+export async function deleteShopProductMedia(id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.delete(shopProductMedia).where(eq(shopProductMedia.id, id));
+}
+
+export async function createShopOrder(data: InsertShopOrder, items: InsertShopOrderItem[]): Promise<ShopOrder> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  return db.transaction(async (tx) => {
+    await tx.insert(shopOrders).values(data);
+    const [order] = await tx.select().from(shopOrders).where(eq(shopOrders.stripeCheckoutSessionId, data.stripeCheckoutSessionId)).limit(1);
+    if (!order) throw new Error("Order creation failed");
+    if (items.length > 0) await tx.insert(shopOrderItems).values(items.map((item) => ({ ...item, orderId: order.id })));
+    return order;
+  });
+}
+
+export async function updateShopOrderByCheckoutSession(
+  stripeCheckoutSessionId: string,
+  data: Partial<InsertShopOrder>,
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.update(shopOrders).set(data).where(eq(shopOrders.stripeCheckoutSessionId, stripeCheckoutSessionId));
+}
+
+export type ShopOrderLineInput = {
+  productId: number;
+  quantity: number;
+};
+
+export async function reserveShopOrder(data: {
+  customerName?: string | null;
+  customerEmail: string;
+  stripeCheckoutSessionId: string;
+  items: ShopOrderLineInput[];
+}): Promise<ShopOrder> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  return db.transaction(async (tx) => {
+    const productIds = Array.from(new Set(data.items.map((item) => item.productId)));
+    const products = await tx.select().from(shopProducts).where(inArray(shopProducts.id, productIds));
+    const productById = new Map(products.map((product) => [product.id, product]));
+    const orderItems: InsertShopOrderItem[] = [];
+
+    for (const item of data.items) {
+      const product = productById.get(item.productId);
+      if (!product || !product.active) throw new Error("商品目前未能購買");
+      if (product.inventoryQuantity - product.reservedQuantity < item.quantity) {
+        throw new Error(`「${product.title}」庫存不足`);
+      }
+
+      await tx
+        .update(shopProducts)
+        .set({ reservedQuantity: sql`${shopProducts.reservedQuantity} + ${item.quantity}` })
+        .where(and(
+          eq(shopProducts.id, item.productId),
+          eq(shopProducts.active, true),
+          sql`${shopProducts.inventoryQuantity} - ${shopProducts.reservedQuantity} >= ${item.quantity}`,
+        ));
+      const [updated] = await tx.select().from(shopProducts).where(eq(shopProducts.id, item.productId)).limit(1);
+      if (!updated || updated.reservedQuantity < product.reservedQuantity + item.quantity) {
+        throw new Error(`「${product.title}」庫存剛被其他訂單預留，請重新整理後再試`);
+      }
+      productById.set(product.id, updated);
+      orderItems.push({
+        orderId: 0,
+        productId: product.id,
+        productTitle: product.title,
+        stripePriceId: product.stripePriceId ?? null,
+        quantity: item.quantity,
+      });
+    }
+
+    await tx.insert(shopOrders).values({
+      customerName: data.customerName ?? null,
+      customerEmail: data.customerEmail,
+      stripeCheckoutSessionId: data.stripeCheckoutSessionId,
+      fulfillmentStatus: "pending",
+    });
+    const [order] = await tx.select().from(shopOrders).where(eq(shopOrders.stripeCheckoutSessionId, data.stripeCheckoutSessionId)).limit(1);
+    if (!order) throw new Error("訂單建立失敗");
+    if (orderItems.length > 0) {
+      await tx.insert(shopOrderItems).values(orderItems.map((item) => ({ ...item, orderId: order.id })));
+    }
+    return order;
+  });
+}
+
+export async function completeShopOrder(stripeCheckoutSessionId: string, stripePaymentIntentId?: string | null): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.transaction(async (tx) => {
+    const [order] = await tx.select().from(shopOrders).where(eq(shopOrders.stripeCheckoutSessionId, stripeCheckoutSessionId)).limit(1);
+    if (!order || order.fulfillmentStatus === "cancelled" || order.fulfillmentStatus === "fulfilled" || order.fulfillmentStatus === "processing") return;
+    const items = await tx.select().from(shopOrderItems).where(eq(shopOrderItems.orderId, order.id));
+    for (const item of items) {
+      await tx
+        .update(shopProducts)
+        .set({
+          inventoryQuantity: sql`${shopProducts.inventoryQuantity} - ${item.quantity}`,
+          reservedQuantity: sql`${shopProducts.reservedQuantity} - ${item.quantity}`,
+        })
+        .where(and(
+          eq(shopProducts.id, item.productId),
+          sql`${shopProducts.inventoryQuantity} >= ${item.quantity}`,
+          sql`${shopProducts.reservedQuantity} >= ${item.quantity}`,
+        ));
+      const [product] = await tx.select().from(shopProducts).where(eq(shopProducts.id, item.productId)).limit(1);
+      if (!product || product.inventoryQuantity < 0 || product.reservedQuantity < 0) {
+        throw new Error("庫存同步失敗");
+      }
+    }
+    await tx.update(shopOrders).set({
+      stripePaymentIntentId: stripePaymentIntentId ?? order.stripePaymentIntentId,
+      fulfillmentStatus: "processing",
+    }).where(eq(shopOrders.id, order.id));
+  });
+}
+
+export async function cancelShopOrder(stripeCheckoutSessionId: string): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.transaction(async (tx) => {
+    const [order] = await tx.select().from(shopOrders).where(eq(shopOrders.stripeCheckoutSessionId, stripeCheckoutSessionId)).limit(1);
+    if (!order || order.fulfillmentStatus !== "pending") return;
+    const items = await tx.select().from(shopOrderItems).where(eq(shopOrderItems.orderId, order.id));
+    for (const item of items) {
+      await tx.update(shopProducts).set({ reservedQuantity: sql`GREATEST(${shopProducts.reservedQuantity} - ${item.quantity}, 0)` }).where(eq(shopProducts.id, item.productId));
+    }
+    await tx.update(shopOrders).set({ fulfillmentStatus: "cancelled" }).where(eq(shopOrders.id, order.id));
+  });
+}
+
+export async function getAllShopOrders() {
+  const db = await getDb();
+  if (!db) return [];
+  const orders = await db.select().from(shopOrders).orderBy(desc(shopOrders.createdAt));
+  return Promise.all(orders.map(async (order) => ({
+    ...order,
+    items: await db.select().from(shopOrderItems).where(eq(shopOrderItems.orderId, order.id)).orderBy(asc(shopOrderItems.id)),
+  })));
+}
+
+export async function updateShopOrderStatus(
+  id: number,
+  fulfillmentStatus: "pending" | "processing" | "shipped" | "fulfilled" | "cancelled",
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("DB unavailable");
+  await db.transaction(async (tx) => {
+    const [order] = await tx.select().from(shopOrders).where(eq(shopOrders.id, id)).limit(1);
+    if (!order) throw new Error("找不到訂單");
+    if (fulfillmentStatus === "cancelled" && order.fulfillmentStatus === "pending") {
+      const items = await tx.select().from(shopOrderItems).where(eq(shopOrderItems.orderId, id));
+      for (const item of items) {
+        await tx.update(shopProducts).set({ reservedQuantity: sql`GREATEST(${shopProducts.reservedQuantity} - ${item.quantity}, 0)` }).where(eq(shopProducts.id, item.productId));
+      }
+    }
+    await tx.update(shopOrders).set({ fulfillmentStatus }).where(eq(shopOrders.id, id));
   });
 }

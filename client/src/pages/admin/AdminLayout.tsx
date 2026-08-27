@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   FileText,
   BookOpen,
+  ShoppingBag,
   Users,
   UserCircle,
   LogOut,
@@ -15,6 +16,7 @@ const NAV_ITEMS = [
   { href: "/admin", label: "總覽", icon: LayoutDashboard, exact: true },
   { href: "/admin/posts", label: "文章管理", icon: FileText },
   { href: "/admin/booklets", label: "小冊子管理", icon: BookOpen },
+  { href: "/admin/selection", label: "行旅選物", icon: ShoppingBag },
   { href: "/admin/subscribers", label: "訂閱者", icon: Users },
   { href: "/admin/about", label: "關於我", icon: UserCircle },
 ];
