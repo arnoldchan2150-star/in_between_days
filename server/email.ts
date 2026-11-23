@@ -1,5 +1,3 @@
-import { ENV } from "./_core/env";
-
 interface SendEmailOptions {
   to: string;
   subject: string;
@@ -38,30 +36,8 @@ async function sendEmail(opts: SendEmailOptions): Promise<boolean> {
     }
   }
 
-  // 備援：使用內建 Forge API
-  if (!ENV.forgeApiUrl || !ENV.forgeApiKey) {
-    console.warn("[Email] Neither Resend API Key nor Forge API configured, skipping email send");
-    return false;
-  }
-  try {
-    const res = await fetch(`${ENV.forgeApiUrl}/v1/email/send`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${ENV.forgeApiKey}`,
-      },
-      body: JSON.stringify(opts),
-    });
-    if (!res.ok) {
-      const text = await res.text();
-      console.error("[Email] Forge send failed:", res.status, text);
-      return false;
-    }
-    return true;
-  } catch (err) {
-    console.error("[Email] Forge send error:", err);
-    return false;
-  }
+  console.warn("[Email] RESEND_API_KEY not configured, skipping email send");
+  return false;
 }
 
 export async function sendBookletToSubscriber(opts: {
