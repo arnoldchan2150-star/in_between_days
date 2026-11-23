@@ -5,7 +5,7 @@ import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
-import { getLoginUrl } from "./const";
+import { ADMIN_LOGIN_PATH } from "./const";
 import "./index.css";
 
 const queryClient = new QueryClient();
@@ -18,7 +18,11 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
 
   if (!isUnauthorized) return;
 
-  window.location.href = getLoginUrl();
+  // Only admin pages need a login; public visitors are never redirected.
+  const path = window.location.pathname;
+  if (!path.startsWith("/admin") || path === ADMIN_LOGIN_PATH) return;
+
+  window.location.href = ADMIN_LOGIN_PATH;
 };
 
 queryClient.getQueryCache().subscribe(event => {

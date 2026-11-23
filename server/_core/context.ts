@@ -2,7 +2,6 @@ import type { CreateExpressContextOptions } from "@trpc/server/adapters/express"
 import { parse as parseCookieHeader } from "cookie";
 import { jwtVerify } from "jose";
 import type { User } from "../../drizzle/schema";
-import { sdk } from "./sdk";
 import { ADMIN_COOKIE_NAME } from "@shared/const";
 
 export type TrpcContext = {
@@ -24,7 +23,7 @@ async function tryAdminJwt(cookieHeader: string | undefined): Promise<User | nul
     );
     const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] });
 
-    // Admin JWT has { sub: email, role: "admin" } — Manus OAuth JWT has { openId, appId, name }
+    // Admin JWT has { sub: email, role: "admin" }
     if (payload.role !== "admin" || !payload.sub) return null;
 
     // Build a synthetic User object so adminProcedure can recognise this session
@@ -48,18 +47,8 @@ async function tryAdminJwt(cookieHeader: string | undefined): Promise<User | nul
 export async function createContext(
   opts: CreateExpressContextOptions
 ): Promise<TrpcContext> {
-  // The admin cookie must take precedence: the same browser may also have a
-  // normal Manus OAuth session, but that session has role "user".
-  let user: User | null = await tryAdminJwt(opts.req.headers.cookie);
-
-  // Fall back to the normal Manus OAuth session for public/authenticated users.
-  if (!user) {
-    try {
-      user = await sdk.authenticateRequest(opts.req);
-    } catch {
-      user = null;
-    }
-  }
+  // Only the site's own email/password admin session is supported.
+  const user: User | null = await tryAdminJwt(opts.req.headers.cookie);
 
   return {
     req: opts.req,
