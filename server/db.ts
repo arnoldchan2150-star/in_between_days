@@ -41,7 +41,6 @@ import {
   shopOrders,
   shopOrderItems,
 } from "../drizzle/schema";
-import { ENV } from "./_core/env";
 
 let _db: ReturnType<typeof drizzle> | null = null;
 
@@ -66,7 +65,6 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     return;
   }
   try {
-    const isOwner = user.openId === ENV.ownerOpenId;
     const values: InsertUser = { openId: user.openId };
     const updateSet: Record<string, unknown> = {};
     const textFields = ["name", "email", "loginMethod"] as const;
@@ -81,7 +79,7 @@ export async function upsertUser(user: InsertUser): Promise<void> {
       values.lastSignedIn = user.lastSignedIn;
       updateSet.lastSignedIn = user.lastSignedIn;
     }
-    const role = isOwner ? "admin" : (user.role ?? "user");
+    const role = user.role ?? "user";
     values.role = role;
     updateSet.role = role;
     if (!values.lastSignedIn) values.lastSignedIn = new Date();

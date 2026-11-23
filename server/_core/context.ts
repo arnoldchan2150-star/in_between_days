@@ -3,6 +3,7 @@ import { parse as parseCookieHeader } from "cookie";
 import { jwtVerify } from "jose";
 import type { User } from "../../drizzle/schema";
 import { ADMIN_COOKIE_NAME } from "@shared/const";
+import { getJwtSecret } from "./env";
 
 export type TrpcContext = {
   req: CreateExpressContextOptions["req"];
@@ -18,9 +19,7 @@ async function tryAdminJwt(cookieHeader: string | undefined): Promise<User | nul
   if (!token) return null;
 
   try {
-    const secret = new TextEncoder().encode(
-      process.env.JWT_SECRET || process.env.COOKIE_SECRET || "fallback-secret"
-    );
+    const secret = getJwtSecret();
     const { payload } = await jwtVerify(token, secret, { algorithms: ["HS256"] });
 
     // Admin JWT has { sub: email, role: "admin" }

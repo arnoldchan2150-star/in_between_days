@@ -4,6 +4,7 @@ import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerStorageProxy } from "./storageProxy";
+import { getJwtSecret } from "./env";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -30,6 +31,7 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 }
 
 async function startServer() {
+  getJwtSecret(); // throws in production if JWT_SECRET is missing
   const app = express();
   const server = createServer(app);
   // Stripe requires the unmodified raw body for signature verification.
@@ -68,7 +70,7 @@ async function startServer() {
       const { getPublishedPosts, getPublicBooklets } = await import("../db");
       const posts = await getPublishedPosts();
       const booklets = await getPublicBooklets();
-      const host = req.get("host") || "inbetweenbd-ni9eppcf.manus.space";
+      const host = req.get("host") || "inbetweenday.com";
       const protocol = req.protocol || "https";
       const baseUrl = `${protocol}://${host}`;
 
@@ -102,7 +104,7 @@ async function startServer() {
   });
 
   app.get("/robots.txt", (req, res) => {
-    const host = req.get("host") || "inbetweenbd-ni9eppcf.manus.space";
+    const host = req.get("host") || "inbetweenday.com";
     const protocol = req.protocol || "https";
     res.type("text/plain");
     res.send(`User-agent: *\nAllow: /\nSitemap: ${protocol}://${host}/sitemap.xml\n`);

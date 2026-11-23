@@ -6,7 +6,7 @@ import { ADMIN_COOKIE_NAME, COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
-import { ENV } from "./_core/env";
+import { getJwtSecret } from "./_core/env";
 import { storagePut } from "./storage";
 import { getStripeClient } from "./stripeShop";
 import { quoteHongKongShipping } from "../shared/shipping";
@@ -82,7 +82,7 @@ import {
 
 // ── Admin guard ────────────────────────────────────────────────────────────
 const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
-  if (ctx.user.role !== "admin" && ctx.user.openId !== ENV.ownerOpenId) {
+  if (ctx.user.role !== "admin") {
     throw new TRPCError({ code: "FORBIDDEN", message: "需要管理員權限" });
   }
   return next({ ctx });
@@ -90,7 +90,7 @@ const adminProcedure = protectedProcedure.use(({ ctx, next }) => {
 
 // ── Session cookie helper ──────────────────────────────────────────────────
 async function setAdminSessionCookie(ctx: { req: any; res: any }, email: string) {
-  const secret = new TextEncoder().encode(ENV.cookieSecret || process.env.JWT_SECRET || "fallback-secret");
+  const secret = getJwtSecret();
   const token = await new SignJWT({ sub: email, role: "admin" })
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("7d")
@@ -106,13 +106,7 @@ export const appRouter = router({
   system: systemRouter,
 
   auth: router({
-    me: publicProcedure.query((opts) => {
-      const user = opts.ctx.user;
-      if (user && user.openId === ENV.ownerOpenId && user.role !== "admin") {
-        return { ...user, role: "admin" as const };
-      }
-      return user;
-    }),
+    me: publicProcedure.query((opts) => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
